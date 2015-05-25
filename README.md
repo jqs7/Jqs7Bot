@@ -1,6 +1,7 @@
 # Telegram 中文群组列表
 
 推荐新的群组地址，请将邀请链接发往 https://telegram.me/joinchat/05f4f7d8011233268903b7e52f38b62c ，并注明群名称。
+Github 用户也可以到 https://github.com/jqs7/telegram-chinese-groups/issues 发帖。
 不适合公开的群、私聊群请问公开和分享。
 
 也可以直接参与目录修订，请 fork https://github.com/jqs7/telegram-chinese-groups 并发送 PR。
