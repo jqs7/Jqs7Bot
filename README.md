@@ -25,3 +25,4 @@
 - 酷安2群 https://telegram.me/joinchat/A4PUYwDCAFz5v5KUJ8yUQA
 - 小众软件 https://telegram.me/joinchat/01a73276008cf68481367699d72cdf66
 - G+科技圈 https://telegram.me/joinchat/BK1haAErqxY9tZ2yCaxR1Q
+- 不正常人类研究中心 https://telegram.me/joinchat/0500a94200a7e65ea8f6ec9e141df918
