@@ -3,7 +3,7 @@
 推荐新的群组地址，请将邀请链接发往 https://telegram.me/joinchat/05f4f7d8011233268903b7e52f38b62c ，并注明群名称。  
 不适合公开的群、私聊群请勿公开和分享。
 
-也可以直接参与目录修订，请 fork https://github.com/jqs7/telegram-chinese-groups 并发送 PR。
+也可以直接参与目录修订，请 fork 本项目并发送 PR，或者到 [issues](https://github.com/jqs7/telegram-chinese-groups/issues) 发布相关群信息。
 
 
 ## Linux
