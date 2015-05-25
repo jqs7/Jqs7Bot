@@ -1,4 +1,4 @@
-# telegram中文群组列表
+# Telegram 中文群组列表
 
 ## Linux
 - ArchLinux https://telegram.me/joinchat/05a78984013ee018c51a2bca4b5a6548
