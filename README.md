@@ -26,3 +26,6 @@
 - 小众软件 https://telegram.me/joinchat/01a73276008cf68481367699d72cdf66
 - G+科技圈 https://telegram.me/joinchat/BK1haAErqxY9tZ2yCaxR1Q
 - 不正常人类研究中心 https://telegram.me/joinchat/0500a94200a7e65ea8f6ec9e141df918
+
+## 同城
+- Telegram西安 https://telegram.me/joinchat/0652097601140f16017a045a1a17059c
