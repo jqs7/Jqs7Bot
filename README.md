@@ -29,3 +29,4 @@
 
 ## 同城
 - Telegram西安 https://telegram.me/joinchat/0652097601140f16017a045a1a17059c
+- TELE广州 https://telegram.me/joinchat/046a2235013e540409fae070ff2b596b
