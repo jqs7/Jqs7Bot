@@ -13,8 +13,9 @@
 - Debian https://telegram.me/joinchat/05a78984013745e8522ce0ba8b02002c
 - Fedora https://telegram.me/joinchat/05b3e08f00bb6ce6aae12fa09ccabca8
 
-## Program Language
+## Programming
 - PHP https://telegram.me/joinchat/05a7898401114052b28d616f0f8d887d
+- 高性能计算 https://telegram.me/joinchat/02634c4800f980aa8b4b9e075f365cb2
 
 ## Software
 - Firefox https://telegram.me/joinchat/BbvvhQC5jsSFhMNKKT1UYw
