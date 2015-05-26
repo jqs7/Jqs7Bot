@@ -20,6 +20,7 @@
 ## Free Chat (闲聊)
 - Google Android https://telegram.me/joinchat/AknxJgFOKXAylGZbLnZ9zw
 - Twitter https://telegram.me/joinchat/046566bd00b467b082e2a0c432862c1c
+- Android Discuss https://telegram.me/joinchat/046a2235010b15c2fc9a83134e45fc81
 - 炊烟群 https://telegram.me/joinchat/029ed0ff0153827a83ad1a998dfd7ff5
 - 酷安1群 https://telegram.me/joinchat/A4PUYwC3Eb55Hb7PtrakWA
 - 酷安2群 https://telegram.me/joinchat/A4PUYwDCAFz5v5KUJ8yUQA
