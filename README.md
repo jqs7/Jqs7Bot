@@ -24,7 +24,7 @@
 ## 影音
 - 不看脑残片(话题为英美剧等) https://telegram.me/joinchat/0420f0bd0131450c7be7c236405df5e0
 
-## Free Chat (闲聊)
+## 闲聊
 - Google Android https://telegram.me/joinchat/AknxJgFOKXAylGZbLnZ9zw
 - Twitter https://telegram.me/joinchat/046566bd00b467b082e2a0c432862c1c
 - Android Discuss https://telegram.me/joinchat/046a2235010b15c2fc9a83134e45fc81
@@ -33,6 +33,7 @@
 - 酷安2群 https://telegram.me/joinchat/A4PUYwDCAFz5v5KUJ8yUQA
 - 小众软件 https://telegram.me/joinchat/01a73276008cf68481367699d72cdf66
 - G+科技圈 https://telegram.me/joinchat/BK1haAErqxY9tZ2yCaxR1Q
+- 辩论组(每日对一话题展开辩论) https://telegram.me/joinchat/02754024012b26f883b44ed7a136b211
 - 不正常人类研究中心 https://telegram.me/joinchat/0500a94200a7e65ea8f6ec9e141df918
 
 ## 同城
