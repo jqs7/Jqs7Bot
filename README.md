@@ -30,7 +30,7 @@
 - Android Discuss https://telegram.me/joinchat/046a2235010b15c2fc9a83134e45fc81
 - 炊烟群 https://telegram.me/joinchat/029ed0ff0153827a83ad1a998dfd7ff5
 - 酷安1群 https://telegram.me/joinchat/A4PUYwC3Eb55Hb7PtrakWA
-- 酷安2群 https://telegram.me/joinchat/A4PUYwDCAFz5v5KUJ8yUQA
+- 酷安2群 https://telegram.me/joinchat/0383d46300c2005ce859ab8054141d6d
 - 小众软件 https://telegram.me/joinchat/01a73276008cf68481367699d72cdf66
 - G+科技圈 https://telegram.me/joinchat/BK1haAErqxY9tZ2yCaxR1Q
 - 辩论组(每日对一话题展开辩论) https://telegram.me/joinchat/02754024012b26f883b44ed7a136b211
