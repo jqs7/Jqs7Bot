@@ -35,6 +35,7 @@
 - G+科技圈 https://telegram.me/joinchat/BK1haAErqxY9tZ2yCaxR1Q
 - 辩论组(每日对一话题展开辩论) https://telegram.me/joinchat/02754024012b26f883b44ed7a136b211
 - 不正常人类研究中心 https://telegram.me/joinchat/0500a94200a7e65ea8f6ec9e141df918
+- 福利群 https://telegram.me/joinchat/04ef56360164ec8010020822fda2dd10
 
 ## 同城
 - Telegram西安 https://telegram.me/joinchat/0652097601140f16017a045a1a17059c
