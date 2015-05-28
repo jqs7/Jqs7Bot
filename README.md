@@ -24,6 +24,9 @@
 ## 影音
 - 不看脑残片(话题为英美剧等) https://telegram.me/joinchat/0420f0bd0131450c7be7c236405df5e0
 
+## Games
+- Steam Games https://telegram.me/joinchat/01d93a04010d43a2a67d92f5e051f03f
+
 ## 闲聊
 - Google Android https://telegram.me/joinchat/AknxJgFOKXAylGZbLnZ9zw
 - Twitter https://telegram.me/joinchat/046566bd00b467b082e2a0c432862c1c
