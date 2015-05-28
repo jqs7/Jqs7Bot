@@ -47,3 +47,4 @@
 
 ## Others
 - 机器人(telegram bots) https://telegram.me/joinchat/05f4f7d800f72c26a792d4c77b012cda
+- tdesktop with fcitx and ibus fix  https://github.com/aphuse/tdesktop
