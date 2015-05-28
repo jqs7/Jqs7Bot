@@ -46,5 +46,5 @@
 - TELE北京 https://telegram.me/joinchat/046a2235015a416e187bb345949e5643
 
 ## Others
-- 机器人(telegram bots) https://telegram.me/joinchat/05f4f7d800f72c26a792d4c77b012cda
+- 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
 - tdesktop with fcitx and ibus fix  https://github.com/aphuse/tdesktop
