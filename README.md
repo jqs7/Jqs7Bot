@@ -13,6 +13,7 @@
 - Debian https://telegram.me/joinchat/05a78984013745e8522ce0ba8b02002c
 - Fedora https://telegram.me/joinchat/05b3e08f00bb6ce6aae12fa09ccabca8
 - openSUSE https://telegram.me/joinchat/05a789840163f1ae880fcc480c553417
+- Ubuntu https://telegram.me/joinchat/04bc74c30122f6ce65ffae5dd1da13e3
 - Raspberry Pi https://telegram.me/joinchat/04ec90dd015c2bda93ed2b0e9137bcfe
 
 ## Programming
