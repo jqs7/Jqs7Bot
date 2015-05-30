@@ -46,6 +46,7 @@
 - 福利群 https://telegram.me/joinchat/04ef56360164ec8010020822fda2dd10
 - 翻墙交流 https://telegram.me/joinchat/046a223500f4b540a11280d731cd6371
 - 知乎 https://telegram.me/joinchat/06216bce0102c62c70cce1e7db5fe7fd
+- UI Design https://telegram.me/joinchat/05a084110131f954c2cf44a2b47f7025
 
 ## 同城
 - Telegram西安 https://telegram.me/joinchat/0652097601140f16017a045a1a17059c
