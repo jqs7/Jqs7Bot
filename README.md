@@ -44,12 +44,14 @@
 - 不正常人类研究中心 https://telegram.me/joinchat/0500a94200a7e65ea8f6ec9e141df918
 - 福利群 https://telegram.me/joinchat/04ef56360164ec8010020822fda2dd10
 - 翻墙交流 https://telegram.me/joinchat/046a223500f4b540a11280d731cd6371
+- 知乎 https://telegram.me/joinchat/06216bce0102c62c70cce1e7db5fe7fd
 
 ## 同城
 - Telegram西安 https://telegram.me/joinchat/0652097601140f16017a045a1a17059c
 - TELE广州(说粤语都可以加) https://telegram.me/joinchat/046a2235013e540409fae070ff2b596b
 - TELE北京 https://telegram.me/joinchat/046a2235015a416e187bb345949e5643
 - 东北 https://telegram.me/joinchat/0420f0bd010c9006b78147e940c159f2
+- 浙江 https://telegram.me/joinchat/046a2235016d4b7ea2484be024618e85
 
 ## Others
 - 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
