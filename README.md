@@ -22,6 +22,7 @@
 
 ## Software
 - Firefox https://telegram.me/joinchat/BbvvhQC5jsSFhMNKKT1UYw
+- Moi 3D https://telegram.me/joinchat/05a0841100a01ad4b000b4044c2ef326
 
 ## 影音
 - 不看脑残片(话题为英美剧等) https://telegram.me/joinchat/0420f0bd0131450c0a0f4eadc9bafb48
