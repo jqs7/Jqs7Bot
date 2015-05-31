@@ -22,6 +22,7 @@
 
 ## Software
 - Firefox https://telegram.me/joinchat/BbvvhQC5jsSFhMNKKT1UYw
+- Drupal https://telegram.me/joinchat/05a78984013873543e1f7a8d3914764f
 - Moi 3D https://telegram.me/joinchat/05a0841100a01ad4b000b4044c2ef326
 
 ## 影音
