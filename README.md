@@ -28,6 +28,7 @@
 
 ## 影音
 - 不看脑残片(话题为英美剧等) https://telegram.me/joinchat/0420f0bd0131450c0a0f4eadc9bafb48
+- 霹雳布袋戏 https://telegram.me/joinchat/06216bce0116eb56b2aa10ddb898fe5f
 
 ## Games
 - Steam Games https://telegram.me/joinchat/01d93a04010d43a2a67d92f5e051f03f
