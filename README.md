@@ -49,6 +49,7 @@
 - 不正常人类研究中心 https://telegram.me/joinchat/0500a94200a7e65ea8f6ec9e141df918
 - 福利群 https://telegram.me/joinchat/04ef56360164ec8010020822fda2dd10
 - 翻墙交流 https://telegram.me/joinchat/046a223500f4b540a11280d731cd6371
+- 翻墙2群 https://telegram.me/joinchat/046a223501675bb6a2b6d220314dd105
 - 知乎 https://telegram.me/joinchat/06216bce0102c62c70cce1e7db5fe7fd
 - UI Design https://telegram.me/joinchat/05a084110131f954c2cf44a2b47f7025
 - ##Orz分部(连通IRC FreeNode@##Orz) https://telegram.me/joinchat/03c782a500db71d25ba09e7664f5bcbe
