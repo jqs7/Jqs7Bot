@@ -5,6 +5,7 @@
 
 也可以直接参与目录修订，请 fork 本项目并发送 PR，或者到 [issues](https://github.com/jqs7/telegram-chinese-groups/issues) 发布相关群信息。
 
+附：可使用[qr code generator](http://www.qr-code-generator.com/)将链接转为二维码以便移动客户端使用。
 
 ## Linux
 - ArchLinux https://telegram.me/joinchat/05a78984013ee018c51a2bca4b5a6548
