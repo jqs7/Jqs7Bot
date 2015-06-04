@@ -1,5 +1,7 @@
 # Telegram 中文群组列表
 
+<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />本<span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Dataset" rel="dct:type">作品</span>采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可。
+
 推荐新的群组地址，请将邀请链接发往 https://telegram.me/joinchat/05f4f7d8011233268903b7e52f38b62c ，并注明群名称。  
 不适合公开的群、私聊群请勿公开和分享。
 
@@ -21,7 +23,7 @@
 - PHP https://telegram.me/joinchat/05a7898401114052b28d616f0f8d887d
 - Python讨论组 https://telegram.me/joinchat/05b3e08f0108d344f72c086dab12165d
 - Drupal https://telegram.me/joinchat/05a78984013873543e1f7a8d3914764f
-- 高性能计算 https://telegram.me/joinchat/02634c4800f980aa8b4b9e075f365cb2
+- backend-developers https://telegram.me/joinchat/02634c4800f980aa8b4b9e075f365cb2
 - 移动自动化测试 https://telegram.me/joinchat/04a5d082010cdf3aebbb4b356ff59023
 
 ## Software
@@ -61,8 +63,10 @@
 - TELE北京 https://telegram.me/joinchat/046a2235015a416e187bb345949e5643
 - 东北 https://telegram.me/joinchat/0420f0bd010c9006b78147e940c159f2
 - 浙江 https://telegram.me/joinchat/046a2235016d4b7ea2484be024618e85
+- 上海租房 https://telegram.me/joinchat/06216bce014244f22009dc9e7c743ef1
 
 ## Others
+- Digital Nomads https://telegram.me/joinchat/06216bce013faf941088775a07665c3f
 - 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
 - tdesktop with fcitx and ibus fix  https://github.com/aphuse/tdesktop  
 compiled version(for archlinux x86_64) http://pan.baidu.com/s/1c0B7WKo  urxg  
