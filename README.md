@@ -22,6 +22,7 @@
 - Python讨论组 https://telegram.me/joinchat/05b3e08f0108d344f72c086dab12165d
 - Drupal https://telegram.me/joinchat/05a78984013873543e1f7a8d3914764f
 - 高性能计算 https://telegram.me/joinchat/02634c4800f980aa8b4b9e075f365cb2
+- 移动自动化测试 https://telegram.me/joinchat/04a5d082010cdf3aebbb4b356ff59023
 
 ## Software
 - Firefox https://telegram.me/joinchat/BbvvhQC5jsSFhMNKKT1UYw
@@ -65,7 +66,8 @@
 - 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
 - tdesktop with fcitx and ibus fix  https://github.com/aphuse/tdesktop  
 compiled version(for archlinux x86_64) http://pan.baidu.com/s/1c0B7WKo  urxg  
-archlinux仓库(for archlinux x86_64)：
+
+archlinux仓库(x86_64)：
 ```
 sudo pacman-key -r 8BC030E2
 sudo pacman-key --lsign-key 8BC030E2
