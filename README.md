@@ -65,3 +65,12 @@
 - 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
 - tdesktop with fcitx and ibus fix  https://github.com/aphuse/tdesktop  
 compiled version(for archlinux x86_64) http://pan.baidu.com/s/1c0B7WKo  urxg
+archlinux仓库(for archlinux x86_64)：
+```
+sudo pacman-key -r 8BC030E2
+sudo pacman-key --lsign-key 8BC030E2
+```
+```
+[Jqs7]
+Server = http://repo.jqs7.com
+```
