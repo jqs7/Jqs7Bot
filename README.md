@@ -55,6 +55,7 @@
 - 翻墙2群 https://telegram.me/joinchat/046a223501675bb6a2b6d220314dd105
 - 知乎 https://telegram.me/joinchat/06216bce0102c62c70cce1e7db5fe7fd
 - UI Design https://telegram.me/joinchat/05a084110131f954c2cf44a2b47f7025
+- 股票 https://telegram.me/joinchat/04bc74c3013ff5705d881582ef3db937
 - ##Orz分部(连通IRC FreeNode@##Orz) https://telegram.me/joinchat/03c782a500db71d25ba09e7664f5bcbe
 
 ## 同城
