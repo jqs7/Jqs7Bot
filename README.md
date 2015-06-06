@@ -66,6 +66,7 @@
 - 东北 https://telegram.me/joinchat/0420f0bd010c9006b78147e940c159f2
 - 浙江 https://telegram.me/joinchat/046a2235016d4b7ea2484be024618e85
 - 上海租房 https://telegram.me/joinchat/06216bce014244f22009dc9e7c743ef1
+- 金华市职业技术学院 https://telegram.me/joinchat/05b3e08f015f7c28bf0f16091d88dcb9
 
 ## Others
 - Digital Nomads https://telegram.me/joinchat/06216bce013faf941088775a07665c3f
