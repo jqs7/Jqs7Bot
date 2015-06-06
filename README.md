@@ -37,6 +37,7 @@
 ## Games
 - Steam Games https://telegram.me/joinchat/01d93a04010d43a2a67d92f5e051f03f
 - Linux游戏站 https://telegram.me/joinchat/04bc74c3014169fc9ce7e23e4868a990
+- MINECRAFT https://telegram.me/joinchat/046a2235011e72f60b7707d168233d61
 
 ## 闲聊
 - Google Android https://telegram.me/joinchat/AknxJgFOKXAylGZbLnZ9zw
