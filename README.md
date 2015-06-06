@@ -74,6 +74,7 @@
 - 主机测评 https://telegram.me/joinchat/035971cc010cf9ca419f1da0b4e7823c
 - Shadowsocks https://telegram.me/joinchat/035971cc0137ff8c2105bcdfa4352f93
 - 英语吧 https://telegram.me/joinchat/05a7898400ff94d22e8019863540aa9e
+- WooYun社区 https://telegram.me/joinchat/0575a16a008fa17ec5457b81a4f15abe
 - 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
 - tdesktop with fcitx and ibus fix  https://github.com/aphuse/tdesktop  
 compiled version(for archlinux x86_64) http://pan.baidu.com/s/1c0B7WKo  urxg  
