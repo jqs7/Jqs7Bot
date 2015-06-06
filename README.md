@@ -40,24 +40,30 @@
 - MINECRAFT https://telegram.me/joinchat/046a2235011e72f60b7707d168233d61
 - Ingress https://telegram.me/joinchat/03cbe95b00f2dbe00cfb8b94ed37f49e
 
-## 闲聊
+## IT
 - Google Android https://telegram.me/joinchat/AknxJgFOKXAylGZbLnZ9zw
 - Twitter https://telegram.me/joinchat/046566bd00b467b082e2a0c432862c1c
 - Android Discuss https://telegram.me/joinchat/046a2235010b15c2fc9a83134e45fc81
 - WPer(Windows Phone) https://telegram.me/joinchat/046a2235012823b897d3a38ce4797fcb
+- G+科技圈 https://telegram.me/joinchat/BK1haAErqxY9tZ2yCaxR1Q
+- 翻墙交流 https://telegram.me/joinchat/046a223500f4b540a11280d731cd6371
+- 翻墙2群 https://telegram.me/joinchat/046a223501675bb6a2b6d220314dd105
+- Digital Nomads https://telegram.me/joinchat/06216bce013faf941088775a07665c3f
+- 主机测评 https://telegram.me/joinchat/035971cc010cf9ca419f1da0b4e7823c
+- Shadowsocks https://telegram.me/joinchat/035971cc0137ff8c2105bcdfa4352f93
+- WooYun社区 https://telegram.me/joinchat/0575a16a008fa17ec5457b81a4f15abe
+- 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
+
+## 闲聊
 - 炊烟群 https://telegram.me/joinchat/029ed0ff0153827a83ad1a998dfd7ff5
 - 酷安1群 https://telegram.me/joinchat/A4PUYwC3Eb55Hb7PtrakWA
 - 酷安2群 https://telegram.me/joinchat/0383d46300c2005ce859ab8054141d6d
 - 小众软件 https://telegram.me/joinchat/01a73276008cf68481367699d72cdf66
-- G+科技圈 https://telegram.me/joinchat/BK1haAErqxY9tZ2yCaxR1Q
 - 辩论组(每日对一话题展开辩论) https://telegram.me/joinchat/02754024012b26f883b44ed7a136b211
 - 不正常人类研究中心 https://telegram.me/joinchat/0500a94200a7e65ea8f6ec9e141df918
 - 福利群 https://telegram.me/joinchat/04ef56360164ec8010020822fda2dd10
-- 翻墙交流 https://telegram.me/joinchat/046a223500f4b540a11280d731cd6371
-- 翻墙2群 https://telegram.me/joinchat/046a223501675bb6a2b6d220314dd105
 - 知乎 https://telegram.me/joinchat/06216bce0102c62c70cce1e7db5fe7fd
 - UI Design https://telegram.me/joinchat/05a084110131f954c2cf44a2b47f7025
-- 股票 https://telegram.me/joinchat/04bc74c3013ff5705d881582ef3db937
 - ##Orz分部(连通IRC FreeNode@##Orz) https://telegram.me/joinchat/03c782a500db71d25ba09e7664f5bcbe
 
 ## 同城
@@ -70,13 +76,11 @@
 - 金华市职业技术学院 https://telegram.me/joinchat/05b3e08f015f7c28bf0f16091d88dcb9
 
 ## Others
-- Digital Nomads https://telegram.me/joinchat/06216bce013faf941088775a07665c3f
-- 主机测评 https://telegram.me/joinchat/035971cc010cf9ca419f1da0b4e7823c
-- Shadowsocks https://telegram.me/joinchat/035971cc0137ff8c2105bcdfa4352f93
 - 英语吧 https://telegram.me/joinchat/05a7898400ff94d22e8019863540aa9e
-- WooYun社区 https://telegram.me/joinchat/0575a16a008fa17ec5457b81a4f15abe
-- 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
-- tdesktop with fcitx and ibus fix  https://github.com/aphuse/tdesktop  
+- 股票 https://telegram.me/joinchat/04bc74c3013ff5705d881582ef3db937
+
+
+tdesktop with fcitx and ibus fix  https://github.com/aphuse/tdesktop  
 compiled version(for archlinux x86_64) http://pan.baidu.com/s/1c0B7WKo  urxg  
 
 archlinux仓库(x86_64)：
