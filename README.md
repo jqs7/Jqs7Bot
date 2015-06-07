@@ -38,7 +38,8 @@
 - Steam Games https://telegram.me/joinchat/01d93a04010d43a2a67d92f5e051f03f
 - Linux游戏站 https://telegram.me/joinchat/04bc74c3014169fc9ce7e23e4868a990
 - MINECRAFT https://telegram.me/joinchat/046a2235011e72f60b7707d168233d61
-- Ingress https://telegram.me/joinchat/03cbe95b00f2dbe00cfb8b94ed37f49e
+- Ingress https://telegram.me/joinchat/03cbe95b00f2dbe024351b3cfb1d4cfd
+- Clash of Clans https://telegram.me/joinchat/03ba3ff50115a5ce65f369242dacd946
 
 ## IT
 - Google Android https://telegram.me/joinchat/AknxJgFOKXAylGZbLnZ9zw
@@ -81,14 +82,12 @@
 
 
 tdesktop with fcitx and ibus fix  https://github.com/aphuse/tdesktop  
-compiled version(for archlinux x86_64) http://pan.baidu.com/s/1c0B7WKo  urxg  
-
-archlinux仓库(x86_64)：
+compiled version for archlinux 仓库：
 ```
-sudo pacman-key -r 8BC030E2
-sudo pacman-key --lsign-key 8BC030E2
+[archlinuxcn]
+SigLevel = Optional TrustedOnly
+Server = http://repo.archlinuxcn.org/$arch
 ```
 ```
-[Jqs7]
-Server = http://repo.jqs7.com
+sudo pacman -S telegram-desktop-cn
 ```
