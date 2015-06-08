@@ -38,7 +38,7 @@
 - Steam Games https://telegram.me/joinchat/01d93a04010d43a2a67d92f5e051f03f
 - Linux游戏站 https://telegram.me/joinchat/04bc74c3014169fc9ce7e23e4868a990
 - MINECRAFT https://telegram.me/joinchat/046a2235011e72f60b7707d168233d61
-- Ingress https://telegram.me/joinchat/03cbe95b00f2dbe024351b3cfb1d4cfd
+- Ingress https://telegram.me/joinchat/046a2235015773c48035d5fe810d07ec
 - Clash of Clans https://telegram.me/joinchat/03ba3ff50115a5ce65f369242dacd946
 
 ## IT
