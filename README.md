@@ -23,6 +23,7 @@
 ## Programming
 - PHP https://telegram.me/joinchat/05a7898401114052b28d616f0f8d887d
 - Python讨论组 https://telegram.me/joinchat/05b3e08f0108d344f72c086dab12165d
+- Rust https://telegram.me/joinchat/05574949013bb486b792b73146ff8ec6
 - Drupal https://telegram.me/joinchat/05a78984013873543e1f7a8d3914764f
 - backend-developers https://telegram.me/joinchat/02634c4800f980aa8b4b9e075f365cb2
 - 移动自动化测试 https://telegram.me/joinchat/04a5d082010cdf3aebbb4b356ff59023
