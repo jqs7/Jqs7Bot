@@ -18,6 +18,7 @@
 - Fedora https://telegram.me/joinchat/05b3e08f00bb6ce6aae12fa09ccabca8
 - openSUSE https://telegram.me/joinchat/05a789840163f1ae880fcc480c553417
 - Raspberry Pi https://telegram.me/joinchat/04ec90dd015c2bda93ed2b0e9137bcfe
+- Gentoo: <https://telegram.me/joinchat/0557494901586680e50d77eebd2986d2>
 
 ## Programming
 - PHP https://telegram.me/joinchat/05a7898401114052b28d616f0f8d887d
@@ -25,6 +26,7 @@
 - Drupal https://telegram.me/joinchat/05a78984013873543e1f7a8d3914764f
 - backend-developers https://telegram.me/joinchat/02634c4800f980aa8b4b9e075f365cb2
 - 移动自动化测试 https://telegram.me/joinchat/04a5d082010cdf3aebbb4b356ff59023
+- 专注Rust学习: <https://telegram.me/joinchat/05574949013bb486b792b73146ff8ec6>
 
 ## Software
 - Firefox https://telegram.me/joinchat/BbvvhQC5jsSFhMNKKT1UYw
