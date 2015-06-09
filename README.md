@@ -47,6 +47,7 @@
 - Google Android https://telegram.me/joinchat/AknxJgFOKXAylGZbLnZ9zw
 - Twitter https://telegram.me/joinchat/046566bd00b467b082e2a0c432862c1c
 - Android Discuss https://telegram.me/joinchat/046a2235010b15c2fc9a83134e45fc81
+- Rom交流 https://telegram.me/joinchat/05dacd3e00cc332a17012c18c40765e0
 - WPer(Windows Phone) https://telegram.me/joinchat/046a2235012823b897d3a38ce4797fcb
 - G+科技圈 https://telegram.me/joinchat/BK1haAErqxY9tZ2yCaxR1Q
 - 翻墙交流 https://telegram.me/joinchat/046a223500f4b540a11280d731cd6371
