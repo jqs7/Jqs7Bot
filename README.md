@@ -80,6 +80,7 @@
 ## Others
 - 英语吧 https://telegram.me/joinchat/05a7898400ff94d22e8019863540aa9e
 - 股票 https://telegram.me/joinchat/04bc74c3013ff5705d881582ef3db937
+- 德语学习 https://telegram.me/joinchat/BEuomgEvlEjGQ9b78dfrqQ
 
 
 tdesktop with fcitx and ibus fix  https://github.com/aphuse/tdesktop  
