@@ -16,6 +16,7 @@
 - Gentoo https://telegram.me/joinchat/0557494901586680e50d77eebd2986d2
 - Ubuntu https://telegram.me/joinchat/05a78984012baf7676de39c19838cfb4
 - Debian https://telegram.me/joinchat/05a78984013745e8522ce0ba8b02002c
+- CentOS https://telegram.me/joinchat/05a789840201e2809786a62e6721fbed
 - Fedora https://telegram.me/joinchat/05b3e08f00bb6ce6aae12fa09ccabca8
 - openSUSE https://telegram.me/joinchat/05a789840163f1ae880fcc480c553417
 - Raspberry Pi https://telegram.me/joinchat/04ec90dd015c2bda93ed2b0e9137bcfe
