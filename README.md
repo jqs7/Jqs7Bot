@@ -57,7 +57,7 @@
 - 主机测评 https://telegram.me/joinchat/035971cc010cf9ca419f1da0b4e7823c
 - Shadowsocks https://telegram.me/joinchat/035971cc0137ff8c2105bcdfa4352f93
 - WooYun社区 https://telegram.me/joinchat/0575a16a008fa17ec5457b81a4f15abe
-- 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
+- Happy Money https://telegram.me/joinchat/047728b301af8a228d992391e4f5c06b
 
 ## 闲聊
 - 酷安1群 https://telegram.me/joinchat/A4PUYwC3Eb55Hb7PtrakWA
@@ -84,6 +84,7 @@
 - 股票 https://telegram.me/joinchat/04bc74c3013ff5705d881582ef3db937
 - 德语学习 https://telegram.me/joinchat/BEuomgEvlEjGQ9b78dfrqQ
 - 垃圾桶(吐槽,压力发泄群) https://telegram.me/joinchat/0420f0bd01288210bb7230657bed5bd1
+- 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
 
 
 tdesktop with fcitx and ibus fix  https://github.com/aphuse/tdesktop  
