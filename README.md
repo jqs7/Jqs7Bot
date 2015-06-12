@@ -51,7 +51,7 @@
 - Rom交流 https://telegram.me/joinchat/05dacd3e00cc332a17012c18c40765e0
 - WPer(Windows Phone) https://telegram.me/joinchat/046a2235012823b897d3a38ce4797fcb
 - G+科技圈 https://telegram.me/joinchat/BK1haAErqxY9tZ2yCaxR1Q
-- 翻墙交流 https://telegram.me/joinchat/046a223500f4b540a11280d731cd6371
+- 翻墙交流 https://telegram.me/joinchat/046a223500f4b54062f13040a30cbf40
 - 翻墙2群 https://telegram.me/joinchat/046a223501675bb6a2b6d220314dd105
 - Digital Nomads https://telegram.me/joinchat/06216bce013faf941088775a07665c3f
 - 主机测评 https://telegram.me/joinchat/035971cc010cf9ca419f1da0b4e7823c
