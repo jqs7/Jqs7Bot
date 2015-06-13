@@ -57,7 +57,7 @@
 - 主机测评 https://telegram.me/joinchat/035971cc010cf9ca419f1da0b4e7823c
 - Shadowsocks https://telegram.me/joinchat/035971cc0137ff8c2105bcdfa4352f93
 - WooYun社区 https://telegram.me/joinchat/0575a16a008fa17ec5457b81a4f15abe
-- Happy Money https://telegram.me/joinchat/047728b301af8a228d992391e4f5c06b
+- Happy Money https://telegram.me/joinchat/047728b301af8a22d9ffd381974d7913
 
 ## 闲聊
 - 酷安1群 https://telegram.me/joinchat/A4PUYwC3Eb55Hb7PtrakWA
