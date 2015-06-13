@@ -90,6 +90,8 @@
 - 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
 
 
+Telegram 第三方贴纸收集 https://meta.appinn.com/t/telegram/977
+
 tdesktop with fcitx and ibus fix https://github.com/aphuse/tdesktop  
 compiled version for archlinux:
 ```
