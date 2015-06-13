@@ -9,6 +9,8 @@
 
 附：可使用[qr code generator](http://www.qr-code-generator.com/)将链接转为二维码以便移动客户端使用。
 
+已收录群组数量：61 个
+
 ## Linux
 - ArchLinux https://telegram.me/joinchat/05a78984013ee018c51a2bca4b5a6548
 - Linux https://telegram.me/joinchat/05a789840153ff521002798540ae6270
@@ -89,12 +91,13 @@
 
 
 tdesktop with fcitx and ibus fix  https://github.com/aphuse/tdesktop  
-compiled version for archlinux 仓库：
+compiled version for archlinux:
 ```
 [archlinuxcn]
 SigLevel = Optional TrustedOnly
 Server = http://repo.archlinuxcn.org/$arch
 ```
 ```
+sudo pacman -Syy
 sudo pacman -S telegram-desktop-cn
 ```
