@@ -14,8 +14,9 @@
 - Linux https://telegram.me/joinchat/05a789840153ff521002798540ae6270
 - GNU/Linux https://telegram.me/joinchat/04bc74c300fc2fca4fd784e8bf7c6ed8
 - Gentoo https://telegram.me/joinchat/0557494901586680e50d77eebd2986d2
-- Ubuntu https://telegram.me/joinchat/05a78984012baf7676de39c19838cfb4
 - Debian https://telegram.me/joinchat/05a78984013745e8522ce0ba8b02002c
+- Linux Mint https://telegram.me/joinchat/05a78984017d9bf84ff8c51d4718b266
+- Ubuntu https://telegram.me/joinchat/05a78984012baf7676de39c19838cfb4
 - CentOS https://telegram.me/joinchat/05a789840201e2809786a62e6721fbed
 - Fedora https://telegram.me/joinchat/05b3e08f00bb6ce6aae12fa09ccabca8
 - openSUSE https://telegram.me/joinchat/05a789840163f1ae880fcc480c553417
