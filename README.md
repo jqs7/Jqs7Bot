@@ -9,7 +9,7 @@
 
 附：可使用[qr code generator](http://www.qr-code-generator.com/)将链接转为二维码以便移动客户端使用。
 
-已收录群组数量：61 个
+####已收录群组数量：61 个
 
 ## Linux
 - ArchLinux https://telegram.me/joinchat/05a78984013ee018c51a2bca4b5a6548
@@ -90,7 +90,7 @@
 - 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
 
 
-tdesktop with fcitx and ibus fix  https://github.com/aphuse/tdesktop  
+tdesktop with fcitx and ibus fix https://github.com/aphuse/tdesktop  
 compiled version for archlinux:
 ```
 [archlinuxcn]
