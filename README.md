@@ -40,12 +40,13 @@
 - 不看脑残片(话题为英美剧等) https://telegram.me/joinchat/0420f0bd0131450c0a0f4eadc9bafb48
 - 霹雳布袋戏 https://telegram.me/joinchat/06216bce0116eb56b2aa10ddb898fe5f
 
-## Games
+## ACG
 - Steam Games https://telegram.me/joinchat/01d93a04010d43a2a67d92f5e051f03f
 - Linux游戏站 https://telegram.me/joinchat/04bc74c3014169fc9ce7e23e4868a990
 - MINECRAFT https://telegram.me/joinchat/046a2235011e72f60b7707d168233d61
 - Ingress https://telegram.me/joinchat/046a2235015773c48035d5fe810d07ec
 - Clash of Clans https://telegram.me/joinchat/03ba3ff50115a5ce65f369242dacd946
+- 番剧狂魔的中二世界 https://telegram.me/joinchat/0435790500c10772809916931ce7f814
 
 ## IT
 - Google Android https://telegram.me/joinchat/AknxJgFOKXAylGZbLnZ9zw
