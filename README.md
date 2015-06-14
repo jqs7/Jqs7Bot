@@ -2,7 +2,7 @@
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />本<span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Dataset" rel="dct:type">作品</span>采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可。
 
-推荐新的群组地址，请将邀请链接发往 https://telegram.me/joinchat/05f4f7d8011233268903b7e52f38b62c ，并注明群名称。  
+推荐新的群组地址，请将邀请链接发往 https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，并注明群名称。  
 不适合公开的群、私聊群请勿公开和分享。
 
 也可以直接参与目录修订，请 fork 本项目并发送 PR，或者到 [issues](https://github.com/jqs7/telegram-chinese-groups/issues) 发布相关群信息。
