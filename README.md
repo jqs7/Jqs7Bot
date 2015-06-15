@@ -7,7 +7,7 @@
 
 也可以直接参与目录修订，请 fork 本项目并发送 PR，或者到 [issues](https://github.com/jqs7/telegram-chinese-groups/issues) 发布相关群信息。
 
-附：可使用[qr code generator](http://www.qr-code-generator.com/)将链接转为二维码以便移动客户端使用。
+附：为防止外星人入侵，搅乱群秩序，影响正常的群组交流功能，推荐各管理员们使用bot进行群组管理(如liberbot等)。
 
 ####已收录群组数量：62 个
 
@@ -50,10 +50,11 @@
 
 ## IT
 - Google Android https://telegram.me/joinchat/AknxJgFOKXAylGZbLnZ9zw
-- Twitter https://telegram.me/joinchat/046566bd00b467b082e2a0c432862c1c
 - Android Discuss https://telegram.me/joinchat/046a2235010b15c2fc9a83134e45fc81
-- Rom交流 https://telegram.me/joinchat/05dacd3e00cc332a17012c18c40765e0
+- iOS http://telegram.me/joinchat/017fbe3a0151185cbea2d103cfdff839
 - WPer(Windows Phone) https://telegram.me/joinchat/046a2235012823b897d3a38ce4797fcb
+- Twitter https://telegram.me/joinchat/046566bd00b467b082e2a0c432862c1c
+- Rom交流 https://telegram.me/joinchat/05dacd3e00cc332a17012c18c40765e0
 - G+科技圈 https://telegram.me/joinchat/BK1haAErqxY9tZ2yCaxR1Q
 - 翻墙交流 https://telegram.me/joinchat/046a223500f4b54062f13040a30cbf40
 - 翻墙2群 https://telegram.me/joinchat/046a223501675bb6a2b6d220314dd105
@@ -91,6 +92,7 @@
 - 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
 
 
+可使用[qr code generator](http://www.qr-code-generator.com/)将链接转为二维码以便移动客户端使用。
 Telegram 第三方贴纸收集 https://meta.appinn.com/t/telegram/977
 
 tdesktop with fcitx and ibus fix https://github.com/aphuse/tdesktop  
