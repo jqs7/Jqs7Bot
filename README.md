@@ -11,7 +11,7 @@
 为防止外星人入侵，搅乱群秩序，影响正常的群组交流功能，推荐各管理员们使用bot进行群组管理(如liberbot等)。  
 若非特别情况，请勿在群组中分享联系人，因为这会暴露被分享者的手机号，属于卖队友的行为。
 
-####已收录群组数量：62 个
+####已收录群组数量：64 个
 
 ## Linux
 - ArchLinux https://telegram.me/joinchat/05a78984013ee018c51a2bca4b5a6548
@@ -31,6 +31,7 @@
 - Python讨论组 https://telegram.me/joinchat/05b3e08f0108d344f72c086dab12165d
 - Rust https://telegram.me/joinchat/05574949013bb486b792b73146ff8ec6
 - Drupal https://telegram.me/joinchat/05a78984013873543e1f7a8d3914764f
+- To Code,Human https://telegram.me/joinchat/04955fb5021fd8e83f0f8cf62bd09bee
 - 移动自动化测试 https://telegram.me/joinchat/04a5d082010cdf3aebbb4b356ff59023
 
 ## Software
@@ -73,6 +74,7 @@
 - 不正常人类研究中心 https://telegram.me/joinchat/0500a94200a7e65ea8f6ec9e141df918
 - 福利群 https://telegram.me/joinchat/04ef56360164ec8010020822fda2dd10
 - 知乎 https://telegram.me/joinchat/06216bce0102c62c70cce1e7db5fe7fd
+- UShare ULearn https://telegram.me/joinchat/04955fb5020ea6d01d4ea8bb235df259
 - UI Design https://telegram.me/joinchat/05a084110131f954c2cf44a2b47f7025
 - ##Orz分部(连通IRC FreeNode@##Orz) https://telegram.me/joinchat/03c782a500db71d25ba09e7664f5bcbe
 
