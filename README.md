@@ -9,7 +9,7 @@
 
 附：为防止外星人入侵，搅乱群秩序，影响正常的群组交流功能，推荐各管理员们使用bot进行群组管理(如liberbot等)。
 
-####已收录群组数量：62 个
+####已收录群组数量：63 个
 
 ## Linux
 - ArchLinux https://telegram.me/joinchat/05a78984013ee018c51a2bca4b5a6548
