@@ -93,6 +93,7 @@
 
 
 可使用[qr code generator](http://www.qr-code-generator.com/)将链接转为二维码以便移动客户端使用。
+Telegram 正體中文支援站 http://www.telegram.url.tw/
 Telegram 第三方贴纸收集 https://meta.appinn.com/t/telegram/977
 
 tdesktop with fcitx and ibus fix https://github.com/aphuse/tdesktop  
