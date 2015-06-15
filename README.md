@@ -7,9 +7,9 @@
 
 也可以直接参与目录修订，请 fork 本项目并发送 PR，或者到 [issues](https://github.com/jqs7/telegram-chinese-groups/issues) 发布相关群信息。
 
->附：  
-  为防止外星人入侵，搅乱群秩序，影响正常的群组交流功能，推荐各管理员们使用bot进行群组管理(如liberbot等)。  
-  若非特别情况，请勿在群组中分享联系人，因为这会暴露被分享者的手机号，属于卖队友的行为。
+>附：
+1. 为防止外星人入侵，搅乱群秩序，影响正常的群组交流功能，推荐各管理员们使用bot进行群组管理(如liberbot等)。
+1. 若非特别情况，请勿在群组中分享联系人，因为这会暴露被分享者的手机号，属于卖队友的行为。
 
 ####已收录群组数量：63 个
 
@@ -94,11 +94,11 @@
 - 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
 
 
-可使用[qr code generator](http://www.qr-code-generator.com/)将链接转为二维码以便移动客户端使用。
-Telegram 正體中文支援站 http://www.telegram.url.tw/
-Telegram 第三方贴纸收集 https://meta.appinn.com/t/telegram/977
-
-tdesktop with fcitx and ibus fix https://github.com/aphuse/tdesktop  
+其他资源：
+1. 可使用[qr code generator](http://www.qr-code-generator.com/)将链接转为二维码以便移动客户端使用。
+1. Telegram 正體中文支援站 http://www.telegram.url.tw/
+1. Telegram 第三方贴纸收集 https://meta.appinn.com/t/telegram/977
+1. tdesktop with fcitx and ibus fix https://github.com/aphuse/tdesktop
 compiled version for archlinux:
 ```
 [archlinuxcn]
