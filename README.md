@@ -11,7 +11,7 @@
 为防止外星人入侵，搅乱群秩序，影响正常的群组交流功能，推荐各管理员们使用bot进行群组管理(如liberbot等)。  
 若非特别情况，请勿在群组中分享联系人，因为这会暴露被分享者的手机号，属于卖队友的行为。
 
-####已收录群组数量：65 个
+####已收录群组数量：64 个
 
 ## Linux
 - ArchLinux https://telegram.me/joinchat/05a78984013ee018c51a2bca4b5a6548
@@ -91,7 +91,6 @@
 ## Others
 - 英语吧 https://telegram.me/joinchat/05a7898400ff94d22e8019863540aa9e
 - 股票 https://telegram.me/joinchat/04bc74c3013ff5705d881582ef3db937
-- 德语学习 https://telegram.me/joinchat/BEuomgEvlEjGQ9b78dfrqQ
 - 垃圾桶(吐槽,压力发泄群) https://telegram.me/joinchat/0420f0bd01288210bb7230657bed5bd1
 - 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
 
