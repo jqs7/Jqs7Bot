@@ -50,7 +50,7 @@
 - Ingress https://telegram.me/joinchat/046a2235015773c48035d5fe810d07ec
 - Clash of Clans https://telegram.me/joinchat/03ba3ff50115a5ce65f369242dacd946
 - 番剧狂魔的中二世界 https://telegram.me/joinchat/0435790500c10772809916931ce7f814
-- 纯洁的我们«里番» https://telegram.me/joinchat/0435790501ef92f06d7c1eb6a3cac629
+- 纯洁的我们«里番/NSFW» https://telegram.me/joinchat/0435790501ef92f06d7c1eb6a3cac629
 
 ## IT
 - Google Android https://telegram.me/joinchat/AknxJgFOKXAylGZbLnZ9zw
