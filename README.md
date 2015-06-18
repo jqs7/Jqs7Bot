@@ -34,6 +34,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - Raspberry Pi https://telegram.me/joinchat/04ec90dd015c2bda93ed2b0e9137bcfe
 
 ## Programming
+- Drupal https://telegram.me/joinchat/05a78984013873543e1f7a8d3914764f
 - PHP https://telegram.me/joinchat/05a7898401114052b28d616f0f8d887d
 - Python讨论组 https://telegram.me/joinchat/05b3e08f0108d344f72c086dab12165d
 - Rust https://telegram.me/joinchat/05574949013bb486b792b73146ff8ec6
@@ -42,7 +43,6 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - 移动自动化测试 https://telegram.me/joinchat/04a5d082010cdf3aebbb4b356ff59023
 
 ## Software
-- Drupal https://telegram.me/joinchat/05a78984013873543e1f7a8d3914764f
 - Firefox https://telegram.me/joinchat/BbvvhQC5jsSFhMNKKT1UYw
 - Moi 3D https://telegram.me/joinchat/05a0841100a01ad4b000b4044c2ef326
 
