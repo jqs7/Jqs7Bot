@@ -72,7 +72,7 @@
 - 酷安1群 https://telegram.me/joinchat/A4PUYwC3Eb55Hb7PtrakWA
 - 酷安2群 https://telegram.me/joinchat/0383d46300c2005ce859ab8054141d6d
 - 小众软件 https://telegram.me/joinchat/01a73276008cf68481367699d72cdf66
-- 每日一论(每天对一个讨论话题) https://telegram.me/joinchat/02754024012b26f883b44ed7a136b211
+- 每日一论(每天一个讨论话题) https://telegram.me/joinchat/02754024012b26f883b44ed7a136b211
 - 不正常人类研究中心 https://telegram.me/joinchat/0500a94200a7e65ea8f6ec9e141df918
 - 福利群 https://telegram.me/joinchat/04ef56360164ec8010020822fda2dd10
 - 知乎 https://telegram.me/joinchat/06216bce0102c62c70cce1e7db5fe7fd
