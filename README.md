@@ -106,8 +106,10 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - 可使用[qr code generator](http://www.qr-code-generator.com/)将链接转为二维码以便移动客户端使用。
 - Telegram 正體中文支援站 http://www.telegram.url.tw/
 - Telegram 第三方贴纸收集 https://meta.appinn.com/t/telegram/977
-- tdesktop with fcitx and ibus fix https://github.com/aphuse/tdesktop<br/>
-compiled version for archlinux:
+
+### tdesktop linux 输入法修复版 :
+Source Code: https://github.com/aphuse/tdesktop<br/>
+Compiled version for Archlinux :<br/>
 ```
 [archlinuxcn]
 SigLevel = Optional TrustedOnly
