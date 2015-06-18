@@ -12,7 +12,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 
 不适合公开的群、私聊群请勿公开和分享。
 
->附：
+>附：<br/>
 为防止外星人入侵，搅乱群秩序，影响正常的群组交流功能，
 推荐使用bot进行群组管理(比如 liberbot 可以设置多个群管理员、ban 人等)。
 若非特别情况，请勿在群组中分享联系人，
@@ -106,7 +106,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - 可使用[qr code generator](http://www.qr-code-generator.com/)将链接转为二维码以便移动客户端使用。
 - Telegram 正體中文支援站 http://www.telegram.url.tw/
 - Telegram 第三方贴纸收集 https://meta.appinn.com/t/telegram/977
-- tdesktop with fcitx and ibus fix https://github.com/aphuse/tdesktop
+- tdesktop with fcitx and ibus fix https://github.com/aphuse/tdesktop<br/>
 compiled version for archlinux:
 ```
 [archlinuxcn]
