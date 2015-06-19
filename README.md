@@ -117,5 +117,6 @@ Server = http://repo.archlinuxcn.org/$arch
 ```
 ```
 sudo pacman -Syy
+sudo pacman -S archlinuxcn-keyring
 sudo pacman -S telegram-desktop-cn
 ```
