@@ -14,7 +14,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 
 >附：<br/>
 为防止外星人入侵，搅乱群秩序，影响正常的群组交流功能，
-推荐使用bot进行群组管理(比如 liberbot 可以设置多个群管理员、ban 人等)。
+推荐使用bot进行群组管理(比如 liberbot 可以设置多个群管理员、ban 人等)。<br/>
 若非特别情况，请勿在群组中分享联系人，
 因为这会暴露被分享者的手机号，属于卖队友的行为。
 
@@ -103,8 +103,8 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
 
 ## 其他资源
-- 可使用[qr code generator](http://www.qr-code-generator.com/)将链接转为二维码以便移动客户端使用。
-- Telegram 正體中文支援站 http://www.telegram.url.tw/
+- 可使用[qr code generator](http://www.qr-code-generator.com)将链接转为二维码以便移动客户端使用。
+- Telegram 正體中文支援站 http://www.telegram.url.tw
 - Telegram 第三方贴纸收集 https://meta.appinn.com/t/telegram/977
 
 ### tdesktop linux 输入法修复版 :
