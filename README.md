@@ -18,7 +18,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 若非特别情况，请勿在群组中分享联系人，
 因为这会暴露被分享者的手机号，属于卖队友的行为。
 
-#### 已收录群组数量：65 个
+#### 已收录群组数量：66 个
 
 ## Linux
 - ArchLinux https://telegram.me/joinchat/05a78984013ee018c51a2bca4b5a6548
