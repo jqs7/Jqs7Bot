@@ -101,7 +101,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - 英语吧 https://telegram.me/joinchat/05a7898400ff94d22e8019863540aa9e
 - 股票 https://telegram.me/joinchat/04bc74c3013ff5705d881582ef3db937
 - 垃圾桶(吐槽,压力发泄群) https://telegram.me/joinchat/0420f0bd01288210bb7230657bed5bd1
-- 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c367813246c6202bb70
+- 机器人(telegram bots) https://telegram.me/joinchat/05fe39f501047c363f51561577d5184d
 
 ## 其他资源
 - 可使用[qr code generator](http://www.qr-code-generator.com)将链接转为二维码以便移动客户端使用。
