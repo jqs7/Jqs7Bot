@@ -86,7 +86,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - 知乎 https://telegram.me/joinchat/06216bce0102c62c70cce1e7db5fe7fd
 - UShare ULearn https://telegram.me/joinchat/04955fb5020ea6d01d4ea8bb235df259
 - UI Design https://telegram.me/joinchat/05a084110131f954c2cf44a2b47f7025
-- ##Orz分部(连通IRC FreeNode@##Orz) https://telegram.me/joinchat/03c782a500db71d25ba09e7664f5bcbe
+- \#\#Orz分部(连通IRC FreeNode@\#\#Orz) https://telegram.me/joinchat/03c782a500db71d25ba09e7664f5bcbe
 
 ## 同城
 - Telegram西安 https://telegram.me/joinchat/0652097601140f16017a045a1a17059c
@@ -108,7 +108,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - Telegram 正體中文支援站 http://www.telegram.url.tw
 - Telegram 第三方贴纸收集 https://meta.appinn.com/t/telegram/977
 
-### tdesktop linux 输入法修复版 :
+#### tdesktop linux 输入法修复版 :
 Source Code: https://github.com/aphuse/tdesktop<br/>
 Compiled version for Archlinux :<br/>
 ```
