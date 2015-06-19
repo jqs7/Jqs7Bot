@@ -57,6 +57,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - MINECRAFT https://telegram.me/joinchat/046a2235011e72f60b7707d168233d61
 - Ingress https://telegram.me/joinchat/046a2235015773c48035d5fe810d07ec
 - Clash of Clans https://telegram.me/joinchat/03ba3ff50115a5ce65f369242dacd946
+- Mobile Games (手游) https://telegram.me/joinchat/05fe39f50187d80e5b96af0274426292
 - 番剧狂魔的中二世界 https://telegram.me/joinchat/0435790500c10772809916931ce7f814
 - 纯洁的我们«里番/NSFW» https://telegram.me/joinchat/0435790501ef92f06d7c1eb6a3cac629
 
