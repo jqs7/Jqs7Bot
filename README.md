@@ -16,9 +16,10 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 为防止外星人入侵，搅乱群秩序，影响正常的群组交流功能，
 推荐使用bot进行群组管理(比如 liberbot 可以设置多个群管理员、ban 人等)。<br/>
 若非特别情况，请勿在群组中分享联系人，
-因为这会暴露被分享者的手机号，属于卖队友的行为。
+因为这会暴露被分享者的手机号，属于卖队友的行为。<br/>
+请勿在群组中大量发送与主题无关的图片或文字。
 
-#### 已收录群组数量：68个
+#### 已收录群组数量：68 个
 
 ## Linux
 - ArchLinux https://telegram.me/joinchat/05a78984013ee018c51a2bca4b5a6548
@@ -109,6 +110,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - 可使用[qr code generator](http://www.qr-code-generator.com)将链接转为二维码以便移动客户端使用。
 - Telegram 正體中文支援站 http://www.telegram.url.tw
 - Telegram 第三方贴纸收集 https://meta.appinn.com/t/telegram/977
+- Telegram 非官方汉化资源 https://github.com/telegram-zhCN
 
 #### tdesktop linux 输入法修复版 :
 Source Code: https://github.com/aphuse/tdesktop<br/>
