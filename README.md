@@ -19,7 +19,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 因为这会暴露被分享者的手机号，属于卖队友的行为。<br/>
 请勿在群组中大量发送与主题无关的图片或文字。
 
-#### 已收录群组数量：68 个
+#### 已收录群组数量：69 个
 
 ## Linux
 - ArchLinux https://telegram.me/joinchat/05a78984013ee018c51a2bca4b5a6548
@@ -95,6 +95,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - Telegram西安 https://telegram.me/joinchat/0652097601140f16017a045a1a17059c
 - TELE广州(说粤语都可以加) https://telegram.me/joinchat/046a2235013e540409fae070ff2b596b
 - TELE北京 https://telegram.me/joinchat/046a2235015a416e187bb345949e5643
+- TELE成都 https://telegram.me/joinchat/046a223500f549941d0ac213be285957
 - 东北 https://telegram.me/joinchat/0420f0bd010c9006b78147e940c159f2
 - 浙江 https://telegram.me/joinchat/046a2235016d4b7ea2484be024618e85
 - 上海租房 https://telegram.me/joinchat/06216bce014244f22009dc9e7c743ef1
