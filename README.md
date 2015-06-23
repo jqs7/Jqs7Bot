@@ -19,7 +19,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 因为这会暴露被分享者的手机号，属于卖队友的行为。<br/>
 请勿在群组中大量发送与主题无关的图片或文字。
 
-#### 已收录群组数量：69 个
+#### 已收录群组数量：70 个
 
 ## Linux
 - ArchLinux https://telegram.me/joinchat/05a78984013ee018c51a2bca4b5a6548
@@ -90,6 +90,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - UShare ULearn https://telegram.me/joinchat/04955fb5020ea6d01d4ea8bb235df259
 - UI Design https://telegram.me/joinchat/05a084110131f954c2cf44a2b47f7025
 - \#\#Orz分部(连通IRC FreeNode@\#\#Orz) https://telegram.me/joinchat/03c782a500db71d25ba09e7664f5bcbe
+- Ressharing(福利群) https://telegram.me/joinchat/0300901300df95de1d9bab41c6b040a2
 
 ## 同城
 - Telegram西安 https://telegram.me/joinchat/0652097601140f16017a045a1a17059c
