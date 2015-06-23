@@ -86,13 +86,13 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - 每日一论(每天一个讨论话题) https://telegram.me/joinchat/02754024012b26f883b44ed7a136b211
 - 不正常人类研究中心 https://telegram.me/joinchat/0500a94200a7e65ea8f6ec9e141df918
 - 知乎 https://telegram.me/joinchat/06216bce0102c62c70cce1e7db5fe7fd
+- UShare ULearn https://telegram.me/joinchat/04955fb5020ea6d01d4ea8bb235df259
 - UI Design https://telegram.me/joinchat/05a084110131f954c2cf44a2b47f7025
 - \#\#Orz分部(连通IRC FreeNode@\#\#Orz) https://telegram.me/joinchat/03c782a500db71d25ba09e7664f5bcbe
 
 ## 资\[fu\]源\[li\]
 - 福利群 https://telegram.me/joinchat/04ef56360164ec8010020822fda2dd10
 - Ressharing(福利群) https://telegram.me/joinchat/0300901300df95de1d9bab41c6b040a2
-- UShare ULearn https://telegram.me/joinchat/04955fb5020ea6d01d4ea8bb235df259
 - H https://telegram.me/joinchat/05fe39f5016d9712db9ce888eeb1f8d2
 
 ## 同城
