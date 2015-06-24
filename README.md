@@ -12,12 +12,14 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 
 不适合公开的群、私聊群请勿公开和分享。
 
->附：<br/>
+>入群须知：<br/>
 为防止外星人入侵，搅乱群秩序，影响正常的群组交流功能，
 推荐使用bot进行群组管理(比如 liberbot 可以设置多个群管理员、ban 人等)。<br/>
 若非特别情况，请勿在群组中分享联系人，
 因为这会暴露被分享者的手机号，属于卖队友的行为。<br/>
-请勿在群组中大量发送与主题无关的图片或文字。
+请勿在群组中大量发送与主题无关的图片或文字。<br/>
+若非特别声明，请勿在群组中发送 [NSFW](https://zh.wikipedia.org/wiki/NSFW) 图片/文字。<br/>
+以上规定适用于大部分群组。
 
 #### 已收录群组数量：71 个
 
@@ -33,6 +35,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - Fedora https://telegram.me/joinchat/05b3e08f00bb6ce6aae12fa09ccabca8
 - openSUSE https://telegram.me/joinchat/05a789840163f1ae880fcc480c553417
 - Raspberry Pi https://telegram.me/joinchat/04ec90dd015c2bda93ed2b0e9137bcfe
+- Manjaro https://telegram.me/joinchat/05a78984025a9262fdabb1f4ceb23b10
 
 ## Programming
 - Clang (C语言) https://telegram.me/joinchat/059708e0014e50b8d4ba97dd51ae3a48
