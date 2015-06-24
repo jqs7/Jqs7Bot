@@ -54,7 +54,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 ## 影音
 - 不看脑残片(话题为英美剧等) https://telegram.me/joinchat/0420f0bd0131450c0a0f4eadc9bafb48
 - 霹雳布袋戏 https://telegram.me/joinchat/06216bce0116eb56b2aa10ddb898fe5f
-- 内核恐慌听友群(IPN) https://telegram.me/joinchat/024fe4ea0137a7fe9069e48f6a8bb865
+- IPN听友群 https://telegram.me/joinchat/024fe4ea0137a7fe9069e48f6a8bb865
 
 ## ACG
 - Steam Games https://telegram.me/joinchat/01d93a04010d43a2a67d92f5e051f03f
