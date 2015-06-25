@@ -18,10 +18,10 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 若非特别情况，请勿在群组中分享联系人，
 因为这会暴露被分享者的手机号，属于卖队友的行为。<br/>
 请勿在群组中大量发送与主题无关的图片或文字。<br/>
-若非特别声明，请勿在群组中发送 [NSFW](https://zh.wikipedia.org/wiki/NSFW) 图片/文字。<br/>
+若非特别声明，请勿在群组中发送 [NSFW](https://zh.wikipedia.org/wiki/NSFW) 或政治相关的图片/文字。<br/>
 以上规定适用于大部分群组。
 
-#### 已收录群组数量：72 个
+#### 已收录群组数量：73 个
 
 ## Linux
 - ArchLinux https://telegram.me/joinchat/05a78984013ee018c51a2bca4b5a6548
@@ -55,6 +55,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - 不看脑残片(话题为英美剧等) https://telegram.me/joinchat/0420f0bd0131450c0a0f4eadc9bafb48
 - 霹雳布袋戏 https://telegram.me/joinchat/06216bce0116eb56b2aa10ddb898fe5f
 - IPN听友群 https://telegram.me/joinchat/024fe4ea0137a7fe9069e48f6a8bb865
+- 神秘博士&三体 https://telegram.me/joinchat/06a9c3e80259e5eecfbdb770de998961
 
 ## ACG
 - Steam Games https://telegram.me/joinchat/01d93a04010d43a2a67d92f5e051f03f
