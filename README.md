@@ -21,7 +21,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 若非特别声明，请勿在群组中发送 [NSFW](https://zh.wikipedia.org/wiki/NSFW) 或政治相关的图片/文字。<br/>
 以上规定适用于大部分群组。
 
-#### 已收录群组数量：75 个
+#### 已收录群组数量：76 个
 
 ## Linux
 - ArchLinux https://telegram.me/joinchat/05a78984013ee018c51a2bca4b5a6548
@@ -79,6 +79,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - Twitter https://telegram.me/joinchat/046566bd00b467b082e2a0c432862c1c
 - Rom交流 https://telegram.me/joinchat/05dacd3e00cc332a17012c18c40765e0
 - G+科技圈 https://telegram.me/joinchat/BK1haAErqxY9tZ2yCaxR1Q
+- 少数派 https://telegram.me/joinchat/04fb1f6500fb60ce5fec73bce239988c
 - 翻墙交流 https://telegram.me/joinchat/046a223500f4b54062f13040a30cbf40
 - 翻墙2群 https://telegram.me/joinchat/046a223501675bb6a2b6d220314dd105
 - Digital Nomads https://telegram.me/joinchat/06216bce013faf941088775a07665c3f
