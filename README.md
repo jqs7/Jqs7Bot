@@ -76,7 +76,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - Android Discuss https://telegram.me/joinchat/046a2235010b15c2fc9a83134e45fc81
 - iOS http://telegram.me/joinchat/017fbe3a0151185cbea2d103cfdff839
 - WPer(Windows Phone) https://telegram.me/joinchat/046a2235012823b897d3a38ce4797fcb
-- Twitter https://telegram.me/joinchat/046566bd00b467b082e2a0c432862c1c
+- Twitter https://telegram.me/joinchat/046566bd00b467b0f2cf5ec47cbbaf8a
 - Rom交流 https://telegram.me/joinchat/05dacd3e00cc332a17012c18c40765e0
 - G+科技圈 https://telegram.me/joinchat/BK1haAErqxY9tZ2yCaxR1Q
 - 少数派 https://telegram.me/joinchat/04fb1f6500fb60ce5fec73bce239988c
