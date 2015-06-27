@@ -21,7 +21,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 若非特别声明，请勿在群组中发送 [NSFW](https://zh.wikipedia.org/wiki/NSFW) 或政治相关的图片/文字。<br/>
 以上规定适用于大部分群组。
 
-#### 已收录群组数量：74 个
+#### 已收录群组数量：75 个
 
 ## Linux
 - ArchLinux https://telegram.me/joinchat/05a78984013ee018c51a2bca4b5a6548
