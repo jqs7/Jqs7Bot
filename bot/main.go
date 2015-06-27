@@ -14,8 +14,9 @@ func main() {
 		log.Println(err)
 	}
 
-	bot, err := tgbotapi.NewBotAPI(groups.String("botapi"))
 	botname := groups.String("botusername")
+
+	bot, err := tgbotapi.NewBotAPI(groups.String("botapi"))
 	if err != nil {
 		log.Println(err)
 	}
@@ -31,34 +32,52 @@ func main() {
 		u := Updater{bot, update.Message.Chat.ID}
 
 		switch update.Message.Text {
+
 		case "/help", "/start", "/help@" + botname, "/start@" + botname:
 			u.NewMessage(groups.String("help"))
+
 		case "/rules", "/rules@" + botname:
 			u.NewMessage(groups.String("rules"))
+
 		case "/about", "/about@" + botname:
 			u.NewMessage(groups.String("about"))
+
 		case "/linux", "/linux@" + botname:
 			u.NewMessage(groups.String("linux"))
+
 		case "/programming", "/programming@" + botname:
 			u.NewMessage(groups.String("programming"))
+
 		case "/software", "/software@" + botname:
 			u.NewMessage(groups.String("software"))
+
 		case "/videos", "/videos@" + botname:
 			u.NewMessage(groups.String("影音"))
+
+		case "/sci_fi", "/sci_fi@" + botname:
+			u.NewMessage(groups.String("科幻"))
+
 		case "/acg", "/acg@" + botname:
 			u.NewMessage(groups.String("ACG"))
+
 		case "/it", "/it@" + botname:
 			u.NewMessage(groups.String("IT"))
+
 		case "/free_chat", "/free_chat@" + botname:
 			u.NewMessage(groups.String("闲聊"))
+
 		case "/resources", "/resources@" + botname:
 			u.NewMessage(groups.String("资源"))
+
 		case "/same-city", "/same_city@" + botname:
 			u.NewMessage(groups.String("同城"))
+
 		case "/others", "/others@" + botname:
 			u.NewMessage(groups.String("Others"))
+
 		case "/other_resources", "/other_resources@" + botname:
 			u.NewMessage(groups.String("其他资源"))
+
 		}
 
 	}
