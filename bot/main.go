@@ -2,21 +2,26 @@ package main
 
 import (
 	"log"
+	"strconv"
 	"strings"
 
 	"github.com/Syfaro/telegram-bot-api"
-	"github.com/astaxie/beego/config"
+	"github.com/kylelemons/go-gypsy/yaml"
 )
 
 func main() {
-	groups, err := config.NewConfig("ini", "groups.conf")
+	groups, err := yaml.ReadFile("botconf.yaml")
 	if err != nil {
 		log.Println(err)
 	}
 
-	botname := groups.String("botusername")
+	botname, err := groups.Get("botusername")
+	botapi, err := groups.Get("botapi")
+	if err != nil {
+		log.Println(err)
+	}
 
-	bot, err := tgbotapi.NewBotAPI(groups.String("botapi"))
+	bot, err := tgbotapi.NewBotAPI(botapi)
 	if err != nil {
 		log.Println(err)
 	}
@@ -29,67 +34,93 @@ func main() {
 	for update := range updates {
 		log.Println(update.Message.From.UserName, update.Message.Text)
 
-		u := Updater{bot, update.Message.Chat.ID}
+		u := Updater{bot, groups, update.Message.Chat.ID}
 
 		switch update.Message.Text {
 
 		case "/help", "/start", "/help@" + botname, "/start@" + botname:
-			u.NewMessage(groups.String("help"))
+			u.SendString("help")
 
 		case "/rules", "/rules@" + botname:
-			u.NewMessage(groups.String("rules"))
+			u.SendString("rules")
 
 		case "/about", "/about@" + botname:
-			u.NewMessage(groups.String("about"))
+			u.SendString("about")
 
 		case "/linux", "/linux@" + botname:
-			u.NewMessage(groups.String("linux"))
+			u.SendStrings("Linux")
 
 		case "/programming", "/programming@" + botname:
-			u.NewMessage(groups.String("programming"))
+			u.SendStrings("Programming")
 
 		case "/software", "/software@" + botname:
-			u.NewMessage(groups.String("software"))
+			u.SendStrings("Software")
 
 		case "/videos", "/videos@" + botname:
-			u.NewMessage(groups.String("影音"))
+			u.SendStrings("影音")
 
 		case "/sci_fi", "/sci_fi@" + botname:
-			u.NewMessage(groups.String("科幻"))
+			u.SendStrings("科幻")
 
 		case "/acg", "/acg@" + botname:
-			u.NewMessage(groups.String("ACG"))
+			u.SendStrings("ACG")
 
 		case "/it", "/it@" + botname:
-			u.NewMessage(groups.String("IT"))
+			u.SendStrings("IT")
 
 		case "/free_chat", "/free_chat@" + botname:
-			u.NewMessage(groups.String("闲聊"))
+			u.SendStrings("闲聊")
 
 		case "/resources", "/resources@" + botname:
-			u.NewMessage(groups.String("资源"))
+			u.SendStrings("资源")
 
-		case "/same-city", "/same_city@" + botname:
-			u.NewMessage(groups.String("同城"))
+		case "/same_city", "/same_city@" + botname:
+			u.SendStrings("同城")
 
 		case "/others", "/others@" + botname:
-			u.NewMessage(groups.String("Others"))
+			u.SendStrings("Others")
 
 		case "/other_resources", "/other_resources@" + botname:
-			u.NewMessage(groups.String("其他资源"))
+			u.SendStrings("其他资源")
 
 		}
-
 	}
 }
 
 type Updater struct {
 	bot    *tgbotapi.BotAPI
+	config *yaml.File
 	chatId int
 }
 
-func (u *Updater) NewMessage(msgText string) {
+func (u *Updater) SendString(msgText string) error {
+	msgText, err := u.config.Get(msgText)
+	if err != nil {
+		return err
+	}
 	msgText = strings.Replace(msgText, "\\n", "\n", -1)
 	msg := tgbotapi.NewMessage(u.chatId, msgText)
 	u.bot.SendMessage(msg)
+	return nil
+}
+
+func (u *Updater) SendStrings(msgText string) error {
+	count, err := u.config.Count(msgText)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	var resultGroup []string
+	for i := 0; i < count; i++ {
+		v, err := u.config.Get(msgText + "[" + strconv.Itoa(i) + "]")
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		resultGroup = append(resultGroup, v)
+	}
+	result := strings.Join(resultGroup, "\n")
+	msg := tgbotapi.NewMessage(u.chatId, result)
+	u.bot.SendMessage(msg)
+	return nil
 }
