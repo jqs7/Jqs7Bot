@@ -37,6 +37,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - Raspberry Pi https://telegram.me/joinchat/04ec90dd015c2bda93ed2b0e9137bcfe
 - Manjaro https://telegram.me/joinchat/05a78984025a9262fdabb1f4ceb23b10
 - Linux User Group https://telegram.me/joinchat/05e726a3022b42ab63e5215ace899999
+- Linux 2群 https://telegram.me/joinchat/05a7898402396d49fba6c1bea0e6f037
 
 ## Programming
 - Clang (C语言) https://telegram.me/joinchat/059708e0014e50b8d4ba97dd51ae3a48
