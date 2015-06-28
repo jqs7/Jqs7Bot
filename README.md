@@ -21,7 +21,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 若非特别声明，请勿在群组中发送 [NSFW](https://zh.wikipedia.org/wiki/NSFW) 或政治相关的图片/文字。<br/>
 以上规定适用于大部分群组。
 
-#### 已收录群组数量：78 个
+#### 已收录群组数量：96 个
 
 ## Linux
 - ArchLinux https://telegram.me/joinchat/05a78984013ee018c51a2bca4b5a6548
@@ -36,6 +36,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - openSUSE https://telegram.me/joinchat/05a789840163f1ae880fcc480c553417
 - Raspberry Pi https://telegram.me/joinchat/04ec90dd015c2bda93ed2b0e9137bcfe
 - Manjaro https://telegram.me/joinchat/05a78984025a9262fdabb1f4ceb23b10
+- Linux User Group https://telegram.me/joinchat/05e726a3022b42ab63e5215ace899999
 
 ## Programming
 - Clang (C语言) https://telegram.me/joinchat/059708e0014e50b8d4ba97dd51ae3a48
@@ -46,6 +47,8 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - To Code,Human https://telegram.me/joinchat/04955fb5021fd8e83f0f8cf62bd09bee
 - backend developers https://telegram.me/joinchat/05fe39f5019c311e792efa186bc32aa2
 - 移动自动化测试 https://telegram.me/joinchat/04a5d082010cdf3aebbb4b356ff59023
+- Swift https://telegram.me/joinchat/025fc17d00f0423e0f6b4f5c7d3af755
+- Android 开发者 https://telegram.me/joinchat/06681652011ce6561befe6f44f04a16b
 
 ## Software
 - Firefox https://telegram.me/joinchat/BbvvhQC5jsSFhMNKKT1UYw
@@ -70,11 +73,13 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - Mobile Games (手游) https://telegram.me/joinchat/05fe39f50187d80e5b96af0274426292
 - 番剧狂魔的中二世界 https://telegram.me/joinchat/0435790500c10772809916931ce7f814
 - 纯洁的我们«里番/NSFW» https://telegram.me/joinchat/0435790501ef92f06d7c1eb6a3cac629
+- VideoGamers https://telegram.me/joinchat/0617a42d01570a7438a5f9958d5470b8
 
 ## IT
 - Google Android https://telegram.me/joinchat/AknxJgFOKXAylGZbLnZ9zw
 - Android Discuss https://telegram.me/joinchat/046a2235010b15c2fc9a83134e45fc81
 - iOS http://telegram.me/joinchat/017fbe3a0151185cbea2d103cfdff839
+- iFans(果粉) https://telegram.me/joinchat/0211df6301508d20352558519855fcf5
 - WPer(Windows Phone) https://telegram.me/joinchat/046a2235012823b897d3a38ce4797fcb
 - Twitter https://telegram.me/joinchat/046566bd00b467b0f2cf5ec47cbbaf8a
 - Rom交流 https://telegram.me/joinchat/05dacd3e00cc332a17012c18c40765e0
@@ -88,17 +93,24 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - Shadowsocks https://telegram.me/joinchat/035971cc0137ff8c2105bcdfa4352f93
 - WooYun社区 https://telegram.me/joinchat/0575a16a008fa17ec5457b81a4f15abe
 - Happy Money https://telegram.me/joinchat/047728b301af8a22d9ffd381974d7913
+- ShadowsocksX https://telegram.me/joinchat/05f27a290140992e1986099ccb5bf7f6
 
 ## 闲聊
 - 酷安1群 https://telegram.me/joinchat/A4PUYwC3Eb55Hb7PtrakWA
 - 酷安2群 https://telegram.me/joinchat/0383d46300c2005ce859ab8054141d6d
 - 小众软件 https://telegram.me/joinchat/01a73276008cf68481367699d72cdf66
+- 小众软件2群 https://telegram.me/joinchat/01a7327600c6f8183d83753d242512cd
 - 每日一论(每天一个讨论话题) https://telegram.me/joinchat/02754024012b26f883b44ed7a136b211
 - 不正常人类研究中心 https://telegram.me/joinchat/0500a94200a7e65ea8f6ec9e141df918
 - 知乎 https://telegram.me/joinchat/06216bce0102c62c70cce1e7db5fe7fd
 - UShare ULearn https://telegram.me/joinchat/04955fb5020ea6d01d4ea8bb235df259
 - UI Design https://telegram.me/joinchat/05a084110131f954c2cf44a2b47f7025
 - \#\#Orz分部(连通IRC FreeNode@\#\#Orz) https://telegram.me/joinchat/03c782a500db71d25ba09e7664f5bcbe
+- G+ https://telegram.me/joinchat/02081367012db68528faaaf6dec5b270
+- G+电报小组 https://telegram.me/joinchat/02966ca200aad4107027b1e7294b5c9e
+- 通天塔(闲聊) https://telegram.me/joinchat/BAKdJAEye8aeaPoNR__GPg
+- 神机 https://telegram.me/joinchat/0653f8f2016a830aa9b503ef8e20368c
+- Anti-GFW http://telegram.me/joinchat/059d24e500c12f4438e3e716ce209431
 
 ## 资\[fu\]源\[li\]
 - 福利群 https://telegram.me/joinchat/04ef56360164ec8010020822fda2dd10
@@ -111,10 +123,16 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - TELE广州(说粤语都可以加) https://telegram.me/joinchat/046a2235013e540409fae070ff2b596b
 - TELE北京 https://telegram.me/joinchat/046a2235015a416e187bb345949e5643
 - TELE成都 https://telegram.me/joinchat/046a223500f549941d0ac213be285957
-- 东北 https://telegram.me/joinchat/0420f0bd010c9006b78147e940c159f2
 - 浙江 https://telegram.me/joinchat/046a2235016d4b7ea2484be024618e85
 - 上海租房 https://telegram.me/joinchat/06216bce014244f22009dc9e7c743ef1
 - 金华市职业技术学院 https://telegram.me/joinchat/05b3e08f015f7c28bf0f16091d88dcb9
+- 天津 https://telegram.me/joinchat/046a2235010811403a3fb7588efd18d9
+- 重庆 https://telegram.me/joinchat/046a22350120c016fbfeab045738d31d
+- 台湾 https://telegram.me/joinchat/046a223500b7bd00a30fdf0c92061e90
+- 深圳 https://telegram.me/joinchat/046a22350148ef46e7fc866a9c4ea51a
+- 上海 https://telegram.me/joinchat/046a223501418da6cbabac2eb5d27628
+- 香港 https://telegram.me/joinchat/046a223500ed1bb4f6d0c9a8735e8d73
+- twitter@jinan(济南推友群) https://telegram.me/joinchat/03584ec0011a996c152809bde10e5c80
 
 ## Others
 - 英语吧 https://telegram.me/joinchat/05a7898400ff94d22e8019863540aa9e

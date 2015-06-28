@@ -39,13 +39,13 @@ func main() {
 		switch update.Message.Text {
 
 		case "/help", "/start", "/help@" + botname, "/start@" + botname:
-			u.SendString("help")
+			u.SendStrings("help")
 
 		case "/rules", "/rules@" + botname:
-			u.SendString("rules")
+			u.SendStrings("rules")
 
 		case "/about", "/about@" + botname:
-			u.SendString("about")
+			u.SendStrings("about")
 
 		case "/linux", "/linux@" + botname:
 			u.SendStrings("Linux")
@@ -117,6 +117,7 @@ func (u *Updater) SendStrings(msgText string) error {
 			log.Println(err)
 			return err
 		}
+		v = strings.Replace(v, "|-", " ", -1)
 		resultGroup = append(resultGroup, v)
 	}
 	result := strings.Join(resultGroup, "\n")
