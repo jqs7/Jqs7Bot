@@ -32,56 +32,56 @@ func main() {
 	updates, err := bot.UpdatesChan(u)
 
 	for update := range updates {
-		log.Println(update.Message.From.UserName, update.Message.Text)
+		log.Printf("[%s]  %s", update.Message.From.UserName, update.Message.Text)
 
 		u := Updater{bot, groups, update.Message.Chat.ID}
 
 		switch update.Message.Text {
 
 		case "/help", "/start", "/help@" + botname, "/start@" + botname:
-			u.SendStrings("help")
+			go u.SendStrings("help")
 
 		case "/rules", "/rules@" + botname:
-			u.SendStrings("rules")
+			go u.SendStrings("rules")
 
 		case "/about", "/about@" + botname:
-			u.SendStrings("about")
+			go u.SendStrings("about")
 
 		case "/linux", "/linux@" + botname:
-			u.SendStrings("Linux")
+			go u.SendStrings("Linux")
 
 		case "/programming", "/programming@" + botname:
-			u.SendStrings("Programming")
+			go u.SendStrings("Programming")
 
 		case "/software", "/software@" + botname:
-			u.SendStrings("Software")
+			go u.SendStrings("Software")
 
 		case "/videos", "/videos@" + botname:
-			u.SendStrings("影音")
+			go u.SendStrings("影音")
 
 		case "/sci_fi", "/sci_fi@" + botname:
-			u.SendStrings("科幻")
+			go u.SendStrings("科幻")
 
 		case "/acg", "/acg@" + botname:
-			u.SendStrings("ACG")
+			go u.SendStrings("ACG")
 
 		case "/it", "/it@" + botname:
-			u.SendStrings("IT")
+			go u.SendStrings("IT")
 
 		case "/free_chat", "/free_chat@" + botname:
-			u.SendStrings("闲聊")
+			go u.SendStrings("闲聊")
 
 		case "/resources", "/resources@" + botname:
-			u.SendStrings("资源")
+			go u.SendStrings("资源")
 
 		case "/same_city", "/same_city@" + botname:
-			u.SendStrings("同城")
+			go u.SendStrings("同城")
 
 		case "/others", "/others@" + botname:
-			u.SendStrings("Others")
+			go u.SendStrings("Others")
 
 		case "/other_resources", "/other_resources@" + botname:
-			u.SendStrings("其他资源")
+			go u.SendStrings("其他资源")
 
 		}
 	}
