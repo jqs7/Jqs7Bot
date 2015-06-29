@@ -32,7 +32,7 @@ func main() {
 	updates, err := bot.UpdatesChan(u)
 
 	for update := range updates {
-		log.Printf("[%s]  %s", update.Message.From.UserName, update.Message.Text)
+		log.Printf("[%s] -- [%d](%s) -- %s", update.Message.From.UserName, update.Message.Chat.ID, update.Message.Chat.Title, update.Message.Text)
 
 		u := Updater{bot, groups, update.Message.Chat.ID}
 
