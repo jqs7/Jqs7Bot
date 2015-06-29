@@ -4,12 +4,19 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"time"
+
+	"gopkg.in/redis.v3"
 
 	"github.com/Syfaro/telegram-bot-api"
 	"github.com/kylelemons/go-gypsy/yaml"
 )
 
 func main() {
+	rc := redis.NewClient(&redis.Options{
+		Addr: "localhost:6379",
+	})
+
 	groups, err := yaml.ReadFile("botconf.yaml")
 	if err != nil {
 		log.Panic(err)
@@ -39,83 +46,107 @@ func main() {
 			update.Message.From.UserName, update.Message.Text,
 		)
 
-		u := Updater{bot, groups, update.Message.Chat.ID}
+		u := Updater{rc, bot, update}
 
 		switch update.Message.Text {
 
 		case "/help", "/start", "/help@" + botname, "/start@" + botname:
-			go u.SendStrings("help")
+			go u.SendMessage(YamlList2String(groups, "help"))
 
 		case "/rules", "/rules@" + botname:
-			go u.SendStrings("rules")
+			go u.SendMessage(YamlList2String(groups, "rules"))
 
 		case "/about", "/about@" + botname:
-			go u.SendStrings("about")
+			go u.SendMessage(YamlList2String(groups, "about"))
 
 		case "/linux", "/linux@" + botname:
-			go u.SendStrings("Linux")
+			go u.SendMessage(YamlList2String(groups, "Linux"))
 
 		case "/programming", "/programming@" + botname:
-			go u.SendStrings("Programming")
+			go u.SendMessage(YamlList2String(groups, "Programming"))
 
 		case "/software", "/software@" + botname:
-			go u.SendStrings("Software")
+			go u.SendMessage(YamlList2String(groups, "Software"))
 
 		case "/videos", "/videos@" + botname:
-			go u.SendStrings("影音")
+			go u.SendMessage(YamlList2String(groups, "影音"))
 
 		case "/sci_fi", "/sci_fi@" + botname:
-			go u.SendStrings("科幻")
+			go u.SendMessage(YamlList2String(groups, "科幻"))
 
 		case "/acg", "/acg@" + botname:
-			go u.SendStrings("ACG")
+			go u.SendMessage(YamlList2String(groups, "ACG"))
 
 		case "/it", "/it@" + botname:
-			go u.SendStrings("IT")
+			go u.SendMessage(YamlList2String(groups, "IT"))
 
 		case "/free_chat", "/free_chat@" + botname:
-			go u.SendStrings("闲聊")
+			go u.SendMessage(YamlList2String(groups, "闲聊"))
 
 		case "/resources", "/resources@" + botname:
-			go u.SendStrings("资源")
+			go u.SendMessage(YamlList2String(groups, "资源"))
 
 		case "/same_city", "/same_city@" + botname:
-			go u.SendStrings("同城")
+			go u.SendMessage(YamlList2String(groups, "同城"))
 
 		case "/others", "/others@" + botname:
-			go u.SendStrings("Others")
+			go u.SendMessage(YamlList2String(groups, "Others"))
 
 		case "/other_resources", "/other_resources@" + botname:
-			go u.SendStrings("其他资源")
+			go u.SendMessage(YamlList2String(groups, "其他资源"))
 
 		}
 	}
 }
 
 type Updater struct {
+	redis  *redis.Client
 	bot    *tgbotapi.BotAPI
-	config *yaml.File
-	chatId int
+	update tgbotapi.Update
 }
 
-func (u *Updater) SendStrings(msgText string) error {
-	count, err := u.config.Count(msgText)
+func (u *Updater) SendMessage(msgText string) {
+	chatId_str := strconv.Itoa(u.update.Message.Chat.ID)
+
+	if u.update.Message.Chat.ID < 0 {
+		if u.redis.Exists(chatId_str).Val() {
+			u.redis.Incr(chatId_str)
+			counter, _ := u.redis.Get(chatId_str).Int64()
+			if counter >= 3 {
+				msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+					"刷屏是坏孩纸~！\n聪明宝宝是会跟奴家私聊的哟😊\n@"+u.bot.Self.UserName)
+				u.bot.SendMessage(msg)
+				return
+			}
+		} else {
+			u.redis.Set(chatId_str, "0", time.Minute*5)
+		}
+	}
+
+	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, msgText)
+	u.bot.SendMessage(msg)
+	return
+}
+
+func YamlList2String(config *yaml.File, text string) string {
+	count, err := config.Count(text)
 	if err != nil {
 		log.Println(err)
-		return err
+		return ""
 	}
+
 	var resultGroup []string
 	for i := 0; i < count; i++ {
-		v, err := u.config.Get(msgText + "[" + strconv.Itoa(i) + "]")
+		v, err := config.Get(text + "[" + strconv.Itoa(i) + "]")
 		if err != nil {
 			log.Println(err)
-			return err
+			return ""
 		}
 		resultGroup = append(resultGroup, v)
 	}
+
 	result := strings.Join(resultGroup, "\n")
 	result = strings.Replace(result, "\\n", "", -1)
-	msg := tgbotapi.NewMessage(u.chatId, result)
-	u.bot.SendMessage(msg)
-	return nil
+
+	return result
 }
