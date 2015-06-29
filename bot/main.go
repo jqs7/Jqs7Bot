@@ -115,6 +115,7 @@ func (u *Updater) SendMessage(msgText string) {
 			if counter >= 3 {
 				msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
 					"刷屏是坏孩纸~！\n聪明宝宝是会跟奴家私聊的哟😊\n@"+u.bot.Self.UserName)
+				msg.ReplyToMessageID = u.update.Message.MessageID
 				u.bot.SendMessage(msg)
 				return
 			}
