@@ -18,7 +18,7 @@ help:
   - /same_city - 同城分类群组列表
   - /others - 其他群组列表
   - /other_resources - 其他资源
-  - |-
+  - \n
   - 如果有新的群资源的话，欢迎骚扰奴家的蓝盆友 @Jqs_7 哟(ゝ∀･)
   - (到Github提个Issue或发个PR也是赞赞哒~)
 

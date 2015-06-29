@@ -93,17 +93,6 @@ type Updater struct {
 	chatId int
 }
 
-func (u *Updater) SendString(msgText string) error {
-	msgText, err := u.config.Get(msgText)
-	if err != nil {
-		return err
-	}
-	msgText = strings.Replace(msgText, "\\n", "\n", -1)
-	msg := tgbotapi.NewMessage(u.chatId, msgText)
-	u.bot.SendMessage(msg)
-	return nil
-}
-
 func (u *Updater) SendStrings(msgText string) error {
 	count, err := u.config.Count(msgText)
 	if err != nil {
@@ -117,10 +106,10 @@ func (u *Updater) SendStrings(msgText string) error {
 			log.Println(err)
 			return err
 		}
-		v = strings.Replace(v, "|-", " ", -1)
 		resultGroup = append(resultGroup, v)
 	}
 	result := strings.Join(resultGroup, "\n")
+	result = strings.Replace(result, "\\n", "", -1)
 	msg := tgbotapi.NewMessage(u.chatId, result)
 	u.bot.SendMessage(msg)
 	return nil
