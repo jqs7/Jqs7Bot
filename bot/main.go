@@ -15,7 +15,6 @@ func main() {
 		log.Panic(err)
 	}
 
-	botname, err := groups.Get("botusername")
 	botapi, err := groups.Get("botapi")
 	if err != nil {
 		log.Panic(err)
@@ -25,6 +24,8 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
+
+	botname := bot.Self.UserName
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
