@@ -12,18 +12,18 @@ import (
 func main() {
 	groups, err := yaml.ReadFile("botconf.yaml")
 	if err != nil {
-		log.Println(err)
+		log.Panic(err)
 	}
 
 	botname, err := groups.Get("botusername")
 	botapi, err := groups.Get("botapi")
 	if err != nil {
-		log.Println(err)
+		log.Panic(err)
 	}
 
 	bot, err := tgbotapi.NewBotAPI(botapi)
 	if err != nil {
-		log.Println(err)
+		log.Panic(err)
 	}
 
 	u := tgbotapi.NewUpdate(0)
@@ -32,7 +32,11 @@ func main() {
 	updates, err := bot.UpdatesChan(u)
 
 	for update := range updates {
-		log.Printf("[%s] -- [%d](%s) -- %s", update.Message.From.UserName, update.Message.Chat.ID, update.Message.Chat.Title, update.Message.Text)
+
+		log.Printf("[%d](%s) -- [%s] -- %s",
+			update.Message.Chat.ID, update.Message.Chat.Title,
+			update.Message.From.UserName, update.Message.Text,
+		)
 
 		u := Updater{bot, groups, update.Message.Chat.ID}
 
