@@ -106,12 +106,12 @@ type Updater struct {
 }
 
 func (u *Updater) SendMessage(msgText string) {
-	chatId_str := strconv.Itoa(u.update.Message.Chat.ID)
+	chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
 
 	if u.update.Message.Chat.ID < 0 {
-		if u.redis.Exists(chatId_str).Val() {
-			u.redis.Incr(chatId_str)
-			counter, _ := u.redis.Get(chatId_str).Int64()
+		if u.redis.Exists(chatIDStr).Val() {
+			u.redis.Incr(chatIDStr)
+			counter, _ := u.redis.Get(chatIDStr).Int64()
 			if counter >= 3 {
 				msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
 					"刷屏是坏孩纸~！\n聪明宝宝是会跟奴家私聊的哟😊\n@"+u.bot.Self.UserName)
@@ -120,7 +120,7 @@ func (u *Updater) SendMessage(msgText string) {
 				return
 			}
 		} else {
-			u.redis.Set(chatId_str, "0", time.Minute*5)
+			u.redis.Set(chatIDStr, "0", time.Minute*5)
 		}
 	}
 
