@@ -102,6 +102,8 @@ func main() {
 		case "/other_resources", "/other_resources@" + botname:
 			go u.SendMessage(YamlList2String(groups, "其他资源"))
 
+		default:
+
 		}
 	}
 }
@@ -124,7 +126,7 @@ func (u *Updater) SendMessage(msgText string) {
 				u.redis.Incr(chatIDStr)
 				counter, _ := u.redis.Get(chatIDStr).Int64()
 				if counter >= u.limitTimes {
-					log.Println("启用防刷屏")
+					log.Println("--- " + u.update.Message.Chat.Title + " --- " + "防刷屏 ---")
 					msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
 						"刷屏是坏孩纸~！\n聪明宝宝是会跟奴家私聊的哟😊\n@"+u.bot.Self.UserName)
 					msg.ReplyToMessageID = u.update.Message.MessageID
