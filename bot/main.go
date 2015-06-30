@@ -120,22 +120,20 @@ type Updater struct {
 func (u *Updater) SendMessage(msgText string) {
 	chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
 
-	if u.enableGroupLimit {
-		if u.update.Message.Chat.ID < 0 {
-			if u.redis.Exists(chatIDStr).Val() {
-				u.redis.Incr(chatIDStr)
-				counter, _ := u.redis.Get(chatIDStr).Int64()
-				if counter >= u.limitTimes {
-					log.Println("--- " + u.update.Message.Chat.Title + " --- " + "防刷屏 ---")
-					msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-						"刷屏是坏孩纸~！\n聪明宝宝是会跟奴家私聊的哟😊\n@"+u.bot.Self.UserName)
-					msg.ReplyToMessageID = u.update.Message.MessageID
-					u.bot.SendMessage(msg)
-					return
-				}
-			} else {
-				u.redis.Set(chatIDStr, "0", u.limitInterval)
+	if u.enableGroupLimit && u.update.Message.Chat.ID < 0 {
+		if u.redis.Exists(chatIDStr).Val() {
+			u.redis.Incr(chatIDStr)
+			counter, _ := u.redis.Get(chatIDStr).Int64()
+			if counter >= u.limitTimes {
+				log.Println("--- " + u.update.Message.Chat.Title + " --- " + "防刷屏 ---")
+				msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+					"刷屏是坏孩纸~！\n聪明宝宝是会跟奴家私聊的哟😊\n@"+u.bot.Self.UserName)
+				msg.ReplyToMessageID = u.update.Message.MessageID
+				u.bot.SendMessage(msg)
+				return
 			}
+		} else {
+			u.redis.Set(chatIDStr, "0", u.limitInterval)
 		}
 	}
 
