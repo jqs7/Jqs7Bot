@@ -111,7 +111,7 @@ type Updater struct {
 	bot              *tgbotapi.BotAPI
 	update           tgbotapi.Update
 	enableGroupLimit bool
-	limitTimes       int
+	limitTimes       int64
 	limitInterval    time.Duration
 }
 
