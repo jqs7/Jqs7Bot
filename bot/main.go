@@ -46,7 +46,14 @@ func main() {
 			update.Message.From.UserName, update.Message.Text,
 		)
 
-		u := Updater{rc, bot, update}
+		u := Updater{
+			redis:            rc,
+			bot:              bot,
+			update:           update,
+			enableGroupLimit: true,
+			limitInterval:    time.Minute * 15,
+			limitTimes:       2,
+		}
 
 		switch update.Message.Text {
 
@@ -100,27 +107,33 @@ func main() {
 }
 
 type Updater struct {
-	redis  *redis.Client
-	bot    *tgbotapi.BotAPI
-	update tgbotapi.Update
+	redis            *redis.Client
+	bot              *tgbotapi.BotAPI
+	update           tgbotapi.Update
+	enableGroupLimit bool
+	limitTimes       int
+	limitInterval    time.Duration
 }
 
 func (u *Updater) SendMessage(msgText string) {
 	chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
 
-	if u.update.Message.Chat.ID < 0 {
-		if u.redis.Exists(chatIDStr).Val() {
-			u.redis.Incr(chatIDStr)
-			counter, _ := u.redis.Get(chatIDStr).Int64()
-			if counter >= 3 {
-				msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-					"刷屏是坏孩纸~！\n聪明宝宝是会跟奴家私聊的哟😊\n@"+u.bot.Self.UserName)
-				msg.ReplyToMessageID = u.update.Message.MessageID
-				u.bot.SendMessage(msg)
-				return
+	if u.enableGroupLimit {
+		if u.update.Message.Chat.ID < 0 {
+			if u.redis.Exists(chatIDStr).Val() {
+				u.redis.Incr(chatIDStr)
+				counter, _ := u.redis.Get(chatIDStr).Int64()
+				if counter >= u.limitTimes {
+					log.Println("启用防刷屏")
+					msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+						"刷屏是坏孩纸~！\n聪明宝宝是会跟奴家私聊的哟😊\n@"+u.bot.Self.UserName)
+					msg.ReplyToMessageID = u.update.Message.MessageID
+					u.bot.SendMessage(msg)
+					return
+				}
+			} else {
+				u.redis.Set(chatIDStr, "0", u.limitInterval)
 			}
-		} else {
-			u.redis.Set(chatIDStr, "0", time.Minute*5)
 		}
 	}
 
