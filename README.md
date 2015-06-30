@@ -55,7 +55,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 ## Software
 - Firefox https://telegram.me/joinchat/BbvvhQC5jsSFhMNKKT1UYw
 - Moi 3D https://telegram.me/joinchat/05a0841100a01ad4b000b4044c2ef326
-- Blender https://telegram.me/joinchat/05d322a8023b51c9473882e6a19535e5
+- Blender Fans https://telegram.me/joinchat/05d322a8023b51c9473882e6a19535e5
 
 ## 影音
 - 不看脑残片(话题为英美剧等) https://telegram.me/joinchat/0420f0bd0131450c0a0f4eadc9bafb48
