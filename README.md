@@ -21,7 +21,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 若非特别声明，请勿在群组中发送 [NSFW](https://zh.wikipedia.org/wiki/NSFW) 或政治相关的图片/文字。<br/>
 以上规定适用于大部分群组。
 
-#### 已收录群组数量：98 个
+#### 已收录群组数量：99 个
 
 ## Linux
 - ArchLinux https://telegram.me/joinchat/05a78984013ee018c51a2bca4b5a6548
@@ -55,6 +55,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 ## Software
 - Firefox https://telegram.me/joinchat/BbvvhQC5jsSFhMNKKT1UYw
 - Moi 3D https://telegram.me/joinchat/05a0841100a01ad4b000b4044c2ef326
+- Blender https://telegram.me/joinchat/05d322a8023b51c9473882e6a19535e5
 
 ## 影音
 - 不看脑残片(话题为英美剧等) https://telegram.me/joinchat/0420f0bd0131450c0a0f4eadc9bafb48
@@ -146,7 +147,8 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - 可使用[qr code generator](http://www.qr-code-generator.com)将链接转为二维码以便移动客户端使用。
 - Telegram 正體中文支援站 http://www.telegram.url.tw
 - Telegram 第三方贴纸收集 https://meta.appinn.com/t/telegram/977
-- Telegram 非官方汉化资源 https://github.com/telegram-zhCN
+- Telegram 非官方中文网站 http://telegram-china.org
+- Telegram 非官方汉化资源 @tgcnlang_bot
 
 #### tdesktop linux 输入法修复版 :
 Source Code: https://github.com/aphuse/tdesktop<br/>
