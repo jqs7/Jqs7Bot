@@ -106,7 +106,8 @@ func main() {
 		default:
 			s := strings.Split(update.Message.Text, " ")
 			if len(s) > 1 && s[0] == "/broadcast" {
-				go u.Broadcast(s[1])
+				msg := strings.Join(s[1:], " ")
+				go u.Broadcast(msg)
 			}
 		}
 	}
@@ -138,7 +139,6 @@ func (u *Updater) SendMessage(msgText string, enableGroupLimit bool) {
 			}
 		} else {
 			expire, _ := time.ParseDuration(limitInterval)
-			log.Println(expire)
 			u.redis.Set(chatIDStr, "0", expire)
 		}
 	}
@@ -151,7 +151,7 @@ func (u *Updater) SendMessage(msgText string, enableGroupLimit bool) {
 func (u *Updater) Subscribe() {
 	chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
 	u.redis.HSet("tgSubscribe", chatIDStr, strconv.FormatBool(true))
-	u.SendMessage("订阅成功\n以后奴家知道新的群组的话，会第一时间告诉你哟😊", false)
+	u.SendMessage("订阅成功\n以后奴家知道新的群组的话，会第一时间告诉你哟😊\n(订阅仅对本会话有效)", false)
 }
 
 func (u *Updater) UnSubscribe() {

@@ -1,4 +1,4 @@
-botapi: 
+botapi:
 limitInterval: 15m
 limitTimes: 2
 master: Jqs_7
