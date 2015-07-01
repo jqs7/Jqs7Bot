@@ -53,49 +53,49 @@ func main() {
 		switch update.Message.Text {
 
 		case "/help", "/start", "/help@" + botname, "/start@" + botname:
-			go u.SendMessage(YamlList2String(conf, "help"), true)
+			go u.SendMessage(YamlList2String(conf, "help"))
 
 		case "/rules", "/rules@" + botname:
-			go u.SendMessage(YamlList2String(conf, "rules"), true)
+			go u.SendMessage(YamlList2String(conf, "rules"))
 
 		case "/about", "/about@" + botname:
-			go u.SendMessage(YamlList2String(conf, "about"), true)
+			go u.SendMessage(YamlList2String(conf, "about"))
 
 		case "/linux", "/linux@" + botname:
-			go u.SendMessage(YamlList2String(conf, "Linux"), true)
+			go u.SendMessage(YamlList2String(conf, "Linux"))
 
 		case "/programming", "/programming@" + botname:
-			go u.SendMessage(YamlList2String(conf, "Programming"), true)
+			go u.SendMessage(YamlList2String(conf, "Programming"))
 
 		case "/software", "/software@" + botname:
-			go u.SendMessage(YamlList2String(conf, "Software"), true)
+			go u.SendMessage(YamlList2String(conf, "Software"))
 
 		case "/videos", "/videos@" + botname:
-			go u.SendMessage(YamlList2String(conf, "影音"), true)
+			go u.SendMessage(YamlList2String(conf, "影音"))
 
 		case "/sci_fi", "/sci_fi@" + botname:
-			go u.SendMessage(YamlList2String(conf, "科幻"), true)
+			go u.SendMessage(YamlList2String(conf, "科幻"))
 
 		case "/acg", "/acg@" + botname:
-			go u.SendMessage(YamlList2String(conf, "ACG"), true)
+			go u.SendMessage(YamlList2String(conf, "ACG"))
 
 		case "/it", "/it@" + botname:
-			go u.SendMessage(YamlList2String(conf, "IT"), true)
+			go u.SendMessage(YamlList2String(conf, "IT"))
 
 		case "/free_chat", "/free_chat@" + botname:
-			go u.SendMessage(YamlList2String(conf, "闲聊"), true)
+			go u.SendMessage(YamlList2String(conf, "闲聊"))
 
 		case "/resources", "/resources@" + botname:
-			go u.SendMessage(YamlList2String(conf, "资源"), true)
+			go u.SendMessage(YamlList2String(conf, "资源"))
 
 		case "/same_city", "/same_city@" + botname:
-			go u.SendMessage(YamlList2String(conf, "同城"), true)
+			go u.SendMessage(YamlList2String(conf, "同城"))
 
 		case "/others", "/others@" + botname:
-			go u.SendMessage(YamlList2String(conf, "Others"), true)
+			go u.SendMessage(YamlList2String(conf, "Others"))
 
 		case "/other_resources", "/other_resources@" + botname:
-			go u.SendMessage(YamlList2String(conf, "其他资源"), true)
+			go u.SendMessage(YamlList2String(conf, "其他资源"))
 
 		case "/subscribe", "/subscribe@" + botname:
 			go u.Subscribe()
@@ -120,8 +120,9 @@ type Updater struct {
 	conf   *yaml.File
 }
 
-func (u *Updater) SendMessage(msgText string, enableGroupLimit bool) {
+func (u *Updater) SendMessage(msgText string) {
 	chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
+	enableGroupLimit, _ := u.conf.GetBool("enableGroupLimit")
 	limitInterval, _ := u.conf.Get("limitInterval")
 	limitTimes, _ := u.conf.GetInt("limitTimes")
 
@@ -151,13 +152,16 @@ func (u *Updater) SendMessage(msgText string, enableGroupLimit bool) {
 func (u *Updater) Subscribe() {
 	chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
 	u.redis.HSet("tgSubscribe", chatIDStr, strconv.FormatBool(true))
-	u.SendMessage("订阅成功\n以后奴家知道新的群组的话，会第一时间告诉你哟😊\n(订阅仅对本会话有效)", false)
+	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+		"订阅成功\n以后奴家知道新的群组的话，会第一时间告诉你哟😊\n(订阅仅对当前会话有效)")
+	u.bot.SendMessage(msg)
 }
 
 func (u *Updater) UnSubscribe() {
 	chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
-	u.redis.HSet("tgSubscribe", chatIDStr, strconv.FormatBool(false))
-	u.SendMessage("好伤心，退订了就不能愉快的玩耍了呢😭", false)
+	//u.redis.HSet("tgSubscribe", chatIDStr, strconv.FormatBool(false))
+	u.redis.HDel("tgSubscribe", chatIDStr)
+	u.SendMessage("好伤心，退订了就不能愉快的玩耍了呢😭")
 }
 
 func (u *Updater) Broadcast(msgText string) {

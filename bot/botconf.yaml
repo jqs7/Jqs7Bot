@@ -1,4 +1,5 @@
 botapi:
+enableGroupLimit: true
 limitInterval: 15m
 limitTimes: 2
 master: Jqs_7
@@ -67,6 +68,7 @@ Programming:
   - backend developers https://telegram.me/joinchat/05fe39f5019c311e792efa186bc32aa2
   - 移动自动化测试 https://telegram.me/joinchat/04a5d082010cdf3aebbb4b356ff59023
   - Swift https://telegram.me/joinchat/025fc17d00f0423e0f6b4f5c7d3af755
+  - Github https://telegram.me/joinchat/0420f0bd010c90067a14a4078a394e3b
 
 Software:
   - Firefox https://telegram.me/joinchat/BbvvhQC5jsSFhMNKKT1UYw
