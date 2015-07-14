@@ -40,12 +40,12 @@ func (u *Updater) Auth(answer string) {
 	index := time.Now().Hour() % len(qs)
 	if qs[index].A.Has(answer) {
 		u.redis.SAdd("tgAuthUser", strconv.Itoa(u.update.Message.From.ID))
-		log.Println(u.update.Message.From.ID + " --- " + u.update.Message.From.UserName + "Auth OK")
+		log.Println(strconv.Itoa(u.update.Message.From.ID) + " --- " + u.update.Message.From.UserName + "Auth OK")
 		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
 			"验证成功喵~！\n原来你不是外星人呢😊")
 		u.bot.SendMessage(msg)
 	} else {
-		log.Println(u.update.Message.From.ID + " --- " + u.update.Message.From.UserName + "Auth Fail")
+		log.Println(strconv.Itoa(u.update.Message.From.ID) + " --- " + u.update.Message.From.UserName + "Auth Fail")
 		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
 			"答案不对不对！你一定是外星人！不跟你玩了喵！")
 		u.bot.SendMessage(msg)
