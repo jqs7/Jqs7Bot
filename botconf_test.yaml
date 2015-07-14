@@ -1,0 +1,17 @@
+botapi:
+enableGroupLimit: true
+limitInterval: 15m
+limitTimes: 2
+master: Jqs_7
+
+questions:
+
+questionsTest:
+  - Q1|A1;A2;A3
+  - Q2|A4;A5;A6
+
+listTest:
+  - 1
+  - 2
+  - \n
+  - 3
