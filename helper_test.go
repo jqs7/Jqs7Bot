@@ -25,4 +25,10 @@ func Test(t *testing.T) {
 		result := []Question{Question{"Q1", s1}, Question{"Q2", s2}}
 		convey.So(GetQuestions(conf, "questionsTest"), convey.ShouldHaveSameTypeAs, result)
 	})
+
+	convey.Convey("To2dSlice Test", t, func() {
+		in := []string{"1", "2", "3", "4", "5"}
+		out := [][]string{[]string{"1", "2", "3"}, []string{"4", "5"}}
+		convey.So(To2dSlice(in, 3, 2), convey.ShouldResemble, out)
+	})
 }

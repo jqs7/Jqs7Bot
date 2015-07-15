@@ -5,10 +5,12 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"gopkg.in/redis.v3"
 
 	"github.com/Syfaro/telegram-bot-api"
+	"github.com/fatih/set"
 	"github.com/kylelemons/go-gypsy/yaml"
 )
 
@@ -17,6 +19,16 @@ func main() {
 		Addr: "localhost:6379",
 	})
 	defer rc.Close()
+
+	categories := []string{
+		"Linux", "Programming", "Software",
+		"影音", "科幻", "ACG", "IT", "闲聊",
+		"资源", "同城", "Others",
+	}
+	categoriesSet := set.New(set.NonThreadSafe)
+	for _, v := range categories {
+		categoriesSet.Add(v)
+	}
 
 	conf, err := yaml.ReadFile("botconf.yaml")
 	if err != nil {
@@ -38,6 +50,11 @@ func main() {
 	updates, err := bot.UpdatesChan(u)
 
 	for update := range updates {
+
+		// Ignore Outdated Updates
+		if time.Since(time.Unix(int64(update.Message.Date), 0)) > time.Hour {
+			continue
+		}
 
 		u := Updater{
 			redis:  rc,
@@ -74,39 +91,6 @@ func main() {
 		case "/about", "/about@" + botname:
 			go u.BotReply(YamlList2String(conf, "about"))
 
-		case "/linux", "/linux@" + botname:
-			go u.BotReply(YamlList2String(conf, "Linux"))
-
-		case "/programming", "/programming@" + botname:
-			go u.BotReply(YamlList2String(conf, "Programming"))
-
-		case "/software", "/software@" + botname:
-			go u.BotReply(YamlList2String(conf, "Software"))
-
-		case "/media", "/media@" + botname:
-			go u.BotReply(YamlList2String(conf, "影音"))
-
-		case "/sci_fi", "/sci_fi@" + botname:
-			go u.BotReply(YamlList2String(conf, "科幻"))
-
-		case "/acg", "/acg@" + botname:
-			go u.BotReply(YamlList2String(conf, "ACG"))
-
-		case "/it", "/it@" + botname:
-			go u.BotReply(YamlList2String(conf, "IT"))
-
-		case "/free_chat", "/free_chat@" + botname:
-			go u.BotReply(YamlList2String(conf, "闲聊"))
-
-		case "/resources", "/resources@" + botname:
-			go u.BotReply(YamlList2String(conf, "资源"))
-
-		case "/same_city", "/same_city@" + botname:
-			go u.BotReply(YamlList2String(conf, "同城"))
-
-		case "/others", "/others@" + botname:
-			go u.BotReply(YamlList2String(conf, "Others"))
-
 		case "/other_resources", "/other_resources@" + botname:
 			go u.BotReply(YamlList2String(conf, "其他资源"))
 
@@ -119,6 +103,9 @@ func main() {
 		case "/autorule":
 			go u.AutoRule()
 
+		case "/groups":
+			go u.Groups(categories, 3, 5)
+
 		default:
 			s := strings.Split(update.Message.Text, " ")
 			if len(s) >= 2 && s[0] == "/broadcast" {
@@ -129,7 +116,11 @@ func main() {
 				go u.SetRule(rule)
 			} else if len(s) >= 2 && s[0] == "/auth" {
 				answer := strings.Join(s[1:], " ")
+				answer = strings.Trim(answer, "[]")
 				go u.Auth(answer)
+			} else if update.Message.Chat.ID > 0 &&
+				categoriesSet.Has(update.Message.Text) {
+				go u.BotReply(YamlList2String(conf, update.Message.Text))
 			}
 		}
 	}

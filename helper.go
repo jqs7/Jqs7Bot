@@ -59,3 +59,18 @@ func GetQuestions(config *yaml.File, text string) []Question {
 	}
 	return result
 }
+
+func To2dSlice(in []string, x, y int) [][]string {
+	out := [][]string{}
+	var begin, end int
+	for i := 0; i < y; i++ {
+		end += x
+		if end >= len(in) {
+			out = append(out, in[begin:])
+			break
+		}
+		out = append(out, in[begin:end])
+		begin = end
+	}
+	return out
+}

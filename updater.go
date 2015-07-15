@@ -18,20 +18,33 @@ type Updater struct {
 }
 
 func (u *Updater) Start() {
-	if u.update.Message.Chat.ID < 0 && !u.redis.HExists("tgGroups",
-		strconv.Itoa(u.update.Message.Chat.ID)).Val() {
-		u.redis.HSet("tgGroups",
-			strconv.Itoa(u.update.Message.Chat.ID), u.update.Message.Chat.Title)
-		log.Printf("%d --- %s join", u.update.Message.Chat.ID, u.update.Message.Chat.Title)
-	}
 	u.BotReply(YamlList2String(u.conf, "help"))
+}
+
+func (u *Updater) Groups(categories []string, x, y int) {
+	if u.update.Message.Chat.ID < 0 {
+		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+			"使用姿势不对呢喵~ ＞▽＜\n本功能只限私聊使用")
+		u.bot.SendMessage(msg)
+	} else {
+		category := To2dSlice(categories, x, y)
+
+		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, "你想要查看哪些群组呢😋")
+		msg.ReplyMarkup = tgbotapi.ReplyKeyboardMarkup{
+			Keyboard:        category,
+			OneTimeKeyboard: true,
+			ResizeKeyboard:  true,
+		}
+		u.bot.SendMessage(msg)
+	}
 }
 
 func (u *Updater) SendQuestion() {
 	qs := GetQuestions(u.conf, "questions")
 	index := time.Now().Hour() % len(qs)
 	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-		"需要通过中文验证之后才能使用本功能哟~\n请问："+qs[index].Q+"\n发送 /auth [答案] 给奴家就可以了呢")
+		"需要通过中文验证之后才能使用本功能哟~\n请问："+
+			qs[index].Q+"\n发送 /auth [答案] 给奴家就可以了呢")
 	u.bot.SendMessage(msg)
 }
 
@@ -40,17 +53,15 @@ func (u *Updater) Auth(answer string) {
 	index := time.Now().Hour() % len(qs)
 	if qs[index].A.Has(answer) {
 		u.redis.SAdd("tgAuthUser", strconv.Itoa(u.update.Message.From.ID))
-		log.Println(strconv.Itoa(u.update.Message.From.ID) + " --- " + u.update.Message.From.UserName + " Auth OK")
+		log.Printf("%d --- %s Auth OK", u.update.Message.From.ID, u.update.Message.From.UserName)
 		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
 			"验证成功喵~！\n原来你不是外星人呢😊")
 		u.bot.SendMessage(msg)
 	} else {
-		log.Println(strconv.Itoa(u.update.Message.From.ID) + " --- " + u.update.Message.From.UserName + " Auth Fail")
+		log.Printf("%d --- %s Auth Fail", u.update.Message.From.ID, u.update.Message.From.UserName)
 		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-			"答案不对不对！你一定是外星人！不跟你玩了喵！")
-		u.bot.SendMessage(msg)
-		msg = tgbotapi.NewMessage(u.update.Message.Chat.ID,
-			"重新验证一下吧\n请问："+qs[index].Q)
+			"答案不对不对！你一定是外星人！不跟你玩了喵！\n"+
+				"重新验证一下吧\n请问："+qs[index].Q)
 		u.bot.SendMessage(msg)
 	}
 }
@@ -68,7 +79,8 @@ func (u *Updater) SetRule(rule string) {
 			chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
 			log.Printf("setting rule %s to %s", rule, chatIDStr)
 			u.redis.Set("tgGroupRule:"+chatIDStr, rule, -1)
-			msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, "新的群组规则Get！✔️\n以下是新的规则：\n\n"+rule)
+			msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+				"新的群组规则Get！✔️\n以下是新的规则：\n\n"+rule)
 			u.bot.SendMessage(msg)
 		} else {
 			u.SendQuestion()
@@ -116,7 +128,7 @@ func (u *Updater) BotReply(msgText string) {
 				u.redis.Incr(chatIDStr)
 				counter, _ := u.redis.Get(chatIDStr).Int64()
 				if counter >= limitTimes {
-					log.Println("--- " + u.update.Message.Chat.Title + " --- " + "防刷屏 ---")
+					log.Printf("--- %s --- 防刷屏 ---", u.update.Message.Chat.Title)
 					msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
 						"刷屏是坏孩纸~！\n聪明宝宝是会跟奴家私聊的哟😊\n@"+u.bot.Self.UserName)
 					msg.ReplyToMessageID = u.update.Message.MessageID
@@ -200,7 +212,7 @@ func (u *Updater) Broadcast(msgText string) {
 				msg := tgbotapi.NewMessage(chatid, msgText)
 				go func(k string) {
 					u.bot.SendMessage(msg)
-					log.Println(k + " --- done")
+					log.Printf("%s --- done", k)
 				}(k)
 			}
 		}
