@@ -245,11 +245,11 @@ func (u *Updater) VimTips() {
 	var tips Tips
 	res, err := goreq.Request{
 		Uri:     "http://vim-tips.com/random_tips/json",
-		Timeout: 500 * time.Millisecond,
+		Timeout: 3500 * time.Millisecond,
 	}.Do()
 	if err != nil {
 		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-			"啊咧？群组娘找不到你要的东西呢_(:3ゝ∠)_")
+			"啊咧？奴家找不到你要的东西呢_(:3ゝ∠)_")
 		u.bot.SendMessage(msg)
 		return
 	}
