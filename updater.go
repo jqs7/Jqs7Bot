@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Syfaro/telegram-bot-api"
+	"github.com/franela/goreq"
 	"github.com/kylelemons/go-gypsy/yaml"
 	"gopkg.in/redis.v3"
 )
@@ -49,25 +50,34 @@ func (u *Updater) SendQuestion() {
 }
 
 func (u *Updater) Auth(answer string) {
-	qs := GetQuestions(u.conf, "questions")
-	index := time.Now().Hour() % len(qs)
-	if qs[index].A.Has(answer) {
-		u.redis.SAdd("tgAuthUser", strconv.Itoa(u.update.Message.From.ID))
-		log.Printf("%d --- %s Auth OK", u.update.Message.From.ID, u.update.Message.From.UserName)
+	if u.update.Message.Chat.ID < 0 {
 		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-			"验证成功喵~！\n原来你不是外星人呢😊")
+			"请点击奴家的头像进入私聊进行验证喵~")
 		u.bot.SendMessage(msg)
 	} else {
-		log.Printf("%d --- %s Auth Fail", u.update.Message.From.ID, u.update.Message.From.UserName)
-		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-			"答案不对不对！你一定是外星人！不跟你玩了喵！\n"+
-				"重新验证一下吧\n请问："+qs[index].Q)
-		u.bot.SendMessage(msg)
+		qs := GetQuestions(u.conf, "questions")
+		index := time.Now().Hour() % len(qs)
+		if qs[index].A.Has(answer) {
+			u.redis.SAdd("tgAuthUser", strconv.Itoa(u.update.Message.From.ID))
+			log.Printf("%d --- %s Auth OK",
+				u.update.Message.From.ID, u.update.Message.From.UserName)
+			msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+				"验证成功喵~！\n原来你不是外星人呢😊")
+			u.bot.SendMessage(msg)
+		} else {
+			log.Printf("%d --- %s Auth Fail",
+				u.update.Message.From.ID, u.update.Message.From.UserName)
+			msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+				"答案不对不对！你一定是外星人！不跟你玩了喵！\n"+
+					"重新验证一下吧\n请问："+qs[index].Q)
+			u.bot.SendMessage(msg)
+		}
 	}
 }
 
 func (u *Updater) isAuthed() bool {
-	if u.redis.SIsMember("tgAuthUser", strconv.Itoa(u.update.Message.From.ID)).Val() {
+	if u.redis.SIsMember("tgAuthUser",
+		strconv.Itoa(u.update.Message.From.ID)).Val() {
 		return true
 	}
 	return false
@@ -93,11 +103,14 @@ func (u *Updater) AutoRule() {
 		chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
 		if u.redis.Exists("tgGroupAutoRule:" + chatIDStr).Val() {
 			u.redis.Del("tgGroupAutoRule:" + chatIDStr)
-			msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, "AutoRule Disable!")
+			msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+				"AutoRule Disable!")
 			u.bot.SendMessage(msg)
 		} else {
-			u.redis.Set("tgGroupAutoRule:"+chatIDStr, strconv.FormatBool(true), -1)
-			msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, "AutoRule Enable!")
+			u.redis.Set("tgGroupAutoRule:"+chatIDStr,
+				strconv.FormatBool(true), -1)
+			msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+				"AutoRule Enable!")
 			u.bot.SendMessage(msg)
 		}
 	}
@@ -128,9 +141,11 @@ func (u *Updater) BotReply(msgText string) {
 				u.redis.Incr(chatIDStr)
 				counter, _ := u.redis.Get(chatIDStr).Int64()
 				if counter >= limitTimes {
-					log.Printf("--- %s --- 防刷屏 ---", u.update.Message.Chat.Title)
+					log.Printf("--- %s --- 防刷屏 ---",
+						u.update.Message.Chat.Title)
 					msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-						"刷屏是坏孩纸~！\n聪明宝宝是会跟奴家私聊的哟😊\n@"+u.bot.Self.UserName)
+						"刷屏是坏孩纸~！\n聪明宝宝是会跟奴家私聊的哟😊\n@"+
+							u.bot.Self.UserName)
 					msg.ReplyToMessageID = u.update.Message.MessageID
 					u.bot.SendMessage(msg)
 					return
@@ -151,7 +166,8 @@ func (u *Updater) BotReply(msgText string) {
 
 func (u *Updater) Subscribe() {
 	chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
-	isSubscribe, _ := strconv.ParseBool(u.redis.HGet("tgSubscribe", chatIDStr).Val())
+	isSubscribe, _ := strconv.ParseBool(u.redis.HGet("tgSubscribe",
+		chatIDStr).Val())
 	if u.update.Message.Chat.ID > 0 {
 		if u.isAuthed() {
 			if isSubscribe {
@@ -162,7 +178,8 @@ func (u *Updater) Subscribe() {
 				u.redis.HSet("tgSubscribe", chatIDStr, strconv.FormatBool(true))
 				u.redis.HIncrBy("tgSubscribeTimes", chatIDStr, 1)
 				msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-					"订阅成功\n以后奴家知道新的群组的话，会第一时间告诉你哟😊\n(订阅仅对当前会话有效)")
+					"订阅成功\n以后奴家知道新的群组的话，会第一时间告诉你哟😊\n"+
+						"(订阅仅对当前会话有效)")
 				u.bot.SendMessage(msg)
 			}
 		} else {
@@ -217,4 +234,28 @@ func (u *Updater) Broadcast(msgText string) {
 			}
 		}
 	}
+}
+
+type Tips struct {
+	Content string
+	Comment string
+}
+
+func (u *Updater) VimTips() {
+	var tips Tips
+	res, err := goreq.Request{
+		Uri:     "http://vim-tips.com/random_tips/json",
+		Timeout: 500 * time.Millisecond,
+	}.Do()
+	if err != nil {
+		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+			"啊咧？群组娘找不到你要的东西呢_(:3ゝ∠)_")
+		u.bot.SendMessage(msg)
+		return
+	}
+	res.Body.FromJsonTo(&tips)
+
+	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+		tips.Content+"\n"+tips.Comment)
+	u.bot.SendMessage(msg)
 }

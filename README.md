@@ -11,7 +11,10 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 
 #### 群组娘の秘技
 
-`/setrule rule` - 在群组中使用该命令可为群组设定自定义规则<br/>
-`/autorule` - 当有新的群成员加入时，群组娘会自动发送一次群组规则<br/>
+- `/setrule rule` - 在群组中使用该命令可为群组设定自定义规则
+- `/autorule` - 当有新的群成员加入时，群组娘会自动发送一次群组规则
+- `/vimtips` - Vim 小技巧(感谢[vim-tips.com](http://vim-tips.com/about)提供的API)
+
 ![rule](http://ww4.sinaimg.cn/large/71d9577dgw1etw9fkwwdsj20bc09xgnh.jpg)
+
 ![Jqs7Bot](http://ww4.sinaimg.cn/large/71d9577dgw1etu6xt5t3vj20zk0k0q9u.jpg)

@@ -73,6 +73,7 @@ func main() {
 			)
 		}
 
+		// Auto Rule When New Member Jion Group
 		if update.Message.NewChatParticipant.ID != 0 {
 			chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
 			if u.redis.Exists("tgGroupAutoRule:" + chatIDStr).Val() {
@@ -105,6 +106,9 @@ func main() {
 
 		case "/groups":
 			go u.Groups(categories, 3, 5)
+
+		case "/vimtips":
+			go u.VimTips()
 
 		default:
 			s := strings.Split(update.Message.Text, " ")
