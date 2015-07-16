@@ -123,6 +123,10 @@ func (u *Updater) Rule() {
 }
 
 func (u *Updater) BotReply(msgText string) {
+	if !u.isAuthed() {
+		u.SendQuestion()
+		return
+	}
 	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, msgText)
 	u.bot.SendMessage(msg)
 	return
