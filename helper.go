@@ -4,8 +4,10 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/fatih/set"
+	"github.com/franela/goreq"
 	"github.com/kylelemons/go-gypsy/yaml"
 )
 
@@ -72,5 +74,31 @@ func To2dSlice(in []string, x, y int) [][]string {
 		out = append(out, in[begin:end])
 		begin = end
 	}
+	return out
+}
+
+type Tips struct {
+	Content string
+	Comment string
+}
+
+func VimTipsChan() (out chan Tips) {
+	out = make(chan Tips, 100)
+	go func() {
+		for {
+			var tips Tips
+			res, err := goreq.Request{
+				Uri:     "http://vim-tips.com/random_tips/json",
+				Timeout: 7777 * time.Millisecond,
+			}.Do()
+			if err != nil {
+				log.Println("Fail to get vim-tips , retry in 3 seconds")
+				time.Sleep(time.Second * 3)
+				continue
+			}
+			res.Body.FromJsonTo(&tips)
+			out <- tips
+		}
+	}()
 	return out
 }

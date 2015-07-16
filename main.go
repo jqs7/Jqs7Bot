@@ -20,6 +20,7 @@ func main() {
 	})
 	defer rc.Close()
 
+	// Init categories
 	categories := []string{
 		"Linux", "Programming", "Software",
 		"影音", "科幻", "ACG", "IT", "闲聊",
@@ -36,7 +37,6 @@ func main() {
 	}
 
 	botapi, _ := conf.Get("botapi")
-
 	bot, err := tgbotapi.NewBotAPI(botapi)
 	if err != nil {
 		log.Panic(err)
@@ -48,6 +48,7 @@ func main() {
 	u.Timeout = 60
 
 	updates, err := bot.UpdatesChan(u)
+	tips := VimTipsChan()
 
 	for update := range updates {
 
@@ -108,7 +109,18 @@ func main() {
 			go u.Groups(categories, 3, 5)
 
 		case "/vimtips":
-			go u.VimTips()
+			go func() {
+				select {
+				case t := <-tips:
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID,
+						t.Content+"\n"+t.Comment)
+					bot.SendMessage(msg)
+				default:
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID,
+						"喵？")
+					bot.SendMessage(msg)
+				}
+			}()
 
 		default:
 			s := strings.Split(update.Message.Text, " ")

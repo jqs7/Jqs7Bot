@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/Syfaro/telegram-bot-api"
-	"github.com/franela/goreq"
 	"github.com/kylelemons/go-gypsy/yaml"
 	"gopkg.in/redis.v3"
 )
@@ -234,28 +233,4 @@ func (u *Updater) Broadcast(msgText string) {
 			}
 		}
 	}
-}
-
-type Tips struct {
-	Content string
-	Comment string
-}
-
-func (u *Updater) VimTips() {
-	var tips Tips
-	res, err := goreq.Request{
-		Uri:     "http://vim-tips.com/random_tips/json",
-		Timeout: 3500 * time.Millisecond,
-	}.Do()
-	if err != nil {
-		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-			"啊咧？奴家找不到你要的东西呢_(:3ゝ∠)_")
-		u.bot.SendMessage(msg)
-		return
-	}
-	res.Body.FromJsonTo(&tips)
-
-	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-		tips.Content+"\n"+tips.Comment)
-	u.bot.SendMessage(msg)
 }
