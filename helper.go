@@ -1,11 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/antonholmquist/jason"
 	"github.com/fatih/set"
 	"github.com/franela/goreq"
 	"github.com/kylelemons/go-gypsy/yaml"
@@ -82,8 +85,8 @@ type Tips struct {
 	Comment string
 }
 
-func VimTipsChan() (out chan Tips) {
-	out = make(chan Tips, 100)
+func VimTipsChan(bufferSize int) (out chan Tips) {
+	out = make(chan Tips, bufferSize)
 	go func() {
 		for {
 			var tips Tips
@@ -100,5 +103,48 @@ func VimTipsChan() (out chan Tips) {
 			out <- tips
 		}
 	}()
+	return out
+}
+
+func BaiduTranslate(apiKey, in string) (out string) {
+	in = url.QueryEscape(in)
+
+	res, err := goreq.Request{
+		Uri: fmt.Sprintf("http://openapi.baidu.com/public/2.0/bmt/translate?"+
+			"client_id=%s&q=%s&from=auto&to=auto",
+			apiKey, in),
+		Timeout: 7777 * time.Millisecond,
+	}.Do()
+	if err != nil {
+		out = "群组娘连接母舰失败，请稍后重试"
+		log.Println("Translation Timeout!")
+		return out
+	}
+
+	jasonObj, _ := jason.NewObjectFromReader(res.Body)
+	result, err := jasonObj.GetObjectArray("trans_result")
+	if err != nil {
+		errCode, _ := jasonObj.GetString("error_code")
+		switch errCode {
+		case "52001":
+			out = "转换失败，母舰大概是快没油了Orz"
+		case "52002":
+			out = "母舰崩坏中..."
+		case "52003":
+			out = "大概男盆友用错API Key啦，大家快去蛤他！σ`∀´)`"
+		case "52004":
+			out = "弹药装填系统泄漏，一定不是奴家的锅(╯‵□′)╯"
+		default:
+			out = "发生了理论上不可能出现的错误，你是不是穿越了喵？"
+		}
+		return out
+	}
+
+	var outs []string
+	for k := range result {
+		tmp, _ := result[k].GetString("dst")
+		outs = append(outs, tmp)
+	}
+	out = strings.Join(outs, "\n")
 	return out
 }

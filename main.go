@@ -37,6 +37,7 @@ func main() {
 	}
 
 	botapi, _ := conf.Get("botapi")
+	baiduAPI, _ := conf.Get("baiduTransKey")
 	bot, err := tgbotapi.NewBotAPI(botapi)
 	if err != nil {
 		log.Panic(err)
@@ -46,9 +47,9 @@ func main() {
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
-
 	updates, err := bot.UpdatesChan(u)
-	tips := VimTipsChan()
+
+	tips := VimTipsChan(100)
 
 	for update := range updates {
 
@@ -64,9 +65,9 @@ func main() {
 			conf:   conf,
 		}
 
+		// Logger
 		startWithSlash, _ := regexp.MatchString("^/", update.Message.Text)
 		atBot, _ := regexp.MatchString("@"+botname, update.Message.Text)
-
 		if update.Message.Chat.ID > 0 || startWithSlash || atBot {
 			log.Printf("[%d](%s) -- [%s] -- %s",
 				update.Message.Chat.ID, update.Message.Chat.Title,
@@ -117,7 +118,7 @@ func main() {
 					bot.SendMessage(msg)
 				default:
 					msg := tgbotapi.NewMessage(update.Message.Chat.ID,
-						"喵？")
+						"喵？奴家找不到你要的东西呢_(:з」∠)_")
 					bot.SendMessage(msg)
 				}
 			}()
@@ -134,8 +135,16 @@ func main() {
 				answer := strings.Join(s[1:], " ")
 				answer = strings.Trim(answer, "[]")
 				go u.Auth(answer)
+			} else if len(s) >= 2 && s[0] == "/trans" {
+				in := strings.Join(s[1:], " ")
+				go func() {
+					out := BaiduTranslate(baiduAPI, in)
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, out)
+					bot.SendMessage(msg)
+				}()
 			} else if update.Message.Chat.ID > 0 &&
 				categoriesSet.Has(update.Message.Text) {
+				// custom keyboard reply
 				go u.BotReply(YamlList2String(conf, update.Message.Text))
 			}
 		}

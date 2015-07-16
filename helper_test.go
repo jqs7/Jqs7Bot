@@ -24,11 +24,31 @@ func Test(t *testing.T) {
 		s2.Add("A4", "A5", "A6")
 		result := []Question{Question{"Q1", s1}, Question{"Q2", s2}}
 		convey.So(GetQuestions(conf, "questionsTest"), convey.ShouldHaveSameTypeAs, result)
+		convey.So(GetQuestions(conf, "questionsTest"), convey.ShouldResemble, result)
 	})
 
 	convey.Convey("To2dSlice Test", t, func() {
 		in := []string{"1", "2", "3", "4", "5"}
 		out := [][]string{[]string{"1", "2", "3"}, []string{"4", "5"}}
 		convey.So(To2dSlice(in, 3, 2), convey.ShouldResemble, out)
+	})
+
+	convey.Convey("Vim-Tips Test", t, func() {
+		t := <-VimTipsChan(1)
+		convey.So(t.Comment, convey.ShouldNotBeBlank)
+		convey.So(t.Content, convey.ShouldNotBeBlank)
+	})
+
+	convey.Convey("Translate Test", t, func() {
+		conf, err := yaml.ReadFile("botconf_test.yaml")
+		convey.So(err, convey.ShouldBeNil)
+
+		convey.So(BaiduTranslate("123", "Hello"), convey.ShouldEqual,
+			"大概男盆友用错API Key啦，大家快去蛤他！σ`∀´)`")
+
+		key, err := conf.Get("baiduTransKey")
+		convey.So(err, convey.ShouldBeNil)
+		convey.So(BaiduTranslate(key, "你好"), convey.ShouldEqual, "Hello")
+		convey.So(BaiduTranslate(key, "Hello"), convey.ShouldEqual, "你好")
 	})
 }

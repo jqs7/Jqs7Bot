@@ -1,4 +1,5 @@
 botapi:
+baiduTransKey:
 enableGroupLimit: true
 limitInterval: 15m
 limitTimes: 2
