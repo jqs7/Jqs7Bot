@@ -110,12 +110,8 @@ func main() {
 			go u.Groups(categories, 3, 5)
 
 		case "/vimtips":
-			select {
-			case t := <-tips:
-				go u.BotReply(t.Content + "\n" + t.Comment)
-			default:
-				go u.BotReply("喵？奴家找不到你要的东西呢_(:з」∠)_")
-			}
+			t := <-tips
+			go u.BotReply(t.Content + "\n" + t.Comment)
 
 		default:
 			s := strings.Split(update.Message.Text, " ")
