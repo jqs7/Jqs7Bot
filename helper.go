@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
 	"log"
 	"net/url"
@@ -145,4 +146,16 @@ func BaiduTranslate(apiKey, in string) (out string) {
 	}
 	out = strings.Join(outs, "\n")
 	return out
+}
+
+func E64(in string) string {
+	return base64.StdEncoding.EncodeToString([]byte(in))
+}
+
+func D64(in string) string {
+	out, err := base64.StdEncoding.DecodeString(in)
+	if err != nil {
+		return "解码系统出现故障，请查看弹药是否填充无误"
+	}
+	return string(out)
 }

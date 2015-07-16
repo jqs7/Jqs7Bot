@@ -110,18 +110,12 @@ func main() {
 			go u.Groups(categories, 3, 5)
 
 		case "/vimtips":
-			go func() {
-				select {
-				case t := <-tips:
-					msg := tgbotapi.NewMessage(update.Message.Chat.ID,
-						t.Content+"\n"+t.Comment)
-					bot.SendMessage(msg)
-				default:
-					msg := tgbotapi.NewMessage(update.Message.Chat.ID,
-						"喵？奴家找不到你要的东西呢_(:з」∠)_")
-					bot.SendMessage(msg)
-				}
-			}()
+			select {
+			case t := <-tips:
+				go u.BotReply(t.Content + "\n" + t.Comment)
+			default:
+				go u.BotReply("喵？奴家找不到你要的东西呢_(:з」∠)_")
+			}
 
 		default:
 			s := strings.Split(update.Message.Text, " ")
@@ -135,13 +129,15 @@ func main() {
 				answer := strings.Join(s[1:], " ")
 				answer = strings.Trim(answer, "[]")
 				go u.Auth(answer)
+			} else if len(s) >= 2 && s[0] == "/e64" {
+				in := strings.Join(s[1:], " ")
+				go u.BotReply(E64(in))
+			} else if len(s) >= 2 && s[0] == "/d64" {
+				in := strings.Join(s[1:], " ")
+				go u.BotReply(D64(in))
 			} else if len(s) >= 2 && s[0] == "/trans" {
 				in := strings.Join(s[1:], " ")
-				go func() {
-					out := BaiduTranslate(baiduAPI, in)
-					msg := tgbotapi.NewMessage(update.Message.Chat.ID, out)
-					bot.SendMessage(msg)
-				}()
+				go u.BotReply(BaiduTranslate(baiduAPI, in))
 			} else if update.Message.Chat.ID > 0 &&
 				categoriesSet.Has(update.Message.Text) {
 				// custom keyboard reply

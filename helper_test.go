@@ -39,6 +39,13 @@ func Test(t *testing.T) {
 		convey.So(t.Content, convey.ShouldNotBeBlank)
 	})
 
+	convey.Convey("Base64 Test", t, func() {
+		convey.So(E64("Hello"), convey.ShouldEqual, "SGVsbG8=")
+		convey.So(D64("sdjaikdbsa"), convey.ShouldEqual,
+			"解码系统出现故障，请查看弹药是否填充无误")
+		convey.So(D64("SGVsbG8="), convey.ShouldEqual, "Hello")
+	})
+
 	convey.Convey("Translate Test", t, func() {
 		conf, err := yaml.ReadFile("botconf_test.yaml")
 		convey.So(err, convey.ShouldBeNil)

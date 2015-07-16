@@ -123,36 +123,6 @@ func (u *Updater) Rule() {
 }
 
 func (u *Updater) BotReply(msgText string) {
-	chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
-	enableGroupLimit, _ := u.conf.GetBool("enableGroupLimit")
-	limitInterval, _ := u.conf.Get("limitInterval")
-	limitTimes, _ := u.conf.GetInt("limitTimes")
-
-	if !u.isAuthed() {
-		u.SendQuestion()
-		return
-	}
-
-	if enableGroupLimit && u.update.Message.Chat.ID < 0 {
-		if u.redis.Exists(chatIDStr).Val() {
-			u.redis.Incr(chatIDStr)
-			counter, _ := u.redis.Get(chatIDStr).Int64()
-			if counter >= limitTimes {
-				log.Printf("--- %s --- 防刷屏 ---",
-					u.update.Message.Chat.Title)
-				msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-					"刷屏是坏孩纸~！\n聪明宝宝是会跟奴家私聊的哟😊\n@"+
-						u.bot.Self.UserName)
-				msg.ReplyToMessageID = u.update.Message.MessageID
-				u.bot.SendMessage(msg)
-				return
-			}
-		} else {
-			expire, _ := time.ParseDuration(limitInterval)
-			u.redis.Set(chatIDStr, "0", expire)
-		}
-	}
-
 	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, msgText)
 	u.bot.SendMessage(msg)
 	return
