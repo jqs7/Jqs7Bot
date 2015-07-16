@@ -26,17 +26,17 @@ func (u *Updater) Groups(categories []string, x, y int) {
 		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
 			"使用姿势不对呢喵~ ＞▽＜\n本功能只限私聊使用")
 		u.bot.SendMessage(msg)
-	} else {
-		category := To2dSlice(categories, x, y)
-
-		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, "你想要查看哪些群组呢😋")
-		msg.ReplyMarkup = tgbotapi.ReplyKeyboardMarkup{
-			Keyboard:        category,
-			OneTimeKeyboard: true,
-			ResizeKeyboard:  true,
-		}
-		u.bot.SendMessage(msg)
+		return
 	}
+	category := To2dSlice(categories, x, y)
+
+	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, "你想要查看哪些群组呢😋")
+	msg.ReplyMarkup = tgbotapi.ReplyKeyboardMarkup{
+		Keyboard:        category,
+		OneTimeKeyboard: true,
+		ResizeKeyboard:  true,
+	}
+	u.bot.SendMessage(msg)
 }
 
 func (u *Updater) SendQuestion() {
@@ -49,28 +49,22 @@ func (u *Updater) SendQuestion() {
 }
 
 func (u *Updater) Auth(answer string) {
-	if u.update.Message.Chat.ID < 0 {
+	qs := GetQuestions(u.conf, "questions")
+	index := time.Now().Hour() % len(qs)
+	if qs[index].A.Has(answer) {
+		u.redis.SAdd("tgAuthUser", strconv.Itoa(u.update.Message.From.ID))
+		log.Printf("%d --- %s Auth OK",
+			u.update.Message.From.ID, u.update.Message.From.UserName)
 		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-			"请点击奴家的头像进入私聊进行验证喵~")
+			"验证成功喵~！\n原来你不是外星人呢😊")
 		u.bot.SendMessage(msg)
 	} else {
-		qs := GetQuestions(u.conf, "questions")
-		index := time.Now().Hour() % len(qs)
-		if qs[index].A.Has(answer) {
-			u.redis.SAdd("tgAuthUser", strconv.Itoa(u.update.Message.From.ID))
-			log.Printf("%d --- %s Auth OK",
-				u.update.Message.From.ID, u.update.Message.From.UserName)
-			msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-				"验证成功喵~！\n原来你不是外星人呢😊")
-			u.bot.SendMessage(msg)
-		} else {
-			log.Printf("%d --- %s Auth Fail",
-				u.update.Message.From.ID, u.update.Message.From.UserName)
-			msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-				"答案不对不对！你一定是外星人！不跟你玩了喵！\n"+
-					"重新验证一下吧\n请问："+qs[index].Q)
-			u.bot.SendMessage(msg)
-		}
+		log.Printf("%d --- %s Auth Fail",
+			u.update.Message.From.ID, u.update.Message.From.UserName)
+		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+			"答案不对不对！你一定是外星人！不跟你玩了喵！\n"+
+				"重新验证一下吧\n请问："+qs[index].Q)
+		u.bot.SendMessage(msg)
 	}
 }
 
@@ -134,59 +128,63 @@ func (u *Updater) BotReply(msgText string) {
 	limitInterval, _ := u.conf.Get("limitInterval")
 	limitTimes, _ := u.conf.GetInt("limitTimes")
 
-	if u.isAuthed() {
-		if enableGroupLimit && u.update.Message.Chat.ID < 0 {
-			if u.redis.Exists(chatIDStr).Val() {
-				u.redis.Incr(chatIDStr)
-				counter, _ := u.redis.Get(chatIDStr).Int64()
-				if counter >= limitTimes {
-					log.Printf("--- %s --- 防刷屏 ---",
-						u.update.Message.Chat.Title)
-					msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-						"刷屏是坏孩纸~！\n聪明宝宝是会跟奴家私聊的哟😊\n@"+
-							u.bot.Self.UserName)
-					msg.ReplyToMessageID = u.update.Message.MessageID
-					u.bot.SendMessage(msg)
-					return
-				}
-			} else {
-				expire, _ := time.ParseDuration(limitInterval)
-				u.redis.Set(chatIDStr, "0", expire)
-			}
-		}
-
-		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, msgText)
-		u.bot.SendMessage(msg)
-		return
-	} else {
+	if !u.isAuthed() {
 		u.SendQuestion()
+		return
 	}
+
+	if enableGroupLimit && u.update.Message.Chat.ID < 0 {
+		if u.redis.Exists(chatIDStr).Val() {
+			u.redis.Incr(chatIDStr)
+			counter, _ := u.redis.Get(chatIDStr).Int64()
+			if counter >= limitTimes {
+				log.Printf("--- %s --- 防刷屏 ---",
+					u.update.Message.Chat.Title)
+				msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+					"刷屏是坏孩纸~！\n聪明宝宝是会跟奴家私聊的哟😊\n@"+
+						u.bot.Self.UserName)
+				msg.ReplyToMessageID = u.update.Message.MessageID
+				u.bot.SendMessage(msg)
+				return
+			}
+		} else {
+			expire, _ := time.ParseDuration(limitInterval)
+			u.redis.Set(chatIDStr, "0", expire)
+		}
+	}
+
+	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, msgText)
+	u.bot.SendMessage(msg)
+	return
 }
 
 func (u *Updater) Subscribe() {
 	chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
 	isSubscribe, _ := strconv.ParseBool(u.redis.HGet("tgSubscribe",
 		chatIDStr).Val())
-	if u.update.Message.Chat.ID > 0 {
-		if u.isAuthed() {
-			if isSubscribe {
-				msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-					"已经订阅过，就不要重复订阅啦😘")
-				u.bot.SendMessage(msg)
-			} else {
-				u.redis.HSet("tgSubscribe", chatIDStr, strconv.FormatBool(true))
-				u.redis.HIncrBy("tgSubscribeTimes", chatIDStr, 1)
-				msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-					"订阅成功\n以后奴家知道新的群组的话，会第一时间告诉你哟😊\n"+
-						"(订阅仅对当前会话有效)")
-				u.bot.SendMessage(msg)
-			}
-		} else {
-			u.SendQuestion()
-		}
-	} else {
+
+	if u.update.Message.Chat.ID < 0 {
 		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
 			"群组订阅功能已取消，需要订阅功能的话，请私聊奴家呢o(￣ˇ￣)o")
+		u.bot.SendMessage(msg)
+		return
+	}
+
+	if u.isAuthed() {
+		u.SendQuestion()
+		return
+	}
+
+	if isSubscribe {
+		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+			"已经订阅过，就不要重复订阅啦😘")
+		u.bot.SendMessage(msg)
+	} else {
+		u.redis.HSet("tgSubscribe", chatIDStr, strconv.FormatBool(true))
+		u.redis.HIncrBy("tgSubscribeTimes", chatIDStr, 1)
+		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+			"订阅成功\n以后奴家知道新的群组的话，会第一时间告诉你哟😊\n"+
+				"(订阅仅对当前会话有效)")
 		u.bot.SendMessage(msg)
 	}
 }
