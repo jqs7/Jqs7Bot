@@ -106,7 +106,7 @@ func main() {
 		case "/autorule":
 			go u.AutoRule()
 
-		case "/groups":
+		case "/groups", "/groups@" + botname:
 			go u.Groups(categories, 3, 5)
 
 		case "/vimtips":
