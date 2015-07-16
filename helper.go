@@ -116,9 +116,8 @@ func BaiduTranslate(apiKey, in string) (out string) {
 		Timeout: 7777 * time.Millisecond,
 	}.Do()
 	if err != nil {
-		out = "群组娘连接母舰失败，请稍后重试"
 		log.Println("Translation Timeout!")
-		return
+		return "群组娘连接母舰失败，请稍后重试"
 	}
 
 	jasonObj, _ := jason.NewObjectFromReader(res.Body)
@@ -127,17 +126,16 @@ func BaiduTranslate(apiKey, in string) (out string) {
 		errCode, _ := jasonObj.GetString("error_code")
 		switch errCode {
 		case "52001":
-			out = "转换失败，母舰大概是快没油了Orz"
+			return "转换失败，母舰大概是快没油了Orz"
 		case "52002":
-			out = "母舰崩坏中..."
+			return "母舰崩坏中..."
 		case "52003":
-			out = "大概男盆友用错API Key啦，大家快去蛤他！σ`∀´)`"
+			return "大概男盆友用错API Key啦，大家快去蛤他！σ`∀´)`"
 		case "52004":
-			out = "弹药装填系统泄漏，一定不是奴家的锅(╯‵□′)╯"
+			return "弹药装填系统泄漏，一定不是奴家的锅(╯‵□′)╯"
 		default:
-			out = "发生了理论上不可能出现的错误，你是不是穿越了喵？"
+			return "发生了理论上不可能出现的错误，你是不是穿越了喵？"
 		}
-		return out
 	}
 
 	var outs []string
