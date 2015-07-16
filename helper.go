@@ -118,7 +118,7 @@ func BaiduTranslate(apiKey, in string) (out string) {
 	if err != nil {
 		out = "群组娘连接母舰失败，请稍后重试"
 		log.Println("Translation Timeout!")
-		return out
+		return
 	}
 
 	jasonObj, _ := jason.NewObjectFromReader(res.Body)
