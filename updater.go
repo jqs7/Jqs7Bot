@@ -30,7 +30,9 @@ func (u *Updater) Groups(categories []string, x, y int) {
 	}
 	category := To2dSlice(categories, x, y)
 
-	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, "你想要查看哪些群组呢😋")
+	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+		"你想要查看哪些群组呢😋\n(为保护群组不被外星人攻击，"+
+			"请勿将群链接转发到群组中，或者公布到网络上)")
 	msg.ReplyMarkup = tgbotapi.ReplyKeyboardMarkup{
 		Keyboard:        category,
 		OneTimeKeyboard: true,

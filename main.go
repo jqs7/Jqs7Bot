@@ -75,7 +75,7 @@ func main() {
 			)
 		}
 
-		// Auto Rule When New Member Jion Group
+		// Auto Rule When New Member Join Group
 		if update.Message.NewChatParticipant.ID != 0 {
 			chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
 			if u.redis.Exists("tgGroupAutoRule:" + chatIDStr).Val() {
