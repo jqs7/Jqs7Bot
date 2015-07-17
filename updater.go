@@ -53,6 +53,14 @@ func (u *Updater) SendQuestion() {
 func (u *Updater) Auth(answer string) {
 	qs := GetQuestions(u.conf, "questions")
 	index := time.Now().Hour() % len(qs)
+	if u.isAuthed() {
+		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+			"已经验证过了，你还想验证，你是不是傻？⊂彡☆))д`)`")
+		msg.ReplyToMessageID = u.update.Message.MessageID
+		u.bot.SendMessage(msg)
+		return
+	}
+
 	if qs[index].A.Has(answer) {
 		u.redis.SAdd("tgAuthUser", strconv.Itoa(u.update.Message.From.ID))
 		log.Printf("%d --- %s Auth OK",
