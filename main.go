@@ -23,8 +23,8 @@ func main() {
 	// Init categories
 	categories := []string{
 		"Linux", "Programming", "Software",
-		"影音", "科幻", "ACG", "IT", "闲聊",
-		"资源", "同城", "Others",
+		"影音", "科幻", "ACG", "IT", "社区",
+		"闲聊", "资源", "同城", "Others",
 	}
 	categoriesSet := set.New(set.NonThreadSafe)
 	for _, v := range categories {
