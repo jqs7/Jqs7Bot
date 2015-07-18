@@ -14,7 +14,8 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - `/setrule [规则]` - 为群组设定自定义规则
 - `/autorule` - 当有新的群成员加入时，自动发送群组规则
 - `/setman [条目] [内容]` - 设置群组自定义条目
-- `/man [条目] ` - 查看群组自定义条目
+- `/man [条目] ` - 查看群组自定义条目，若无参数，则列出所有条目
+- `/rmman [条目]` - 删除自定义条目，支持多参数
 - `/vimtips` - Vim 小技巧(感谢 [vim-tips.com](http://vim-tips.com/about) 提供的API)
 - `/trans [待翻译内容]` - 中英互译(使用百度翻译API)
 - `/e64 [内容]` - base64加密

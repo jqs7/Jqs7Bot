@@ -137,8 +137,14 @@ func main() {
 			} else if len(s) >= 3 && s[0] == "/setman" {
 				value := strings.Join(s[2:], " ")
 				go u.SetMan(s[1], value)
-			} else if len(s) >= 2 && s[0] == "/man" {
-				go u.Man(s[1])
+			} else if len(s) >= 2 && s[0] == "/rmman" {
+				go u.RmMan(s[1:]...)
+			} else if s[0] == "/man" {
+				if len(s) < 2 {
+					go u.ListMan()
+				} else {
+					go u.Man(s[1])
+				}
 			} else if update.Message.Chat.ID > 0 &&
 				categoriesSet.Has(update.Message.Text) {
 				// custom keyboard reply

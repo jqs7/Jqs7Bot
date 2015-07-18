@@ -42,6 +42,13 @@ func (u *Updater) Groups(categories []string, x, y int) {
 }
 
 func (u *Updater) SendQuestion() {
+	if u.update.Message.Chat.ID < 0 {
+		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+			"需要通过中文验证之后才能使用本功能哟~\n"+
+				"点击奴家的头像进入私聊模式，进行验证吧")
+		u.bot.SendMessage(msg)
+		return
+	}
 	qs := GetQuestions(u.conf, "questions")
 	index := time.Now().Hour() % len(qs)
 	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
@@ -53,28 +60,30 @@ func (u *Updater) SendQuestion() {
 func (u *Updater) Auth(answer string) {
 	qs := GetQuestions(u.conf, "questions")
 	index := time.Now().Hour() % len(qs)
-	if u.IsAuthed() {
-		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-			"已经验证过了，你还想验证，你是不是傻？⊂彡☆))д`)`")
-		msg.ReplyToMessageID = u.update.Message.MessageID
-		u.bot.SendMessage(msg)
-		return
-	}
+	if u.update.Message.Chat.ID > 0 {
+		if u.IsAuthed() {
+			msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+				"已经验证过了，你还想验证，你是不是傻？⊂彡☆))д`)`")
+			msg.ReplyToMessageID = u.update.Message.MessageID
+			u.bot.SendMessage(msg)
+			return
+		}
 
-	if qs[index].A.Has(answer) {
-		u.redis.SAdd("tgAuthUser", strconv.Itoa(u.update.Message.From.ID))
-		log.Printf("%d --- %s Auth OK",
-			u.update.Message.From.ID, u.update.Message.From.UserName)
-		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-			"验证成功喵~！\n原来你不是外星人呢😊")
-		u.bot.SendMessage(msg)
-	} else {
-		log.Printf("%d --- %s Auth Fail",
-			u.update.Message.From.ID, u.update.Message.From.UserName)
-		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-			"答案不对不对！你一定是外星人！不跟你玩了喵！\n"+
-				"重新验证一下吧\n请问："+qs[index].Q)
-		u.bot.SendMessage(msg)
+		if qs[index].A.Has(answer) {
+			u.redis.SAdd("tgAuthUser", strconv.Itoa(u.update.Message.From.ID))
+			log.Printf("%d --- %s Auth OK",
+				u.update.Message.From.ID, u.update.Message.From.UserName)
+			msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+				"验证成功喵~！\n原来你不是外星人呢😊")
+			u.bot.SendMessage(msg)
+		} else {
+			log.Printf("%d --- %s Auth Fail",
+				u.update.Message.From.ID, u.update.Message.From.UserName)
+			msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+				"答案不对不对！你一定是外星人！不跟你玩了喵！\n"+
+					"重新验证一下吧\n请问："+qs[index].Q)
+			u.bot.SendMessage(msg)
+		}
 	}
 }
 
@@ -230,9 +239,28 @@ func (u *Updater) SetMan(field, value string) {
 	}
 }
 
+func (u *Updater) ListMan() {
+	if u.update.Message.Chat.ID < 0 {
+		var result string
+		fields := u.redis.HGetAllMap("tgMan:" +
+			strconv.Itoa(u.update.Message.Chat.ID)).Val()
+		for k := range fields {
+			result += k + "\n"
+		}
+		u.BotReply(result)
+	}
+}
+
 func (u *Updater) Man(field string) {
 	if u.update.Message.Chat.ID < 0 {
 		u.BotReply(u.redis.HGet("tgMan:"+
 			strconv.Itoa(u.update.Message.Chat.ID), field).Val())
 	}
+}
+
+func (u *Updater) RmMan(fields ...string) {
+	for k := range fields {
+		u.redis.HDel("tgMan:"+strconv.Itoa(u.update.Message.Chat.ID), fields[k])
+	}
+	u.ListMan()
 }
