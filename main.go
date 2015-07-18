@@ -114,7 +114,7 @@ func main() {
 			go u.BotReply(t.Content + "\n" + t.Comment)
 
 		default:
-			s := strings.Split(update.Message.Text, " ")
+			s := strings.Fields(update.Message.Text)
 			if len(s) >= 2 && s[0] == "/broadcast" {
 				msg := strings.Join(s[1:], " ")
 				go u.Broadcast(msg)
