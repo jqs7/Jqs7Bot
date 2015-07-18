@@ -53,7 +53,7 @@ func (u *Updater) SendQuestion() {
 func (u *Updater) Auth(answer string) {
 	qs := GetQuestions(u.conf, "questions")
 	index := time.Now().Hour() % len(qs)
-	if u.isAuthed() {
+	if u.IsAuthed() {
 		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
 			"已经验证过了，你还想验证，你是不是傻？⊂彡☆))д`)`")
 		msg.ReplyToMessageID = u.update.Message.MessageID
@@ -78,7 +78,7 @@ func (u *Updater) Auth(answer string) {
 	}
 }
 
-func (u *Updater) isAuthed() bool {
+func (u *Updater) IsAuthed() bool {
 	if u.redis.SIsMember("tgAuthUser",
 		strconv.Itoa(u.update.Message.From.ID)).Val() {
 		return true
@@ -88,7 +88,7 @@ func (u *Updater) isAuthed() bool {
 
 func (u *Updater) SetRule(rule string) {
 	if u.update.Message.Chat.ID < 0 {
-		if u.isAuthed() {
+		if u.IsAuthed() {
 			chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
 			log.Printf("setting rule %s to %s", rule, chatIDStr)
 			u.redis.Set("tgGroupRule:"+chatIDStr, rule, -1)
@@ -107,13 +107,13 @@ func (u *Updater) AutoRule() {
 		if u.redis.Exists("tgGroupAutoRule:" + chatIDStr).Val() {
 			u.redis.Del("tgGroupAutoRule:" + chatIDStr)
 			msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-				"AutoRule Disable!")
+				"AutoRule Disabled!")
 			u.bot.SendMessage(msg)
 		} else {
 			u.redis.Set("tgGroupAutoRule:"+chatIDStr,
 				strconv.FormatBool(true), -1)
 			msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-				"AutoRule Enable!")
+				"AutoRule Enabled!")
 			u.bot.SendMessage(msg)
 		}
 	}
@@ -133,7 +133,7 @@ func (u *Updater) Rule() {
 }
 
 func (u *Updater) BotReply(msgText string) {
-	if !u.isAuthed() {
+	if !u.IsAuthed() {
 		u.SendQuestion()
 		return
 	}
@@ -154,7 +154,7 @@ func (u *Updater) Subscribe() {
 		return
 	}
 
-	if u.isAuthed() {
+	if !u.IsAuthed() {
 		u.SendQuestion()
 		return
 	}
@@ -214,5 +214,25 @@ func (u *Updater) Broadcast(msgText string) {
 				}(k)
 			}
 		}
+	}
+}
+
+func (u *Updater) SetMan(field, value string) {
+	if !u.IsAuthed() {
+		u.SendQuestion()
+		return
+	}
+
+	if u.update.Message.Chat.ID < 0 {
+		u.redis.HSet("tgMan:"+strconv.Itoa(u.update.Message.Chat.ID),
+			field, value)
+		u.BotReply(field + ":\n" + value)
+	}
+}
+
+func (u *Updater) Man(field string) {
+	if u.update.Message.Chat.ID < 0 {
+		u.BotReply(u.redis.HGet("tgMan:"+
+			strconv.Itoa(u.update.Message.Chat.ID), field).Val())
 	}
 }

@@ -134,6 +134,11 @@ func main() {
 			} else if len(s) >= 2 && s[0] == "/trans" {
 				in := strings.Join(s[1:], " ")
 				go u.BotReply(BaiduTranslate(baiduAPI, in))
+			} else if len(s) >= 3 && s[0] == "/setman" {
+				value := strings.Join(s[2:], " ")
+				go u.SetMan(s[1], value)
+			} else if len(s) >= 2 && s[0] == "/man" {
+				go u.Man(s[1])
 			} else if update.Message.Chat.ID > 0 &&
 				categoriesSet.Has(update.Message.Text) {
 				// custom keyboard reply
