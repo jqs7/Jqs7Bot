@@ -139,7 +139,7 @@ func main() {
 				go u.SetMan(s[1], value)
 			} else if len(s) >= 2 && s[0] == "/rmman" {
 				go u.RmMan(s[1:]...)
-			} else if s[0] == "/man" {
+			} else if len(s) >= 1 && s[0] == "/man" {
 				if len(s) < 2 {
 					go u.ListMan()
 				} else {
