@@ -255,7 +255,7 @@ func (u *Updater) Man(field string) {
 	if u.update.Message.Chat.ID < 0 {
 		if field == "man" && !u.redis.HExists("tgMan:"+
 			strconv.Itoa(u.update.Message.Chat.ID), "man").Val() {
-			u.BotReply("你在慢慢个鬼啦！(σﾟ∀ﾟ)σ")
+			u.BotReply("你在慢慢个什么鬼啦！(σﾟ∀ﾟ)σ")
 			return
 		}
 		u.BotReply(u.redis.HGet("tgMan:"+

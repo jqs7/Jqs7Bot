@@ -96,8 +96,7 @@ func VimTipsChan(bufferSize int) (out chan Tips) {
 				Timeout: 7777 * time.Millisecond,
 			}.Do()
 			if err != nil {
-				log.Println("Fail to get vim-tips , retry in 3 seconds")
-				time.Sleep(time.Second * 3)
+				log.Println("Fail to get vim-tips , retry ...")
 				continue
 			}
 			res.Body.FromJsonTo(&tips)
