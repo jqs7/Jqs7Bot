@@ -38,6 +38,7 @@ func main() {
 
 	botapi, _ := conf.Get("botapi")
 	baiduAPI, _ := conf.Get("baiduTransKey")
+	vimTipsCache, _ := conf.GetInt("vimTipsCache")
 	bot, err := tgbotapi.NewBotAPI(botapi)
 	if err != nil {
 		log.Panic(err)
@@ -49,7 +50,7 @@ func main() {
 	u.Timeout = 60
 	updates, err := bot.UpdatesChan(u)
 
-	tips := VimTipsChan(100)
+	tips := VimTipsChan(int(vimTipsCache))
 
 	for update := range updates {
 

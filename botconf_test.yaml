@@ -1,8 +1,6 @@
 botapi:
 baiduTransKey:
-enableGroupLimit: true
-limitInterval: 15m
-limitTimes: 2
+vimTipsCache: 3
 master: Jqs_7
 
 questions:
