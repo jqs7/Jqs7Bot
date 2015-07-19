@@ -115,7 +115,15 @@ func main() {
 			go u.BotReply(t.Content + "\n" + t.Comment)
 
 		default:
-			s := strings.Fields(update.Message.Text)
+			s := strings.FieldsFunc(update.Message.Text,
+				func(r rune) bool {
+					switch r {
+					case '\t', '\v', '\f', '\r', ' ', 0xA0:
+						return true
+					}
+					return false
+				})
+
 			if len(s) >= 2 && s[0] == "/broadcast" {
 				msg := strings.Join(s[1:], " ")
 				go u.Broadcast(msg)
