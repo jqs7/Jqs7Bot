@@ -131,9 +131,14 @@ func main() {
 			} else if len(s) >= 2 && s[0] == "/d64" {
 				in := strings.Join(s[1:], " ")
 				go u.BotReply(D64(in))
-			} else if len(s) >= 2 && s[0] == "/trans" {
-				in := strings.Join(s[1:], " ")
-				go u.BotReply(BaiduTranslate(baiduAPI, in))
+			} else if len(s) >= 1 && s[0] == "/trans" {
+				if update.Message.ReplyToMessage != nil {
+					go u.BotReply(BaiduTranslate(baiduAPI,
+						update.Message.ReplyToMessage.Text))
+				} else {
+					in := strings.Join(s[1:], " ")
+					go u.BotReply(BaiduTranslate(baiduAPI, in))
+				}
 			} else if len(s) >= 3 && s[0] == "/setman" {
 				value := strings.Join(s[2:], " ")
 				go u.SetMan(s[1], value)
