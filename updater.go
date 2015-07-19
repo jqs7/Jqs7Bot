@@ -128,14 +128,14 @@ func (u *Updater) AutoRule() {
 	}
 }
 
-func (u *Updater) Rule() {
+func (u *Updater) Rule(chatID int) {
 	chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
 	if u.redis.Exists("tgGroupRule:" + chatIDStr).Val() {
-		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+		msg := tgbotapi.NewMessage(chatID,
 			u.redis.Get("tgGroupRule:"+chatIDStr).Val())
 		u.bot.SendMessage(msg)
 	} else {
-		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+		msg := tgbotapi.NewMessage(chatID,
 			YamlList2String(u.conf, "rules"))
 		u.bot.SendMessage(msg)
 	}

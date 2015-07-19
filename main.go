@@ -80,7 +80,12 @@ func main() {
 		if update.Message.NewChatParticipant.ID != 0 {
 			chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
 			if u.redis.Exists("tgGroupAutoRule:" + chatIDStr).Val() {
-				go u.Rule()
+				go func() {
+					msg := tgbotapi.NewMessage(update.Message.NewChatParticipant.ID,
+						"欢迎加入 "+update.Message.Chat.Title+"\n 以下是群组规则：")
+					bot.SendMessage(msg)
+					u.Rule(update.Message.NewChatParticipant.ID)
+				}()
 			}
 		}
 
@@ -90,7 +95,7 @@ func main() {
 			go u.Start()
 
 		case "/rules", "/rules@" + botname:
-			go u.Rule()
+			go u.Rule(update.Message.Chat.ID)
 
 		case "/about", "/about@" + botname:
 			go u.BotReply(YamlList2String(conf, "about"))
