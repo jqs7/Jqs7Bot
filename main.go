@@ -135,7 +135,8 @@ func main() {
 					go u.BotReply(D64(in))
 				}
 			case "/trans":
-				if update.Message.ReplyToMessage != nil {
+				if update.Message.ReplyToMessage != nil &&
+					update.Message.ReplyToMessage.Text != "" {
 					go u.BotReply(BaiduTranslate(baiduAPI,
 						update.Message.ReplyToMessage.Text))
 				} else if len(s) >= 2 {
@@ -180,6 +181,5 @@ func main() {
 				}
 			}
 		}
-
 	}
 }
