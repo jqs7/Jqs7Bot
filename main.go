@@ -98,85 +98,88 @@ func main() {
 				return false
 			})
 
-		switch s[0] {
-		case "/help", "/start", "/help@" + botname, "/start@" + botname:
-			go u.Start()
-		case "/rules", "/rules@" + botname:
-			go u.Rule(update.Message.Chat.ID)
-		case "/about", "/about@" + botname:
-			go u.BotReply(YamlList2String(conf, "about"))
-		case "/other_resources", "/other_resources@" + botname:
-			go u.BotReply(YamlList2String(conf, "其他资源"))
-		case "/subscribe", "/subscribe@" + botname:
-			go u.Subscribe()
-		case "/unsubscribe", "/unsubscribe@" + botname:
-			go u.UnSubscribe()
-		case "/autorule":
-			go u.AutoRule()
-		case "/groups", "/groups@" + botname:
-			go u.Groups(categories, 3, 5)
-		case "/vimtips":
-			t := <-tips
-			go u.BotReply(t.Content + "\n" + t.Comment)
-		case "/setrule":
-			if len(s) >= 2 {
-				rule := strings.Join(s[1:], " ")
-				go u.SetRule(rule)
-			}
-		case "/e64":
-			if len(s) >= 2 {
-				in := strings.Join(s[1:], " ")
-				go u.BotReply(E64(in))
-			}
-		case "d64":
-			if len(s) >= 2 {
-				in := strings.Join(s[1:], " ")
-				go u.BotReply(D64(in))
-			}
-		case "/trans":
-			if update.Message.ReplyToMessage != nil {
-				go u.BotReply(BaiduTranslate(baiduAPI,
-					update.Message.ReplyToMessage.Text))
-			} else if len(s) >= 2 {
-				in := strings.Join(s[1:], " ")
-				go u.BotReply(BaiduTranslate(baiduAPI, in))
-			}
-		case "/setman":
-			if len(s) >= 3 {
-				value := strings.Join(s[2:], " ")
-				go u.SetMan(s[1], value)
-			}
-		case "/rmman":
-			if len(s) >= 2 {
-				go u.RmMan(s[1:]...)
-			}
-		case "/man":
-			if len(s) == 1 {
-				go u.ListMan()
-			} else {
-				go u.Man(s[1])
-			}
-		case "/broadcast":
-			if len(s) == 1 {
-				go u.PreBroadcast()
-			} else if len(s) >= 2 {
-				msg := strings.Join(s[1:], " ")
-				go u.Broadcast(msg)
-			}
-		default:
-			if update.Message.Chat.ID > 0 {
-				switch u.GetStatus() {
-				case "auth":
-					go u.Auth(update.Message.Text)
-				case "broadcast":
-					go u.Broadcast(update.Message.Text)
-				default:
-					if categoriesSet.Has(update.Message.Text) {
-						// custom keyboard reply
-						go u.BotReply(YamlList2String(conf, update.Message.Text))
+		if len(s) > 0 {
+			switch s[0] {
+			case "/help", "/start", "/help@" + botname, "/start@" + botname:
+				go u.Start()
+			case "/rules", "/rules@" + botname:
+				go u.Rule(update.Message.Chat.ID)
+			case "/about", "/about@" + botname:
+				go u.BotReply(YamlList2String(conf, "about"))
+			case "/other_resources", "/other_resources@" + botname:
+				go u.BotReply(YamlList2String(conf, "其他资源"))
+			case "/subscribe", "/subscribe@" + botname:
+				go u.Subscribe()
+			case "/unsubscribe", "/unsubscribe@" + botname:
+				go u.UnSubscribe()
+			case "/autorule":
+				go u.AutoRule()
+			case "/groups", "/groups@" + botname:
+				go u.Groups(categories, 3, 5)
+			case "/vimtips":
+				t := <-tips
+				go u.BotReply(t.Content + "\n" + t.Comment)
+			case "/setrule":
+				if len(s) >= 2 {
+					rule := strings.Join(s[1:], " ")
+					go u.SetRule(rule)
+				}
+			case "/e64":
+				if len(s) >= 2 {
+					in := strings.Join(s[1:], " ")
+					go u.BotReply(E64(in))
+				}
+			case "d64":
+				if len(s) >= 2 {
+					in := strings.Join(s[1:], " ")
+					go u.BotReply(D64(in))
+				}
+			case "/trans":
+				if update.Message.ReplyToMessage != nil {
+					go u.BotReply(BaiduTranslate(baiduAPI,
+						update.Message.ReplyToMessage.Text))
+				} else if len(s) >= 2 {
+					in := strings.Join(s[1:], " ")
+					go u.BotReply(BaiduTranslate(baiduAPI, in))
+				}
+			case "/setman":
+				if len(s) >= 3 {
+					value := strings.Join(s[2:], " ")
+					go u.SetMan(s[1], value)
+				}
+			case "/rmman":
+				if len(s) >= 2 {
+					go u.RmMan(s[1:]...)
+				}
+			case "/man":
+				if len(s) == 1 {
+					go u.ListMan()
+				} else {
+					go u.Man(s[1])
+				}
+			case "/broadcast":
+				if len(s) == 1 {
+					go u.PreBroadcast()
+				} else if len(s) >= 2 {
+					msg := strings.Join(s[1:], " ")
+					go u.Broadcast(msg)
+				}
+			default:
+				if update.Message.Chat.ID > 0 {
+					switch u.GetStatus() {
+					case "auth":
+						go u.Auth(update.Message.Text)
+					case "broadcast":
+						go u.Broadcast(update.Message.Text)
+					default:
+						if categoriesSet.Has(update.Message.Text) {
+							// custom keyboard reply
+							go u.BotReply(YamlList2String(conf, update.Message.Text))
+						}
 					}
 				}
 			}
 		}
+
 	}
 }
