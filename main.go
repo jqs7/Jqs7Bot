@@ -89,7 +89,16 @@ func main() {
 			}
 		}
 
-		switch update.Message.Text {
+		s := strings.FieldsFunc(update.Message.Text,
+			func(r rune) bool {
+				switch r {
+				case '\t', '\v', '\f', '\r', ' ', 0xA0:
+					return true
+				}
+				return false
+			})
+
+		switch s[0] {
 
 		case "/help", "/start", "/help@" + botname, "/start@" + botname:
 			go u.Start()
@@ -119,55 +128,68 @@ func main() {
 			t := <-tips
 			go u.BotReply(t.Content + "\n" + t.Comment)
 
-		default:
-			s := strings.FieldsFunc(update.Message.Text,
-				func(r rune) bool {
-					switch r {
-					case '\t', '\v', '\f', '\r', ' ', 0xA0:
-						return true
-					}
-					return false
-				})
-
-			if len(s) >= 2 && s[0] == "/broadcast" {
-				msg := strings.Join(s[1:], " ")
-				go u.Broadcast(msg)
-			} else if len(s) >= 2 && s[0] == "/setrule" {
+		case "/setrule":
+			if len(s) >= 2 {
 				rule := strings.Join(s[1:], " ")
 				go u.SetRule(rule)
-			} else if len(s) >= 2 && s[0] == "/auth" {
-				answer := strings.Join(s[1:], " ")
-				answer = strings.Trim(answer, "[]")
-				go u.Auth(answer)
-			} else if len(s) >= 2 && s[0] == "/e64" {
+			}
+
+		case "/e64":
+			if len(s) >= 2 {
 				in := strings.Join(s[1:], " ")
 				go u.BotReply(E64(in))
-			} else if len(s) >= 2 && s[0] == "/d64" {
+			}
+
+		case "d64":
+			if len(s) >= 2 {
 				in := strings.Join(s[1:], " ")
 				go u.BotReply(D64(in))
-			} else if len(s) >= 1 && s[0] == "/trans" {
-				if update.Message.ReplyToMessage != nil {
-					go u.BotReply(BaiduTranslate(baiduAPI,
-						update.Message.ReplyToMessage.Text))
-				} else {
-					in := strings.Join(s[1:], " ")
-					go u.BotReply(BaiduTranslate(baiduAPI, in))
-				}
-			} else if len(s) >= 3 && s[0] == "/setman" {
+			}
+
+		case "/trans":
+			if update.Message.ReplyToMessage != nil {
+				go u.BotReply(BaiduTranslate(baiduAPI,
+					update.Message.ReplyToMessage.Text))
+			} else if len(s) >= 2 {
+				in := strings.Join(s[1:], " ")
+				go u.BotReply(BaiduTranslate(baiduAPI, in))
+			}
+
+		case "/setman":
+			if len(s) >= 3 {
 				value := strings.Join(s[2:], " ")
 				go u.SetMan(s[1], value)
-			} else if len(s) >= 2 && s[0] == "/rmman" {
+			}
+
+		case "/rmman":
+			if len(s) >= 2 {
 				go u.RmMan(s[1:]...)
-			} else if len(s) >= 1 && s[0] == "/man" {
-				if len(s) < 2 {
-					go u.ListMan()
-				} else {
-					go u.Man(s[1])
+			}
+
+		case "/man":
+			if len(s) == 1 {
+				go u.ListMan()
+			} else {
+				go u.Man(s[1])
+			}
+
+		case "/broadcast":
+			if len(s) >= 2 {
+				msg := strings.Join(s[1:], " ")
+				go u.Broadcast(msg)
+			}
+
+		default:
+			if update.Message.Chat.ID > 0 {
+				switch u.GetStatus() {
+				case "auth":
+					go u.Auth(update.Message.Text)
+				default:
+					if categoriesSet.Has(update.Message.Text) {
+						// custom keyboard reply
+						go u.BotReply(YamlList2String(conf, update.Message.Text))
+					}
 				}
-			} else if update.Message.Chat.ID > 0 &&
-				categoriesSet.Has(update.Message.Text) {
-				// custom keyboard reply
-				go u.BotReply(YamlList2String(conf, update.Message.Text))
 			}
 		}
 	}
