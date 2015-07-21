@@ -116,6 +116,8 @@ func main() {
 				go u.AutoRule()
 			case "/groups", "/groups@" + botname:
 				go u.Groups(categories, 3, 5)
+			case "/cancel":
+				go u.Cancel()
 			case "/vimtips":
 				t := <-tips
 				go u.BotReply(t.Content + "\n" + t.Comment)

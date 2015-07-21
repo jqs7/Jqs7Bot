@@ -68,3 +68,13 @@ func (u *Updater) GetStatus() string {
 	}
 	return ""
 }
+
+func (u *Updater) Cancel() {
+	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
+		"群组娘已完成零态重置")
+	u.SetStatus("")
+	msg.ReplyMarkup = tgbotapi.ReplyKeyboardHide{
+		HideKeyboard: true,
+	}
+	u.bot.SendMessage(msg)
+}
