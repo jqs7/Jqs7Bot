@@ -133,7 +133,10 @@ func main() {
 					go u.SetRule(rule)
 				}
 			case "/e64":
-				if len(s) >= 2 {
+				if update.Message.ReplyToMessage != nil &&
+					update.Message.ReplyToMessage.Text != "" {
+					go u.BotReply(E64(update.Message.ReplyToMessage.Text))
+				} else if len(s) >= 2 {
 					in := strings.Join(s[1:], " ")
 					go u.BotReply(E64(in))
 				}
