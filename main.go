@@ -38,7 +38,7 @@ func main() {
 
 	botapi, _ := conf.Get("botapi")
 	baiduAPI, _ := conf.Get("baiduTransKey")
-	vimTipsCache, _ := conf.GetInt("vimTipsCache")
+	vhCache, _ := conf.GetInt("vhCache")
 	bot, err := tgbotapi.NewBotAPI(botapi)
 	if err != nil {
 		log.Panic(err)
@@ -50,7 +50,7 @@ func main() {
 	u.Timeout = 60
 	updates, err := bot.UpdatesChan(u)
 
-	tips := VimTipsChan(int(vimTipsCache))
+	vh := VH(int(vhCache))
 
 	for update := range updates {
 
@@ -89,6 +89,7 @@ func main() {
 			}
 		}
 
+		// Field the message text
 		s := strings.FieldsFunc(update.Message.Text,
 			func(r rune) bool {
 				switch r {
@@ -118,9 +119,8 @@ func main() {
 				go u.Groups(categories, 3, 5)
 			case "/cancel":
 				go u.Cancel()
-			case "/vimtips":
-				t := <-tips
-				go u.BotReply(t.Content + "\n" + t.Comment)
+			case "/vh":
+				go u.BotReply(<-vh)
 			case "/setrule":
 				if len(s) >= 2 {
 					rule := strings.Join(s[1:], " ")
@@ -174,6 +174,7 @@ func main() {
 						go u.Auth(update.Message.Text)
 					case "broadcast":
 						go u.Broadcast(update.Message.Text)
+						u.SetStatus("")
 					default:
 						if categoriesSet.Has(update.Message.Text) {
 							// custom keyboard reply

@@ -94,7 +94,7 @@ func VimTipsChan(bufferSize int) (out chan Tips) {
 			var tips Tips
 			res, err := goreq.Request{
 				Uri:     "http://vim-tips.com/random_tips/json",
-				Timeout: 7777 * time.Millisecond,
+				Timeout: 777 * time.Millisecond,
 			}.Do()
 			if err != nil {
 				log.Println("Fail to get vim-tips , retry ...")
@@ -102,6 +102,52 @@ func VimTipsChan(bufferSize int) (out chan Tips) {
 			}
 			res.Body.FromJsonTo(&tips)
 			out <- tips
+		}
+	}()
+	return out
+}
+
+type Hitokoto struct {
+	Hitokoto string
+	Source   string
+}
+
+func HitokotoChan(bufferSize int) (out chan Hitokoto) {
+	out = make(chan Hitokoto, bufferSize)
+	go func() {
+		for {
+			var h Hitokoto
+			res, err := goreq.Request{
+				Uri:     "http://api.hitokoto.us/rand",
+				Timeout: 777 * time.Millisecond,
+			}.Do()
+			if err != nil {
+				log.Println("Fail to get Hitokoto , retry ...")
+				continue
+			}
+			res.Body.FromJsonTo(&h)
+			out <- h
+		}
+	}()
+	return out
+}
+
+func VH(bufferSize int) chan string {
+	tip := VimTipsChan(bufferSize / 2)
+	hitokoto := HitokotoChan(bufferSize / 2)
+	out := make(chan string, bufferSize)
+	go func() {
+		for {
+			select {
+			case t := <-tip:
+				out <- t.Content + "\n" + t.Comment
+			case h := <-hitokoto:
+				if h.Source == "" {
+					out <- fmt.Sprintf("%s", h.Hitokoto)
+				} else {
+					out <- fmt.Sprintf("[%s] %s", h.Source, h.Hitokoto)
+				}
+			}
 		}
 	}()
 	return out

@@ -87,6 +87,5 @@ func (u *Updater) Broadcast(msgText string) {
 				}(k)
 			}
 		}
-		u.SetStatus("")
 	}
 }

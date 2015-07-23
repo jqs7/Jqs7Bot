@@ -39,6 +39,17 @@ func Test(t *testing.T) {
 		convey.So(t.Content, convey.ShouldNotBeBlank)
 	})
 
+	convey.Convey("Hitokoto Test", t, func() {
+		h := <-HitokotoChan(1)
+		convey.So(h.Hitokoto, convey.ShouldNotBeBlank)
+		convey.So(h.Source, convey.ShouldNotBeBlank)
+	})
+
+	convey.Convey("VH Test", t, func() {
+		v := <-VH(1)
+		convey.So(v, convey.ShouldNotBeBlank)
+	})
+
 	convey.Convey("Base64 Test", t, func() {
 		convey.So(E64("Hello"), convey.ShouldEqual, "SGVsbG8=")
 		convey.So(D64("sdjaikdbsa"), convey.ShouldEqual,
