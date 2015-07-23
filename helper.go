@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/antonholmquist/jason"
 	"github.com/fatih/set"
@@ -156,5 +157,8 @@ func D64(in string) string {
 	if err != nil {
 		return "解码系统出现故障，请查看弹药是否填充无误"
 	}
-	return string(out)
+	if utf8.Valid(out) {
+		return string(out)
+	}
+	return "解码结果包含不明物体，群组娘已将之上交国家"
 }
