@@ -131,7 +131,7 @@ func main() {
 					in := strings.Join(s[1:], " ")
 					go u.BotReply(E64(in))
 				}
-			case "d64":
+			case "/d64":
 				if len(s) >= 2 {
 					in := strings.Join(s[1:], " ")
 					go u.BotReply(D64(in))
