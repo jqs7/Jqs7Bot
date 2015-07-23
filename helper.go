@@ -133,8 +133,8 @@ func HitokotoChan(bufferSize int) (out chan Hitokoto) {
 }
 
 func VH(bufferSize int) chan string {
-	tip := VimTipsChan(bufferSize / 2)
-	hitokoto := HitokotoChan(bufferSize / 2)
+	tip := VimTipsChan(2)
+	hitokoto := HitokotoChan(2)
 	out := make(chan string, bufferSize)
 	go func() {
 		for {
