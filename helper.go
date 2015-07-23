@@ -132,27 +132,6 @@ func HitokotoChan(bufferSize int) (out chan Hitokoto) {
 	return out
 }
 
-func VH(bufferSize int) chan string {
-	tip := VimTipsChan(2)
-	hitokoto := HitokotoChan(2)
-	out := make(chan string, bufferSize)
-	go func() {
-		for {
-			select {
-			case t := <-tip:
-				out <- t.Content + "\n" + t.Comment
-			case h := <-hitokoto:
-				if h.Source == "" {
-					out <- fmt.Sprintf("%s", h.Hitokoto)
-				} else {
-					out <- fmt.Sprintf("[%s] %s", h.Source, h.Hitokoto)
-				}
-			}
-		}
-	}()
-	return out
-}
-
 func BaiduTranslate(apiKey, in string) (out string) {
 	in = url.QueryEscape(in)
 

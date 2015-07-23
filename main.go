@@ -38,7 +38,8 @@ func main() {
 
 	botapi, _ := conf.Get("botapi")
 	baiduAPI, _ := conf.Get("baiduTransKey")
-	vhCache, _ := conf.GetInt("vhCache")
+	vimTipsCache, _ := conf.GetInt("vimTipsCache")
+	hitokotoCache, _ := conf.GetInt("hitokotoCache")
 	bot, err := tgbotapi.NewBotAPI(botapi)
 	if err != nil {
 		log.Panic(err)
@@ -50,7 +51,8 @@ func main() {
 	u.Timeout = 60
 	updates, err := bot.UpdatesChan(u)
 
-	vh := VH(int(vhCache))
+	vimtips := VimTipsChan(int(vimTipsCache))
+	hitokoto := HitokotoChan(int(hitokotoCache))
 
 	for update := range updates {
 
@@ -119,8 +121,12 @@ func main() {
 				go u.Groups(categories, 3, 5)
 			case "/cancel":
 				go u.Cancel()
-			case "/vh":
-				go u.BotReply(<-vh)
+			case "/vimtips":
+				v := <-vimtips
+				go u.BotReply(v.Content + "\n" + v.Comment)
+			case "/hitokoto":
+				h := <-hitokoto
+				go u.BotReply(h.Source + "\n" + h.Hitokoto)
 			case "/setrule":
 				if len(s) >= 2 {
 					rule := strings.Join(s[1:], " ")
