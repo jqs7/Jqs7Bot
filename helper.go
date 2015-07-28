@@ -87,7 +87,7 @@ type Tips struct {
 	Comment string
 }
 
-func VimTipsChan(bufferSize int) (out chan Tips) {
+func (t Tips) GetChan(bufferSize int) (out chan Tips) {
 	out = make(chan Tips, bufferSize)
 	go func() {
 		for {
@@ -107,12 +107,16 @@ func VimTipsChan(bufferSize int) (out chan Tips) {
 	return out
 }
 
+func (t Tips) ToString() string {
+	return t.Content + "\n" + t.Comment
+}
+
 type Hitokoto struct {
 	Hitokoto string
 	Source   string
 }
 
-func HitokotoChan(bufferSize int) (out chan Hitokoto) {
+func (h Hitokoto) GetChan(bufferSize int) (out chan Hitokoto) {
 	out = make(chan Hitokoto, bufferSize)
 	go func() {
 		for {
@@ -130,6 +134,10 @@ func HitokotoChan(bufferSize int) (out chan Hitokoto) {
 		}
 	}()
 	return out
+}
+
+func (h Hitokoto) ToString() string {
+	return h.Source + "\n" + h.Hitokoto
 }
 
 func BaiduTranslate(apiKey, in string) (out string) {

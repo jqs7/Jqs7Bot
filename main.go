@@ -51,8 +51,8 @@ func main() {
 	u.Timeout = 60
 	updates, err := bot.UpdatesChan(u)
 
-	vimtips := VimTipsChan(int(vimTipsCache))
-	hitokoto := HitokotoChan(int(hitokotoCache))
+	vimtips := new(Tips).GetChan(int(vimTipsCache))
+	hitokoto := new(Hitokoto).GetChan(int(hitokotoCache))
 
 	for update := range updates {
 
@@ -121,12 +121,15 @@ func main() {
 				go u.Groups(categories, 3, 5)
 			case "/cancel":
 				go u.Cancel()
-			case "/vimtips":
-				v := <-vimtips
-				go u.BotReply(v.Content + "\n" + v.Comment)
-			case "/hitokoto":
-				h := <-hitokoto
-				go u.BotReply(h.Source + "\n" + h.Hitokoto)
+			case "/rand":
+				select {
+				case v := <-vimtips:
+					go u.BotReply(v.ToString())
+				case h := <-hitokoto:
+					go u.BotReply(h.ToString())
+				default:
+					go u.BotReply("诶诶?群组娘迷路了呢_(:з」∠)_")
+				}
 			case "/setrule":
 				if len(s) >= 2 {
 					rule := strings.Join(s[1:], " ")
