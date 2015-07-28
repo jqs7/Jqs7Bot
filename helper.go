@@ -137,7 +137,10 @@ func (h Hitokoto) GetChan(bufferSize int) (out chan Hitokoto) {
 }
 
 func (h Hitokoto) ToString() string {
-	return "「" + h.Source + "」" + "\n" + h.Hitokoto
+	if h.Source == "" {
+		return h.Hitokoto
+	}
+	return "「" + strings.Trim(h.Source, "《》") + "」" + "\n" + h.Hitokoto
 }
 
 func BaiduTranslate(apiKey, in string) (out string) {
