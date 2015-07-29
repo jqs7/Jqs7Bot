@@ -148,6 +148,11 @@ func main() {
 					in := strings.Join(s[1:], " ")
 					go u.BotReply(D64(in))
 				}
+			case "/gg":
+				if len(s) >= 2 {
+					q := strings.Join(s[1:], " ")
+					go u.BotReplyNoPreview(Google(q))
+				}
 			case "/trans":
 				if update.Message.ReplyToMessage != nil &&
 					update.Message.ReplyToMessage.Text != "" {

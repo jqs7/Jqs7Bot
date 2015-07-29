@@ -18,6 +18,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - `/rmman [条目]` - 删除自定义条目，支持多参数
 - `/rand` - 随机获取一条 [vim-tips](http://vim-tips.com/about) 或者  [一言](http://hitokoto.us/index.html)
 - `/trans [待翻译内容]` - 中英互译(使用百度翻译API)
+- `/gg [内容]` - Google搜索
 - `/e64 [内容]` - base64加密
 - `/d64 [内容]` - base64解密
 

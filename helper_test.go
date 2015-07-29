@@ -34,15 +34,21 @@ func Test(t *testing.T) {
 	})
 
 	convey.Convey("Vim-Tips Test", t, func() {
-		t := <-VimTipsChan(1)
+		t := <-new(Tips).GetChan(1)
 		convey.So(t.Comment, convey.ShouldNotBeBlank)
 		convey.So(t.Content, convey.ShouldNotBeBlank)
 	})
 
 	convey.Convey("Hitokoto Test", t, func() {
-		h := <-HitokotoChan(1)
+		h := <-new(Hitokoto).GetChan(1)
 		convey.So(h.Hitokoto, convey.ShouldNotBeBlank)
 		convey.So(h.Source, convey.ShouldNotBeBlank)
+	})
+
+	convey.Convey("Google Test", t, func() {
+		convey.So(Google("hey"), convey.ShouldEqual,
+			"HEY!\nhttp://hey.com/\nhey - Wiktionary\nhttps://en.wiktionary.org/wiki/hey\n"+
+				"Hey | Define Hey at Dictionary.com\nhttp://dictionary.reference.com/browse/hey\n")
 	})
 
 	convey.Convey("Base64 Test", t, func() {

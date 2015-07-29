@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/base64"
 	"fmt"
 	"log"
@@ -182,6 +183,38 @@ func BaiduTranslate(apiKey, in string) (out string) {
 	}
 	out = strings.Join(outs, "\n")
 	return out
+}
+
+func Google(query string) string {
+	query = url.QueryEscape(query)
+	res, err := goreq.Request{
+		Uri:     "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=3&q=" + query,
+		Timeout: 7777 * time.Millisecond,
+	}.Do()
+	if err != nil {
+		return "群组娘连接母舰失败，请稍后重试"
+	}
+
+	var google struct {
+		ResponseData struct {
+			Results []struct {
+				URL               string
+				TitleNoFormatting string
+			}
+		}
+	}
+
+	err = res.Body.FromJsonTo(&google)
+	if err != nil {
+		return "转换失败，母舰大概是快没油了Orz"
+	}
+
+	var buf bytes.Buffer
+	for _, item := range google.ResponseData.Results {
+		u, _ := url.QueryUnescape(item.URL)
+		buf.WriteString(item.TitleNoFormatting + "\n" + u + "\n")
+	}
+	return buf.String()
 }
 
 func E64(in string) string {

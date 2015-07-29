@@ -49,6 +49,17 @@ func (u *Updater) BotReply(msgText string) {
 	return
 }
 
+func (u *Updater) BotReplyNoPreview(msgText string) {
+	if !u.IsAuthed() {
+		u.SendQuestion()
+		return
+	}
+	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, msgText)
+	msg.DisableWebPagePreview = true
+	u.bot.SendMessage(msg)
+	return
+}
+
 func (u *Updater) SetStatus(status string) {
 	if status == "" {
 		u.redis.Del("tgStatus:" +
