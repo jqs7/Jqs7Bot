@@ -184,6 +184,13 @@ func main() {
 					msg := strings.Join(s[1:], " ")
 					go u.Broadcast(msg)
 				}
+
+			case "/reload":
+				master, _ := u.conf.Get("master")
+				if u.update.Message.Chat.UserName == master {
+					conf, _ = yaml.ReadFile("botconf.yaml")
+					go u.BotReply("群组娘已完成弹药重装(ゝ∀･)")
+				}
 			default:
 				if update.Message.Chat.ID > 0 {
 					switch u.GetStatus() {
