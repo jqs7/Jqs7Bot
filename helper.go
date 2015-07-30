@@ -146,7 +146,8 @@ func (h Hitokoto) ToString() string {
 
 func BaiduTranslate(apiKey, in string) (out string) {
 	in = url.QueryEscape(in)
-
+	retry := 0
+Req:
 	res, err := goreq.Request{
 		Uri: fmt.Sprintf("http://openapi.baidu.com/public/2.0/bmt/translate?"+
 			"client_id=%s&q=%s&from=auto&to=auto",
@@ -154,8 +155,13 @@ func BaiduTranslate(apiKey, in string) (out string) {
 		Timeout: 7777 * time.Millisecond,
 	}.Do()
 	if err != nil {
-		log.Println("Translation Timeout!")
-		return "群组娘连接母舰失败，请稍后重试"
+		if retry < 2 {
+			retry++
+			goto Req
+		} else {
+			log.Println("Translation Timeout!")
+			return "群组娘连接母舰失败，请稍后重试"
+		}
 	}
 
 	jasonObj, _ := jason.NewObjectFromReader(res.Body)
@@ -187,12 +193,20 @@ func BaiduTranslate(apiKey, in string) (out string) {
 
 func Google(query string) string {
 	query = url.QueryEscape(query)
+	retry := 0
+Req:
 	res, err := goreq.Request{
 		Uri:     "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=3&q=" + query,
 		Timeout: 7777 * time.Millisecond,
 	}.Do()
 	if err != nil {
-		return "群组娘连接母舰失败，请稍后重试"
+		if retry < 2 {
+			retry++
+			goto Req
+		} else {
+			log.Println("Google Timeout!")
+			return "群组娘连接母舰失败，请稍后重试"
+		}
 	}
 
 	var google struct {
