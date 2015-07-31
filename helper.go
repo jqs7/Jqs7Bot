@@ -169,13 +169,13 @@ Req:
 	if err != nil {
 		errCode, _ := jasonObj.GetString("error_code")
 		switch errCode {
-		case "52001":
+		case "52001": //超时
 			return "转换失败，母舰大概是快没油了Orz"
-		case "52002":
+		case "52002": //翻译系统错误
 			return "母舰崩坏中..."
-		case "52003":
+		case "52003": //未授权用户
 			return "大概男盆友用错API Key啦，大家快去蛤他！σ`∀´)`"
-		case "52004":
+		case "52004": //必填参数为空
 			return "弹药装填系统泄漏，一定不是奴家的锅(╯‵□′)╯"
 		default:
 			return "发生了理论上不可能出现的错误，你是不是穿越了喵？"
@@ -253,7 +253,10 @@ Req:
 	jasonObj, _ := jason.NewObjectFromReader(res.Body)
 	errCode, _ := jasonObj.GetInt64("code")
 	switch errCode {
-	case 305000:
+	case 100000: //文本类数据
+		out, _ := jasonObj.GetString("text")
+		return out
+	case 305000: //列车
 		list, _ := jasonObj.GetObjectArray("list")
 		var buf bytes.Buffer
 		for _, v := range list {
@@ -267,7 +270,7 @@ Req:
 				trainNum, start, terminal, startTime, endTime))
 		}
 		return buf.String()
-	case 306000:
+	case 306000: //航班
 		list, _ := jasonObj.GetObjectArray("list")
 		var buf bytes.Buffer
 		for _, v := range list {
@@ -279,10 +282,10 @@ Req:
 				flight, startTime, endTime))
 		}
 		return buf.String()
-	case 200000:
+	case 200000: //网址
 		url, _ := jasonObj.GetString("url")
 		return url
-	case 302000:
+	case 302000: //新闻
 		list, _ := jasonObj.GetObjectArray("list")
 		var buf bytes.Buffer
 		for _, v := range list {
@@ -292,7 +295,7 @@ Req:
 				article, url))
 		}
 		return buf.String()
-	case 308000:
+	case 308000: //菜谱、视频、小说
 		list, _ := jasonObj.GetObjectArray("list")
 		var buf bytes.Buffer
 		for _, v := range list {
@@ -302,23 +305,22 @@ Req:
 				name, url))
 		}
 		return buf.String()
-	case 40001:
+	case 40001: //key长度错误
 		return "大概男盆友用错API Key啦，大家快去蛤他！σ`∀´)`"
-	case 40002:
+	case 40002: //请求内容为空
 		return "弹药装填系统泄漏，一定不是奴家的锅(╯‵□′)╯"
-	case 40003:
+	case 40003: //key错误或帐号未激活
 		return "大概男盆友用错API Key啦，大家快去蛤他！σ`∀´)`"
-	case 40004:
+	case 40004: //请求次数已用完
 		return "今天弹药不足，明天再来吧(＃°Д°)"
-	case 40005:
+	case 40005: //暂不支持该功能
 		return "恭喜你触发了母舰的迷之G点"
-	case 40006:
+	case 40006: //服务器升级中
 		return "母舰升级中..."
-	case 40007:
+	case 40007: //服务器数据格式异常
 		return "转换失败，母舰大概是快没油了Orz"
 	default:
-		out, _ := jasonObj.GetString("text")
-		return out
+		return "发生了理论上不可能出现的错误，你是不是穿越了喵？"
 	}
 }
 
