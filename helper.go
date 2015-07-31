@@ -232,13 +232,13 @@ Req:
 	return buf.String()
 }
 
-func TuringBot(apiKey, in string) string {
+func TuringBot(apiKey, userid, in string) string {
 	in = url.QueryEscape(in)
 	retry := 0
 Req:
 	res, err := goreq.Request{
 		Uri: fmt.Sprintf("http://www.tuling123.com/openapi/api?"+
-			"key=%s&info=%s", apiKey, in),
+			"key=%s&info=%s&userid=%s", apiKey, in, userid),
 		Timeout: 3777 * time.Millisecond,
 	}.Do()
 	if err != nil {
