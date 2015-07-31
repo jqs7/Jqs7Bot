@@ -231,6 +231,97 @@ Req:
 	return buf.String()
 }
 
+func TuringBot(apiKey, in string) string {
+	in = url.QueryEscape(in)
+	retry := 0
+Req:
+	res, err := goreq.Request{
+		Uri: fmt.Sprintf("http://www.tuling123.com/openapi/api?"+
+			"key=%s&info=%s", apiKey, in),
+		Timeout: 7777 * time.Millisecond,
+	}.Do()
+	if err != nil {
+		if retry < 2 {
+			retry++
+			goto Req
+		} else {
+			log.Println("Google Timeout!")
+			return "群组娘连接母舰失败，请稍后重试"
+		}
+	}
+
+	jasonObj, _ := jason.NewObjectFromReader(res.Body)
+	errCode, _ := jasonObj.GetInt64("code")
+	switch errCode {
+	case 305000:
+		list, _ := jasonObj.GetObjectArray("list")
+		var buf bytes.Buffer
+		for _, v := range list {
+			trainNum, _ := v.GetString("trainnum")
+			start, _ := v.GetString("start")
+			terminal, _ := v.GetString("terminal")
+			startTime, _ := v.GetString("starttime")
+			endTime, _ := v.GetString("endtime")
+
+			buf.WriteString(fmt.Sprintf("%s|%s->%s|%s->%s\n",
+				trainNum, start, terminal, startTime, endTime))
+		}
+		return buf.String()
+	case 306000:
+		list, _ := jasonObj.GetObjectArray("list")
+		var buf bytes.Buffer
+		for _, v := range list {
+			flight, _ := v.GetString("flight")
+			startTime, _ := v.GetString("starttime")
+			endTime, _ := v.GetString("endtime")
+
+			buf.WriteString(fmt.Sprintf("%s|%s->%s\n",
+				flight, startTime, endTime))
+		}
+		return buf.String()
+	case 200000:
+		url, _ := jasonObj.GetString("url")
+		return url
+	case 302000:
+		list, _ := jasonObj.GetObjectArray("list")
+		var buf bytes.Buffer
+		for _, v := range list {
+			article, _ := v.GetString("article")
+			url, _ := v.GetString("detailurl")
+			buf.WriteString(fmt.Sprintf("%s\n%s\n",
+				article, url))
+		}
+		return buf.String()
+	case 308000:
+		list, _ := jasonObj.GetObjectArray("list")
+		var buf bytes.Buffer
+		for _, v := range list {
+			name, _ := v.GetString("name")
+			url, _ := v.GetString("detailurl")
+			buf.WriteString(fmt.Sprintf("%s\n%s\n",
+				name, url))
+		}
+		return buf.String()
+	case 40001:
+		return "大概男盆友用错API Key啦，大家快去蛤他！σ`∀´)`"
+	case 40002:
+		return "弹药装填系统泄漏，一定不是奴家的锅(╯‵□′)╯"
+	case 40003:
+		return "大概男盆友用错API Key啦，大家快去蛤他！σ`∀´)`"
+	case 40004:
+		return "今天弹药不足，明天再来吧(＃°Д°)"
+	case 40005:
+		return "恭喜你触发了母舰的迷之G点"
+	case 40006:
+		return "母舰升级中..."
+	case 40007:
+		return "转换失败，母舰大概是快没油了Orz"
+	default:
+		out, _ := jasonObj.GetString("text")
+		return out
+	}
+}
+
 func E64(in string) string {
 	return base64.StdEncoding.EncodeToString([]byte(in))
 }

@@ -38,6 +38,7 @@ func main() {
 
 	botapi, _ := conf.Get("botapi")
 	baiduAPI, _ := conf.Get("baiduTransKey")
+	turingAPI, _ := conf.Get("turingBotKey")
 	vimTipsCache, _ := conf.GetInt("vimTipsCache")
 	hitokotoCache, _ := conf.GetInt("hitokotoCache")
 	bot, err := tgbotapi.NewBotAPI(botapi)
@@ -191,6 +192,9 @@ func main() {
 					conf, _ = yaml.ReadFile("botconf.yaml")
 					go u.BotReply("群组娘已完成弹药重装(ゝ∀･)")
 				}
+			case "@" + botname:
+				in := strings.Join(s[1:], " ")
+				go u.BotReplyNoPreview(TuringBot(turingAPI, in))
 			default:
 				if update.Message.Chat.ID > 0 {
 					switch u.GetStatus() {
@@ -203,6 +207,8 @@ func main() {
 						if categoriesSet.Has(update.Message.Text) {
 							// custom keyboard reply
 							go u.BotReply(YamlList2String(conf, update.Message.Text))
+						} else {
+							go u.BotReplyNoPreview(TuringBot(turingAPI, update.Message.Text))
 						}
 					}
 				}
