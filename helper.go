@@ -226,7 +226,8 @@ Req:
 	var buf bytes.Buffer
 	for _, item := range google.ResponseData.Results {
 		u, _ := url.QueryUnescape(item.URL)
-		buf.WriteString(item.TitleNoFormatting + "\n" + u + "\n")
+		t, _ := url.QueryUnescape(item.TitleNoFormatting)
+		buf.WriteString(t + "\n" + u + "\n")
 	}
 	return buf.String()
 }
