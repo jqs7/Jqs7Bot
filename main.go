@@ -195,7 +195,7 @@ func main() {
 			case "@" + botname:
 				in := strings.Join(s[1:], " ")
 				go u.BotReplyNoPreview(TuringBot(turingAPI,
-					strconv.Itoa(update.Message.From.ID), in))
+					strconv.Itoa(update.Message.Chat.ID), in))
 			default:
 				if update.Message.Chat.ID > 0 {
 					switch u.GetStatus() {
@@ -210,13 +210,13 @@ func main() {
 							go u.BotReply(YamlList2String(conf, update.Message.Text))
 						} else {
 							go u.BotReplyNoPreview(TuringBot(turingAPI,
-								strconv.Itoa(update.Message.From.ID), update.Message.Text))
+								strconv.Itoa(update.Message.Chat.ID), update.Message.Text))
 						}
 					}
 				} else if update.Message.ReplyToMessage != nil &&
 					update.Message.ReplyToMessage.From.UserName == botname {
 					go u.BotReplyNoPreview(TuringBot(turingAPI,
-						strconv.Itoa(update.Message.From.ID), update.Message.Text))
+						strconv.Itoa(update.Message.Chat.ID), update.Message.Text))
 				}
 			}
 		}
