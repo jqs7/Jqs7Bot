@@ -256,7 +256,21 @@ Req:
 	switch errCode {
 	case 100000: //文本类数据
 		out, _ := jasonObj.GetString("text")
+		out = strings.Replace(out, "<br>", "\n", -1)
 		return out
+	case 200000: //网址
+		url, _ := jasonObj.GetString("url")
+		return url
+	case 302000: //新闻
+		list, _ := jasonObj.GetObjectArray("list")
+		var buf bytes.Buffer
+		for _, v := range list {
+			article, _ := v.GetString("article")
+			url, _ := v.GetString("detailurl")
+			buf.WriteString(fmt.Sprintf("%s\n%s\n",
+				article, url))
+		}
+		return buf.String()
 	case 305000: //列车
 		list, _ := jasonObj.GetObjectArray("list")
 		var buf bytes.Buffer
@@ -281,19 +295,6 @@ Req:
 
 			buf.WriteString(fmt.Sprintf("%s|%s->%s\n",
 				flight, startTime, endTime))
-		}
-		return buf.String()
-	case 200000: //网址
-		url, _ := jasonObj.GetString("url")
-		return url
-	case 302000: //新闻
-		list, _ := jasonObj.GetObjectArray("list")
-		var buf bytes.Buffer
-		for _, v := range list {
-			article, _ := v.GetString("article")
-			url, _ := v.GetString("detailurl")
-			buf.WriteString(fmt.Sprintf("%s\n%s\n",
-				article, url))
 		}
 		return buf.String()
 	case 308000: //菜谱、视频、小说
