@@ -114,10 +114,18 @@ func (u *Updater) Turing(turingAPI, text string) {
 		return
 	}
 	typing := tgbotapi.NewChatAction(u.update.Message.Chat.ID, "typing")
-	go u.bot.SendChatAction(typing)
-	msgText := TuringBot(turingAPI,
-		strconv.Itoa(u.update.Message.Chat.ID), text)
-	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, msgText)
+	msgText := make(chan string)
+	chatAction := make(chan bool)
+	go func() {
+		msgText <- TuringBot(turingAPI,
+			strconv.Itoa(u.update.Message.Chat.ID), text)
+	}()
+	go func() {
+		u.bot.SendChatAction(typing)
+		chatAction <- true
+	}()
+	<-chatAction
+	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, <-msgText)
 	msg.DisableWebPagePreview = true
 	if u.update.Message.Chat.ID < 0 {
 		msg.ReplyToMessageID = u.update.Message.MessageID
