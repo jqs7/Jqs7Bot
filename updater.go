@@ -44,6 +44,8 @@ func (u *Updater) BotReply(msgText string) {
 		u.SendQuestion()
 		return
 	}
+	typing := tgbotapi.NewChatAction(u.update.Message.Chat.ID, "typing")
+	u.bot.SendChatAction(typing)
 	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, msgText)
 	u.bot.SendMessage(msg)
 	return

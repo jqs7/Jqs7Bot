@@ -41,21 +41,20 @@ func main() {
 	turingAPI, _ := conf.Get("turingBotKey")
 	vimTipsCache, _ := conf.GetInt("vimTipsCache")
 	hitokotoCache, _ := conf.GetInt("hitokotoCache")
+	vimtips := new(Tips).GetChan(int(vimTipsCache))
+	hitokoto := new(Hitokoto).GetChan(int(hitokotoCache))
+
 	bot, err := tgbotapi.NewBotAPI(botapi)
 	if err != nil {
 		log.Panic(err)
 	}
-
 	botname := bot.Self.UserName
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
-	updates, err := bot.UpdatesChan(u)
+	bot.UpdatesChan(u)
 
-	vimtips := new(Tips).GetChan(int(vimTipsCache))
-	hitokoto := new(Hitokoto).GetChan(int(hitokotoCache))
-
-	for update := range updates {
+	for update := range bot.Updates {
 
 		// Ignore Outdated Updates
 		if time.Since(time.Unix(int64(update.Message.Date), 0)) > time.Hour {

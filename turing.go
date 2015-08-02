@@ -113,6 +113,8 @@ func (u *Updater) Turing(turingAPI, text string) {
 		u.SendQuestion()
 		return
 	}
+	typing := tgbotapi.NewChatAction(u.update.Message.Chat.ID, "typing")
+	go u.bot.SendChatAction(typing)
 	msgText := TuringBot(turingAPI,
 		strconv.Itoa(u.update.Message.Chat.ID), text)
 	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, msgText)
