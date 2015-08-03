@@ -192,8 +192,12 @@ func main() {
 					go u.BotReply("群组娘已完成弹药重装(ゝ∀･)")
 				}
 			case "@" + botname:
-				in := strings.Join(s[1:], " ")
-				go u.Turing(turingAPI, in)
+				if len(s) == 1 {
+					go u.BotReply("叫奴家是有什么事呢| ω・´)")
+				} else if len(s) >= 2 {
+					in := strings.Join(s[1:], " ")
+					go u.Turing(turingAPI, in)
+				}
 			default:
 				if update.Message.Chat.ID > 0 {
 					switch u.GetStatus() {

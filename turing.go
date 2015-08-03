@@ -21,7 +21,7 @@ Req:
 	res, err := goreq.Request{
 		Uri: fmt.Sprintf("http://www.tuling123.com/openapi/api?"+
 			"key=%s&info=%s&userid=%s", apiKey, in, userid),
-		Timeout: 3777 * time.Millisecond,
+		Timeout: 17 * time.Second,
 	}.Do()
 	if err != nil {
 		if retry < 2 {

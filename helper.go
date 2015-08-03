@@ -152,7 +152,7 @@ Req:
 		Uri: fmt.Sprintf("http://openapi.baidu.com/public/2.0/bmt/translate?"+
 			"client_id=%s&q=%s&from=auto&to=auto",
 			apiKey, in),
-		Timeout: 3777 * time.Millisecond,
+		Timeout: 17 * time.Second,
 	}.Do()
 	if err != nil {
 		if retry < 2 {
@@ -197,7 +197,7 @@ func Google(query string) string {
 Req:
 	res, err := goreq.Request{
 		Uri:     "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=3&q=" + query,
-		Timeout: 3777 * time.Millisecond,
+		Timeout: 17 * time.Second,
 	}.Do()
 	if err != nil {
 		if retry < 2 {
