@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -16,6 +17,7 @@ import (
 
 func TuringBot(apiKey, userid, in string) string {
 	in = url.QueryEscape(in)
+
 	retry := 0
 Req:
 	res, err := goreq.Request{
@@ -28,19 +30,22 @@ Req:
 			retry++
 			goto Req
 		} else {
-			log.Println("Google Timeout!")
+			log.Println("Turing Timeout!")
 			return "群组娘连接母舰失败，请稍后重试"
 		}
 	}
 
 	jasonObj, _ := jason.NewObjectFromReader(res.Body)
-	errCode, _ := jasonObj.GetInt64("code")
+	errCode, err := jasonObj.GetInt64("code")
+	if err != nil {
+		return "群组娘连接母舰失败，请稍后重试"
+	}
 	switch errCode {
 	case 100000: //文本类数据
 		out, _ := jasonObj.GetString("text")
-		if strings.Contains(in, url.QueryEscape("天气")) ||
-			strings.Contains(in, url.QueryEscape("天氣")) {
-			log.Println("ok")
+		//天气判断
+		if weather, err := regexp.MatchString("^*:[0-9]*/[0-9]*.*,*°*;*$",
+			out); weather && err == nil {
 			out = strings.Replace(out, ";", "\n", -1)
 		}
 		out = strings.Replace(out, "<br>", "\n", -1)
