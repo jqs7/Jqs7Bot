@@ -38,6 +38,11 @@ Req:
 	switch errCode {
 	case 100000: //文本类数据
 		out, _ := jasonObj.GetString("text")
+		if strings.Contains(in, url.QueryEscape("天气")) ||
+			strings.Contains(in, url.QueryEscape("天氣")) {
+			log.Println("ok")
+			out = strings.Replace(out, ";", "\n", -1)
+		}
 		out = strings.Replace(out, "<br>", "\n", -1)
 		return out
 	case 200000: //网址
