@@ -118,7 +118,7 @@ Req:
 	}
 }
 
-func (u *Updater) Turing(turingAPI, text string) {
+func (u *Updater) Turing(turingAPI, baiduAPI, text string) {
 	if !u.IsAuthed() {
 		u.SendQuestion()
 		return
@@ -126,6 +126,8 @@ func (u *Updater) Turing(turingAPI, text string) {
 	msgText := make(chan string)
 	chatAction := make(chan bool)
 	asGroupMsg := false
+	reqCount := false
+APIReq:
 	go func() {
 		var userid string
 		if u.update.Message.Chat.ID < 0 &&
@@ -149,6 +151,16 @@ func (u *Updater) Turing(turingAPI, text string) {
 	if asGroupMsg {
 		result = fmt.Sprintf("- %s", result)
 	}
+	if strings.Contains(result, "不会说英语") {
+		if !reqCount {
+			text = BaiduTranslate(baiduAPI, text)
+			reqCount = true
+			goto APIReq
+		} else {
+			result = "奴家对你说的实在是理解无力了(´・ω・`)"
+		}
+	}
+
 	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, result)
 	msg.DisableWebPagePreview = true
 	if u.update.Message.Chat.ID < 0 {
