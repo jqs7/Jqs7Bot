@@ -128,7 +128,7 @@ func (u *Updater) Turing(turingAPI, text string) {
 	chatAction := make(chan bool)
 	go func() {
 		msgText <- TuringBot(turingAPI,
-			strconv.Itoa(u.update.Message.Chat.ID), text)
+			strconv.Itoa(u.update.Message.From.ID), text)
 	}()
 	go func() {
 		u.bot.SendChatAction(typing)
