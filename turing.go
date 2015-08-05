@@ -43,10 +43,10 @@ Req:
 	switch errCode {
 	case 100000: //文本类数据
 		out, _ := jasonObj.GetString("text")
-		isWeather, _ := regexp.MatchString("^.{2,10}:[0-9]{2}"+
-			"/[0-9]{2}.*,*-*°*;*$", out)
+		isWeather, _ := regexp.MatchString("^.{2,10}:.*,.*-.*°.*;.*$", out)
 		if isWeather {
-			out = strings.Replace(out, ";", "\n", -1)
+			replacer := strings.NewReplacer(";", "\n", "晴", "☀️", "多云", "☁️")
+			out = replacer.Replace(out)
 		}
 		out = strings.Replace(out, "<br>", "\n", -1)
 		return out
@@ -123,7 +123,6 @@ func (u *Updater) Turing(turingAPI, text string) {
 		u.SendQuestion()
 		return
 	}
-	typing := tgbotapi.NewChatAction(u.update.Message.Chat.ID, "typing")
 	msgText := make(chan string)
 	chatAction := make(chan bool)
 	asGroupMsg := false
@@ -140,13 +139,15 @@ func (u *Updater) Turing(turingAPI, text string) {
 		msgText <- TuringBot(turingAPI, userid, text)
 	}()
 	go func() {
+		typing := tgbotapi.
+			NewChatAction(u.update.Message.Chat.ID, "typing")
 		u.bot.SendChatAction(typing)
 		chatAction <- true
 	}()
 	<-chatAction
 	result := <-msgText
 	if asGroupMsg {
-		result = "-" + result
+		result = fmt.Sprintf("- %s", result)
 	}
 	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, result)
 	msg.DisableWebPagePreview = true
