@@ -126,22 +126,29 @@ func (u *Updater) Turing(turingAPI, text string) {
 	typing := tgbotapi.NewChatAction(u.update.Message.Chat.ID, "typing")
 	msgText := make(chan string)
 	chatAction := make(chan bool)
+	asGroupMsg := false
 	go func() {
-		if strings.HasPrefix(text, "-") {
+		var userid string
+		if u.update.Message.Chat.ID < 0 &&
+			strings.HasPrefix(text, "-") {
 			text = strings.TrimPrefix(text, "-")
-			msgText <- TuringBot(turingAPI,
-				strconv.Itoa(u.update.Message.Chat.ID), text)
+			asGroupMsg = true
+			userid = strconv.Itoa(u.update.Message.Chat.ID)
 		} else {
-			msgText <- TuringBot(turingAPI,
-				strconv.Itoa(u.update.Message.From.ID), text)
+			userid = strconv.Itoa(u.update.Message.From.ID)
 		}
+		msgText <- TuringBot(turingAPI, userid, text)
 	}()
 	go func() {
 		u.bot.SendChatAction(typing)
 		chatAction <- true
 	}()
 	<-chatAction
-	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, <-msgText)
+	result := <-msgText
+	if asGroupMsg {
+		result = "-" + result
+	}
+	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, result)
 	msg.DisableWebPagePreview = true
 	if u.update.Message.Chat.ID < 0 {
 		msg.ReplyToMessageID = u.update.Message.MessageID
