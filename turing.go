@@ -127,8 +127,14 @@ func (u *Updater) Turing(turingAPI, text string) {
 	msgText := make(chan string)
 	chatAction := make(chan bool)
 	go func() {
-		msgText <- TuringBot(turingAPI,
-			strconv.Itoa(u.update.Message.From.ID), text)
+		if strings.HasPrefix(text, "-") {
+			text = strings.TrimPrefix(text, "-")
+			msgText <- TuringBot(turingAPI,
+				strconv.Itoa(u.update.Message.Chat.ID), text)
+		} else {
+			msgText <- TuringBot(turingAPI,
+				strconv.Itoa(u.update.Message.From.ID), text)
+		}
 	}()
 	go func() {
 		u.bot.SendChatAction(typing)
