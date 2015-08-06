@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/Syfaro/telegram-bot-api"
@@ -11,6 +12,8 @@ import (
 func (u *Updater) Auth(answer string) {
 	qs := GetQuestions(u.conf, "questions")
 	index := time.Now().Hour() % len(qs)
+	answer = strings.ToLower(answer)
+	answer = strings.TrimSpace(answer)
 	if u.update.Message.Chat.ID > 0 {
 		if u.IsAuthed() {
 			msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
