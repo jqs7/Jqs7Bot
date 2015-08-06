@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/Syfaro/telegram-bot-api"
 	"github.com/antonholmquist/jason"
@@ -140,8 +141,9 @@ func (u *Updater) Turing(turingAPI, baiduAPI, text string) {
 			userid = strconv.Itoa(u.update.Message.From.ID)
 		}
 		//语言检测，如果不是中文，则使用翻译后的结果
-		reZh, _ := regexp.MatchString(`^[\p{Han}]+`, text)
-		if !reZh {
+		reZh := regexp.MustCompile(`[\p{Han}]`).
+			FindAllString(text, -1)
+		if float32(len(reZh))/float32(utf8.RuneCountInString(text)) > 0.6 {
 			result, from := BaiduTranslate(baiduAPI, text)
 			if from != "zh" {
 				text = result
