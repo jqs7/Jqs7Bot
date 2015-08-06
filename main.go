@@ -188,8 +188,7 @@ func main() {
 				}
 
 			case "/reload":
-				master, _ := u.conf.Get("master")
-				if u.update.Message.Chat.UserName == master {
+				if u.IsMaster() {
 					conf, _ = yaml.ReadFile("botconf.yaml")
 					go u.BotReply("群组娘已完成弹药重装(ゝ∀･)")
 				}

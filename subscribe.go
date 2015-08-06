@@ -60,16 +60,14 @@ func (u *Updater) UnSubscribe() {
 }
 
 func (u *Updater) PreBroadcast() {
-	master, _ := u.conf.Get("master")
-	if u.update.Message.Chat.UserName == master {
+	if u.IsMaster() {
 		u.BotReply("Send me the Broadcast (＾o＾)ﾉ")
 		u.SetStatus("broadcast")
 	}
 }
 
 func (u *Updater) Broadcast(msgText string) {
-	master, _ := u.conf.Get("master")
-	if u.update.Message.Chat.UserName == master &&
+	if u.IsMaster() &&
 		u.redis.Exists("tgSubscribe").Val() {
 
 		subStates := u.redis.HGetAllMap("tgSubscribe").Val()

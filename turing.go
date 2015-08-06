@@ -35,7 +35,10 @@ Req:
 		}
 	}
 
-	jasonObj, _ := jason.NewObjectFromReader(res.Body)
+	jasonObj, err := jason.NewObjectFromReader(res.Body)
+	if err != nil {
+		return "群组娘连接母舰失败，请稍后重试"
+	}
 	errCode, err := jasonObj.GetInt64("code")
 	if err != nil {
 		return "群组娘连接母舰失败，请稍后重试"

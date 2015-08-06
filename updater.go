@@ -19,6 +19,14 @@ func (u *Updater) Start() {
 	u.BotReply(YamlList2String(u.conf, "help"))
 }
 
+func (u *Updater) IsMaster() bool {
+	master, _ := u.conf.Get("master")
+	if u.update.Message.Chat.UserName == master {
+		return true
+	}
+	return false
+}
+
 func (u *Updater) Groups(categories []string, x, y int) {
 	if u.update.Message.Chat.ID < 0 {
 		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
