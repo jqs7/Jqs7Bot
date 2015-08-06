@@ -140,9 +140,12 @@ func (u *Updater) Turing(turingAPI, baiduAPI, text string) {
 			userid = strconv.Itoa(u.update.Message.From.ID)
 		}
 		//语言检测，如果不是中文，则使用翻译后的结果
-		result, from := BaiduTranslate(baiduAPI, text)
-		if from != "zh" {
-			text = result
+		reZh, _ := regexp.MatchString(`^[\p{Han}]+`, text)
+		if !reZh {
+			result, from := BaiduTranslate(baiduAPI, text)
+			if from != "zh" {
+				text = result
+			}
 		}
 
 		msgText <- TuringBot(turingAPI, userid, text)
