@@ -156,11 +156,13 @@ func main() {
 			case "/trans":
 				if update.Message.ReplyToMessage != nil &&
 					update.Message.ReplyToMessage.Text != "" {
-					go u.BotReply(BaiduTranslate(baiduAPI,
-						update.Message.ReplyToMessage.Text))
+					result, _ := BaiduTranslate(baiduAPI,
+						update.Message.ReplyToMessage.Text)
+					go u.BotReply(result)
 				} else if len(s) >= 2 {
 					in := strings.Join(s[1:], " ")
-					go u.BotReply(BaiduTranslate(baiduAPI, in))
+					result, _ := BaiduTranslate(baiduAPI, in)
+					go u.BotReply(result)
 				}
 			case "/setman":
 				if len(s) >= 3 {

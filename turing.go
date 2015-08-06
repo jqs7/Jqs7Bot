@@ -126,8 +126,6 @@ func (u *Updater) Turing(turingAPI, baiduAPI, text string) {
 	msgText := make(chan string)
 	chatAction := make(chan bool)
 	asGroupMsg := false
-	reqCount := false
-APIReq:
 	go func() {
 		var userid string
 		if u.update.Message.Chat.ID < 0 &&
@@ -138,8 +136,15 @@ APIReq:
 		} else {
 			userid = strconv.Itoa(u.update.Message.From.ID)
 		}
+		//语言检测，如果不是中文，则使用翻译后的结果
+		result, from := BaiduTranslate(baiduAPI, text)
+		if from != "zh" {
+			text = result
+		}
+
 		msgText <- TuringBot(turingAPI, userid, text)
 	}()
+
 	go func() {
 		typing := tgbotapi.
 			NewChatAction(u.update.Message.Chat.ID, "typing")
@@ -150,15 +155,6 @@ APIReq:
 	result := <-msgText
 	if asGroupMsg {
 		result = fmt.Sprintf("- %s", result)
-	}
-	if strings.Contains(result, "不会说英语") {
-		if !reqCount {
-			text = BaiduTranslate(baiduAPI, text)
-			reqCount = true
-			goto APIReq
-		} else {
-			result = "奴家对你说的实在是理解无力了(´・ω・`)"
-		}
 	}
 
 	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, result)
