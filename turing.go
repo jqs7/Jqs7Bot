@@ -143,7 +143,7 @@ func (u *Updater) Turing(text string) {
 		//语言检测，如果不是中文，则使用翻译后的结果
 		reZh := regexp.MustCompile(`[\p{Han}]`).
 			FindAllString(text, -1)
-		if float32(len(reZh))/float32(utf8.RuneCountInString(text)) < 0.6 {
+		if float32(len(reZh))/float32(utf8.RuneCountInString(text)) < 0.4 {
 			result, from := u.Trans(text)
 			if from != "zh" {
 				text = result
