@@ -15,6 +15,7 @@ import (
 	"github.com/fatih/set"
 	"github.com/franela/goreq"
 	"github.com/kylelemons/go-gypsy/yaml"
+	"github.com/st3v/translator/microsoft"
 )
 
 func YamlList2String(config *yaml.File, text string) string {
@@ -190,6 +191,45 @@ Req:
 	}
 	out = strings.Join(outs, "\n")
 	return out, from
+}
+
+func MsTranslate(clientID, clientSecret, text string) (out, from string, err error) {
+	t := microsoft.NewTranslator(clientID, clientSecret)
+	from, err = t.Detect(text)
+	if err != nil {
+		return "", "", err
+	}
+	switch from {
+	case "zh-CHS", "zh-CHT":
+		out, err = t.Translate(text, from, "en")
+		if err != nil {
+			return "", from, err
+		}
+		return
+	default:
+		out, err = t.Translate(text, from, "zh-CHS")
+		if err != nil {
+			return "", from, err
+		}
+		return
+	}
+}
+
+func (u *Updater) Trans(in string) (out, from string) {
+	sp := strings.Split(in, "\n")
+
+	var buf bytes.Buffer
+	var err error
+	for _, s := range sp {
+		out, from, err = MsTranslate(u.configs.msID, u.configs.msSecret, s)
+		if err != nil {
+			out, from = BaiduTranslate(u.configs.baiduAPI, in)
+			return
+		}
+		buf.WriteString(out + "\n")
+	}
+	out = buf.String()
+	return
 }
 
 func Google(query string) string {

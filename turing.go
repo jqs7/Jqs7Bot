@@ -122,7 +122,7 @@ Req:
 	}
 }
 
-func (u *Updater) Turing(turingAPI, baiduAPI, text string) {
+func (u *Updater) Turing(text string) {
 	if !u.IsAuthed() {
 		u.SendQuestion()
 		return
@@ -144,13 +144,13 @@ func (u *Updater) Turing(turingAPI, baiduAPI, text string) {
 		reZh := regexp.MustCompile(`[\p{Han}]`).
 			FindAllString(text, -1)
 		if float32(len(reZh))/float32(utf8.RuneCountInString(text)) < 0.6 {
-			result, from := BaiduTranslate(baiduAPI, text)
+			result, from := u.Trans(text)
 			if from != "zh" {
 				text = result
 			}
 		}
 
-		msgText <- TuringBot(turingAPI, userid, text)
+		msgText <- TuringBot(u.configs.turingAPI, userid, text)
 	}()
 
 	go func() {

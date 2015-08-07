@@ -39,6 +39,8 @@ func main() {
 	botapi, _ := conf.Get("botapi")
 	baiduAPI, _ := conf.Get("baiduTransKey")
 	turingAPI, _ := conf.Get("turingBotKey")
+	msID, _ := conf.Get("msTransId")
+	msSecret, _ := conf.Get("msTransSecret")
 	vimTipsCache, _ := conf.GetInt("vimTipsCache")
 	hitokotoCache, _ := conf.GetInt("hitokotoCache")
 	vimtips := new(Tips).GetChan(int(vimTipsCache))
@@ -66,6 +68,12 @@ func main() {
 			bot:    bot,
 			update: update,
 			conf:   conf,
+			configs: Config{
+				baiduAPI,
+				turingAPI,
+				msID,
+				msSecret,
+			},
 		}
 
 		// Logger
@@ -155,13 +163,13 @@ func main() {
 				}
 			case "/trans":
 				if update.Message.ReplyToMessage != nil &&
-					update.Message.ReplyToMessage.Text != "" {
-					result, _ := BaiduTranslate(baiduAPI,
+					update.Message.ReplyToMessage.Text != "" && len(s) < 2 {
+					result, _ := u.Trans(
 						update.Message.ReplyToMessage.Text)
 					go u.BotReply(result)
 				} else if len(s) >= 2 {
 					in := strings.Join(s[1:], " ")
-					result, _ := BaiduTranslate(baiduAPI, in)
+					result, _ := u.Trans(in)
 					go u.BotReply(result)
 				}
 			case "/setman":
@@ -197,7 +205,7 @@ func main() {
 					go u.BotReply("叫奴家是有什么事呢| ω・´)")
 				} else if len(s) >= 2 {
 					in := strings.Join(s[1:], " ")
-					go u.Turing(turingAPI, baiduAPI, in)
+					go u.Turing(in)
 				}
 			default:
 				if update.Message.Chat.ID > 0 {
@@ -212,12 +220,12 @@ func main() {
 							// custom keyboard reply
 							go u.BotReply(YamlList2String(conf, update.Message.Text))
 						} else {
-							go u.Turing(turingAPI, baiduAPI, update.Message.Text)
+							go u.Turing(update.Message.Text)
 						}
 					}
 				} else if update.Message.ReplyToMessage != nil &&
 					update.Message.ReplyToMessage.From.UserName == botname {
-					go u.Turing(turingAPI, baiduAPI, update.Message.Text)
+					go u.Turing(update.Message.Text)
 				}
 			}
 		}

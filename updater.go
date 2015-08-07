@@ -9,10 +9,18 @@ import (
 )
 
 type Updater struct {
-	redis  *redis.Client
-	bot    *tgbotapi.BotAPI
-	update tgbotapi.Update
-	conf   *yaml.File
+	redis   *redis.Client
+	bot     *tgbotapi.BotAPI
+	update  tgbotapi.Update
+	conf    *yaml.File
+	configs Config
+}
+
+type Config struct {
+	baiduAPI  string
+	turingAPI string
+	msID      string
+	msSecret  string
 }
 
 func (u *Updater) Start() {
