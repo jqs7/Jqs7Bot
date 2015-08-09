@@ -51,6 +51,7 @@ Req:
 		if isWeather {
 			replacer := strings.NewReplacer(";", "\n", "晴", "☀️", "多云", "☁️")
 			out = replacer.Replace(out)
+			out = strings.Replace(out, ":", ":\n", 1)
 		}
 		out = strings.Replace(out, "<br>", "\n", -1)
 		return out
