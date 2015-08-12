@@ -29,7 +29,7 @@ func (u *Updater) Start() {
 
 func (u *Updater) IsMaster() bool {
 	master, _ := u.conf.Get("master")
-	if u.update.Message.Chat.UserName == master {
+	if u.update.Message.From.UserName == master {
 		return true
 	}
 	return false
