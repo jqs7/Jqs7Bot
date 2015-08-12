@@ -60,7 +60,7 @@ func (u *Updater) UnSubscribe() {
 }
 
 func (u *Updater) PreBroadcast() {
-	if u.IsMaster() {
+	if u.IsMaster() && u.update.Message.Chat.ID < 0 {
 		u.BotReply("Send me the Broadcast (＾o＾)ﾉ")
 		u.SetStatus("broadcast")
 	}
