@@ -11,10 +11,12 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/akhenakh/statgo"
 	"github.com/antonholmquist/jason"
 	"github.com/fatih/set"
 	"github.com/franela/goreq"
 	"github.com/kylelemons/go-gypsy/yaml"
+	"github.com/pyk/byten"
 	"github.com/st3v/translator/microsoft"
 )
 
@@ -237,7 +239,8 @@ func Google(query string) string {
 	retry := 0
 Req:
 	res, err := goreq.Request{
-		Uri:     "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=3&q=" + query,
+		Uri: fmt.Sprintf("http://ajax.googleapis.com/"+
+			"ajax/services/search/web?v=1.0&rsz=3&q=%s", query),
 		Timeout: 17 * time.Second,
 	}.Do()
 	if err != nil {
@@ -271,6 +274,50 @@ Req:
 		buf.WriteString(t + "\n" + u + "\n")
 	}
 	return buf.String()
+}
+
+func Stat(t string) string {
+	s := statgo.NewStat()
+	switch t {
+	case "free":
+		m := s.MemStats()
+		return fmt.Sprintf(
+			"Total:%s\nFree:%s\nUsed:%s\nCache:%s\n"+
+				"SwapTotal:%s\nSwapUsed:%s\nSwapFree:%s\n",
+			humanByte(m.Total, m.Free, m.Used, m.Cache, m.SwapTotal, m.SwapUsed, m.SwapFree)...,
+		)
+	case "df":
+		fs := s.FSInfos()
+		var buf bytes.Buffer
+		for _, v := range fs {
+			if v.Size == 0 {
+				continue
+			}
+			f := fmt.Sprintf("DeviceName:%s\nFSType:%s\nMountPoint:%s\nSize:%s\n"+
+				"Used:%s\nFree:%s\nAvailable:%s\n\n",
+				humanByte(v.DeviceName, v.FSType, v.MountPoint, v.Size, v.Used, v.Free, v.Available)...,
+			)
+			buf.WriteString(f)
+		}
+		return buf.String()
+	default:
+		h := s.HostInfos()
+		return fmt.Sprintf(
+			"OSRelease:%s\nHostName:%s\nNCPUs:%d\nMaxCPUs:%d\n",
+			h.OSRelease, h.HostName, h.NCPUs, h.MaxCPUs,
+		)
+	}
+}
+
+func humanByte(in ...interface{}) (out []interface{}) {
+	for _, v := range in {
+		if i, ok := v.(int); ok {
+			out = append(out, byten.Size(int64(i)))
+		} else {
+			out = append(out, v)
+		}
+	}
+	return out
 }
 
 func E64(in string) string {

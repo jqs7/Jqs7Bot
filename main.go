@@ -194,11 +194,15 @@ func main() {
 					msg := strings.Join(s[1:], " ")
 					go u.Broadcast(msg)
 				}
-
 			case "/reload":
 				if u.IsMaster() {
 					conf, _ = yaml.ReadFile("botconf.yaml")
 					go u.BotReply("群组娘已完成弹药重装(ゝ∀･)")
+				}
+			case "/os", "/df", "/free":
+				command := strings.TrimLeft(update.Message.Text, "/")
+				if u.IsMaster() {
+					go u.BotReply(Stat(command))
 				}
 			case "@" + botname:
 				if len(s) == 1 {
