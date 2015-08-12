@@ -282,9 +282,10 @@ func Stat(t string) string {
 	case "free":
 		m := s.MemStats()
 		return fmt.Sprintf(
-			"Total:%s\nFree:%s\nUsed:%s\nCache:%s\n"+
-				"SwapTotal:%s\nSwapUsed:%s\nSwapFree:%s\n",
-			humanByte(m.Total, m.Free, m.Used, m.Cache, m.SwapTotal, m.SwapUsed, m.SwapFree)...,
+			"Total: %s\nFree: %s\nUsed: %s\nCache: %s\n"+
+				"SwapTotal: %s\nSwapUsed: %s\nSwapFree: %s\n",
+			humanByte(m.Total, m.Free, m.Used, m.Cache,
+				m.SwapTotal, m.SwapUsed, m.SwapFree)...,
 		)
 	case "df":
 		fs := s.FSInfos()
@@ -293,9 +294,11 @@ func Stat(t string) string {
 			if v.Size == 0 {
 				continue
 			}
-			f := fmt.Sprintf("DeviceName:%s\nFSType:%s\nMountPoint:%s\nSize:%s\n"+
-				"Used:%s\nFree:%s\nAvailable:%s\n\n",
-				humanByte(v.DeviceName, v.FSType, v.MountPoint, v.Size, v.Used, v.Free, v.Available)...,
+			f := fmt.Sprintf("DeviceName: %s\nFSType: %s\n"+
+				"MountPoint: %s\nSize: %s\n"+"Used: %s\n"+
+				"Free: %s\nAvailable: %s\n\n",
+				humanByte(v.DeviceName, v.FSType, v.MountPoint,
+					v.Size, v.Used, v.Free, v.Available)...,
 			)
 			buf.WriteString(f)
 		}
@@ -303,7 +306,7 @@ func Stat(t string) string {
 	default:
 		h := s.HostInfos()
 		return fmt.Sprintf(
-			"OSRelease:%s\nHostName:%s\nNCPUs:%d\nMaxCPUs:%d\n",
+			"OSRelease: %s\nHostName: %s\nNCPUs: %d\nMaxCPUs: %d\n",
 			h.OSRelease, h.HostName, h.NCPUs, h.MaxCPUs,
 		)
 	}
