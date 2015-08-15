@@ -8,9 +8,11 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 	"unicode/utf8"
 
+	"github.com/Syfaro/telegram-bot-api"
 	"github.com/akhenakh/statgo"
 	"github.com/antonholmquist/jason"
 	"github.com/fatih/set"
@@ -220,16 +222,28 @@ func MsTranslate(clientID, clientSecret, text string) (out, from string, err err
 func (u *Updater) Trans(in string) (out, from string) {
 	sp := strings.Split(in, "\n")
 
+	var w sync.WaitGroup
 	var buf bytes.Buffer
-	var err error
-	for _, s := range sp {
-		out, from, err = MsTranslate(u.configs.msID, u.configs.msSecret, s)
-		if err != nil {
-			out, from = BaiduTranslate(u.configs.baiduAPI, in)
-			return
+	w.Add(2)
+	go func() {
+		typing := tgbotapi.
+			NewChatAction(u.update.Message.Chat.ID, "typing")
+		u.bot.SendChatAction(typing)
+		w.Done()
+	}()
+	go func() {
+		var err error
+		for _, s := range sp {
+			out, from, err = MsTranslate(u.configs.msID, u.configs.msSecret, s)
+			if err != nil {
+				out, from = BaiduTranslate(u.configs.baiduAPI, in)
+				return
+			}
+			buf.WriteString(out + "\n")
 		}
-		buf.WriteString(out + "\n")
-	}
+		w.Done()
+	}()
+	w.Wait()
 	out = buf.String()
 	return
 }
