@@ -110,126 +110,128 @@ func main() {
 			})
 
 		if len(s) > 0 {
-			switch s[0] {
-			case "/help", "/start", "/help@" + botname, "/start@" + botname:
-				go u.Start()
-			case "/rules", "/rules@" + botname:
-				go u.Rule(update.Message.Chat.ID)
-			case "/about", "/about@" + botname:
-				go u.BotReply(YamlList2String(conf, "about"))
-			case "/other_resources", "/other_resources@" + botname:
-				go u.BotReply(YamlList2String(conf, "其他资源"))
-			case "/subscribe", "/subscribe@" + botname:
-				go u.Subscribe()
-			case "/unsubscribe", "/unsubscribe@" + botname:
-				go u.UnSubscribe()
-			case "/autorule":
-				go u.AutoRule()
-			case "/groups", "/groups@" + botname:
-				go u.Groups(categories, 3, 5)
-			case "/cancel":
-				go u.Cancel()
-			case "/rand":
-				select {
-				case v := <-vimtips:
-					go u.BotReply(v.ToString())
-				case h := <-hitokoto:
-					go u.BotReply(h.ToString())
-				default:
-					go u.BotReply("诶诶?群组娘迷路了呢_(:з」∠)_")
-				}
-			case "/setrule":
-				if len(s) >= 2 {
-					rule := strings.Join(s[1:], " ")
-					go u.SetRule(rule)
-				}
-			case "/e64":
-				if update.Message.ReplyToMessage != nil &&
-					update.Message.ReplyToMessage.Text != "" {
-					go u.BotReply(E64(update.Message.ReplyToMessage.Text))
-				} else if len(s) >= 2 {
-					in := strings.Join(s[1:], " ")
-					go u.BotReply(E64(in))
-				}
-			case "/d64":
-				if len(s) >= 2 {
-					in := strings.Join(s[1:], " ")
-					go u.BotReply(D64(in))
-				}
-			case "/gg":
-				if len(s) >= 2 {
-					q := strings.Join(s[1:], " ")
-					go u.BotReplyNoPreview(Google(q))
-				}
-			case "/trans":
-				if update.Message.ReplyToMessage != nil &&
-					update.Message.ReplyToMessage.Text != "" && len(s) < 2 {
-					result, _ := u.Trans(
-						update.Message.ReplyToMessage.Text)
-					go u.BotReply(result)
-				} else if len(s) >= 2 {
-					in := strings.Join(s[1:], " ")
-					result, _ := u.Trans(in)
-					go u.BotReply(result)
-				}
-			case "/setman":
-				if len(s) >= 3 {
-					value := strings.Join(s[2:], " ")
-					go u.SetMan(s[1], value)
-				}
-			case "/rmman":
-				if len(s) >= 2 {
-					go u.RmMan(s[1:]...)
-				}
-			case "/man":
-				if len(s) == 1 {
-					go u.ListMan()
-				} else {
-					go u.Man(s[1])
-				}
-			case "/broadcast":
-				if len(s) == 1 {
-					go u.PreBroadcast()
-				} else if len(s) >= 2 {
-					msg := strings.Join(s[1:], " ")
-					go u.Broadcast(msg)
-				}
-			case "/reload":
-				if u.IsMaster() {
-					conf, _ = yaml.ReadFile("botconf.yaml")
-					go u.BotReply("群组娘已完成弹药重装(ゝ∀･)")
-				}
-			case "/os", "/df", "/free":
-				command := strings.TrimLeft(update.Message.Text, "/")
-				go u.BotReply(Stat(command))
-			case "@" + botname:
-				if len(s) == 1 {
-					go u.BotReply("叫奴家是有什么事呢| ω・´)")
-				} else if len(s) >= 2 {
-					in := strings.Join(s[1:], " ")
-					go u.Turing(in)
-				}
-			default:
-				if update.Message.Chat.ID > 0 {
-					switch u.GetStatus() {
-					case "auth":
-						go u.Auth(update.Message.Text)
-					case "broadcast":
-						go u.Broadcast(update.Message.Text)
-						u.SetStatus("")
+			go func(u Updater, update tgbotapi.Update) {
+				switch s[0] {
+				case "/help", "/start", "/help@" + botname, "/start@" + botname:
+					u.Start()
+				case "/rules", "/rules@" + botname:
+					u.Rule(update.Message.Chat.ID)
+				case "/about", "/about@" + botname:
+					u.BotReply(YamlList2String(conf, "about"))
+				case "/other_resources", "/other_resources@" + botname:
+					u.BotReply(YamlList2String(conf, "其他资源"))
+				case "/subscribe", "/subscribe@" + botname:
+					u.Subscribe()
+				case "/unsubscribe", "/unsubscribe@" + botname:
+					u.UnSubscribe()
+				case "/autorule":
+					u.AutoRule()
+				case "/groups", "/groups@" + botname:
+					u.Groups(categories, 3, 5)
+				case "/cancel":
+					u.Cancel()
+				case "/rand":
+					select {
+					case v := <-vimtips:
+						u.BotReply(v.ToString())
+					case h := <-hitokoto:
+						u.BotReply(h.ToString())
 					default:
-						if categoriesSet.Has(update.Message.Text) {
-							// custom keyboard reply
-							go u.BotReply(YamlList2String(conf, update.Message.Text))
-						} else {
-							go u.Turing(update.Message.Text)
-						}
+						u.BotReply("诶诶?群组娘迷路了呢_(:з」∠)_")
 					}
-				} else if update.Message.ReplyToMessage != nil &&
-					update.Message.ReplyToMessage.From.UserName == botname {
-					go u.Turing(update.Message.Text)
+				case "/setrule":
+					if len(s) >= 2 {
+						rule := strings.Join(s[1:], " ")
+						u.SetRule(rule)
+					}
+				case "/e64":
+					if update.Message.ReplyToMessage != nil &&
+						update.Message.ReplyToMessage.Text != "" {
+						u.BotReply(E64(update.Message.ReplyToMessage.Text))
+					} else if len(s) >= 2 {
+						in := strings.Join(s[1:], " ")
+						u.BotReply(E64(in))
+					}
+				case "/d64":
+					if len(s) >= 2 {
+						in := strings.Join(s[1:], " ")
+						u.BotReply(D64(in))
+					}
+				case "/gg":
+					if len(s) >= 2 {
+						q := strings.Join(s[1:], " ")
+						u.BotReplyNoPreview(Google(q))
+					}
+				case "/trans":
+					if update.Message.ReplyToMessage != nil &&
+						update.Message.ReplyToMessage.Text != "" && len(s) < 2 {
+						result, _ := u.Trans(
+							update.Message.ReplyToMessage.Text)
+						u.BotReply(result)
+					} else if len(s) >= 2 {
+						in := strings.Join(s[1:], " ")
+						result, _ := u.Trans(in)
+						u.BotReply(result)
+					}
+				case "/setman":
+					if len(s) >= 3 {
+						value := strings.Join(s[2:], " ")
+						u.SetMan(s[1], value)
+					}
+				case "/rmman":
+					if len(s) >= 2 {
+						u.RmMan(s[1:]...)
+					}
+				case "/man":
+					if len(s) == 1 {
+						u.ListMan()
+					} else {
+						u.Man(s[1])
+					}
+				case "/broadcast":
+					if len(s) == 1 {
+						u.PreBroadcast()
+					} else if len(s) >= 2 {
+						msg := strings.Join(s[1:], " ")
+						u.Broadcast(msg)
+					}
+				case "/reload":
+					if u.IsMaster() {
+						conf, _ = yaml.ReadFile("botconf.yaml")
+						u.BotReply("群组娘已完成弹药重装(ゝ∀･)")
+					}
+				case "/os", "/df", "/free":
+					command := strings.TrimLeft(update.Message.Text, "/")
+					u.BotReply(Stat(command))
+				case "@" + botname:
+					if len(s) == 1 {
+						u.BotReply("叫奴家是有什么事呢| ω・´)")
+					} else if len(s) >= 2 {
+						in := strings.Join(s[1:], " ")
+						u.Turing(in)
+					}
+				default:
+					if update.Message.Chat.ID > 0 {
+						switch u.GetStatus() {
+						case "auth":
+							u.Auth(update.Message.Text)
+						case "broadcast":
+							u.Broadcast(update.Message.Text)
+							u.SetStatus("")
+						default:
+							if categoriesSet.Has(update.Message.Text) {
+								// custom keyboard reply
+								u.BotReply(YamlList2String(conf, update.Message.Text))
+							} else {
+								u.Turing(update.Message.Text)
+							}
+						}
+					} else if update.Message.ReplyToMessage != nil &&
+						update.Message.ReplyToMessage.From.UserName == botname {
+						u.Turing(update.Message.Text)
+					}
 				}
-			}
+			}(u, update)
 		}
 	}
 }
