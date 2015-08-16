@@ -201,9 +201,7 @@ func main() {
 				}
 			case "/os", "/df", "/free":
 				command := strings.TrimLeft(update.Message.Text, "/")
-				if u.IsMaster() {
-					go u.BotReply(Stat(command))
-				}
+				go u.BotReply(Stat(command))
 			case "@" + botname:
 				if len(s) == 1 {
 					go u.BotReply("叫奴家是有什么事呢| ω・´)")

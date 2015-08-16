@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -13,12 +14,16 @@ import (
 	"unicode/utf8"
 
 	"github.com/Syfaro/telegram-bot-api"
-	"github.com/akhenakh/statgo"
 	"github.com/antonholmquist/jason"
 	"github.com/fatih/set"
 	"github.com/franela/goreq"
 	"github.com/kylelemons/go-gypsy/yaml"
 	"github.com/pyk/byten"
+	"github.com/shirou/gopsutil/cpu"
+	"github.com/shirou/gopsutil/disk"
+	"github.com/shirou/gopsutil/host"
+	"github.com/shirou/gopsutil/load"
+	"github.com/shirou/gopsutil/mem"
 	"github.com/st3v/translator/microsoft"
 )
 
@@ -291,46 +296,74 @@ Req:
 }
 
 func Stat(t string) string {
-	s := statgo.NewStat()
+	checkErr := func(err error) string {
+		return "系统酱正在食用作死药丸中..."
+	}
 	switch t {
 	case "free":
-		m := s.MemStats()
+		m, err := mem.VirtualMemory()
+		checkErr(err)
+		s, err := mem.SwapMemory()
+		checkErr(err)
+		mem := new(runtime.MemStats)
+		runtime.ReadMemStats(mem)
 		return fmt.Sprintf(
-			"Total: %s\nFree: %s\nUsed: %s\nCache: %s\n"+
-				"SwapTotal: %s\nSwapUsed: %s\nSwapFree: %s\n",
-			humanByte(m.Total, m.Free, m.Used, m.Cache,
-				m.SwapTotal, m.SwapUsed, m.SwapFree)...,
+			"全局:\n"+
+				"Total: %s Free: %s\nUsed: %s %s%%\nCache: %s\n"+
+				"Swap:\nTotal: %s Free: %s\n Used: %s %s%%\n"+
+				"群组娘:\n"+
+				"Allocated: %s\nTotal Allocated: %s\nSystem: %s\n",
+			humanByte(m.Total, m.Free, m.Used, m.UsedPercent, m.Cached,
+				s.Total, s.Free, s.Used, s.UsedPercent,
+				mem.Alloc, mem.TotalAlloc, mem.Sys)...,
 		)
 	case "df":
-		fs := s.FSInfos()
+		fs, err := disk.DiskPartitions(false)
+		checkErr(err)
 		var buf bytes.Buffer
-		for _, v := range fs {
-			if v.Size == 0 {
+		for k := range fs {
+			du, err := disk.DiskUsage(fs[k].Mountpoint)
+			switch {
+			case err != nil, du.UsedPercent == 0, du.Free == 0:
 				continue
 			}
-			f := fmt.Sprintf("DeviceName: %s\nFSType: %s\n"+
-				"MountPoint: %s\nSize: %s\n"+"Used: %s\n"+
-				"Free: %s\nAvailable: %s\n\n",
-				humanByte(v.DeviceName, v.FSType, v.MountPoint,
-					v.Size, v.Used, v.Free, v.Available)...,
+			f := fmt.Sprintf("Mountpoint: %s Type: %s \n"+
+				"Total: %s Free: %s \nUsed: %s %s%%\n",
+				humanByte(fs[k].Mountpoint, fs[k].Fstype,
+					du.Total, du.Free, du.Used, du.UsedPercent)...,
 			)
 			buf.WriteString(f)
 		}
 		return buf.String()
-	default:
-		h := s.HostInfos()
+	case "os":
+		h, err := host.HostInfo()
+		checkErr(err)
+		l, err := load.LoadAvg()
+		checkErr(err)
+		c, err := cpu.CPUPercent(time.Second*5, false)
+		checkErr(err)
 		return fmt.Sprintf(
-			"OSRelease: %s\nHostName: %s\nNCPUs: %d\nMaxCPUs: %d\n",
-			h.OSRelease, h.HostName, h.NCPUs, h.MaxCPUs,
+			"OSRelease: %s\nHostName: %s\nLoadAdv: %.2f %.2f %.2f\n"+
+				"Goroutine: %d\nCPU: %.2f%%",
+			h.Platform, h.Hostname, l.Load1, l.Load5, l.Load15,
+			runtime.NumGoroutine(), c[0],
 		)
+	default:
+		return "欢迎来到未知领域(ゝ∀･)"
 	}
 }
 
 func humanByte(in ...interface{}) (out []interface{}) {
 	for _, v := range in {
-		if i, ok := v.(int); ok {
-			out = append(out, byten.Size(int64(i)))
-		} else {
+		switch v.(type) {
+		case int, uint64:
+			s := fmt.Sprintf("%d", v)
+			i, _ := strconv.ParseInt(s, 10, 64)
+			out = append(out, byten.Size(i))
+		case float64:
+			s := fmt.Sprintf("%.2f", v)
+			out = append(out, s)
+		default:
 			out = append(out, v)
 		}
 	}
