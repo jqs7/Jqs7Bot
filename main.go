@@ -201,8 +201,10 @@ func main() {
 						u.BotReply("群组娘已完成弹药重装(ゝ∀･)")
 					}
 				case "/os", "/df", "/free":
-					command := strings.TrimLeft(update.Message.Text, "/")
-					u.BotReply(Stat(command))
+					if u.IsMaster() {
+						command := strings.TrimLeft(update.Message.Text, "/")
+						u.BotReply(Stat(command))
+					}
 				case "@" + botname:
 					if len(s) == 1 {
 						u.BotReply("叫奴家是有什么事呢| ω・´)")
