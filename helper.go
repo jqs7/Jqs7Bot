@@ -301,9 +301,11 @@ func (u *Updater) Statistics(s string) string {
 			buf.WriteString(s)
 			otherUser -= score
 		}
-		s = fmt.Sprintf("其他用户:%.0f / %.2f%% 人均:%.0f\n",
-			otherUser, otherUser/total*100, otherUser/float64(otherCount))
-		buf.WriteString(s)
+		if otherUser > 0 {
+			s = fmt.Sprintf("其他用户:%.0f / %.2f%% 人均:%.0f\n",
+				otherUser, otherUser/total*100, otherUser/float64(otherCount))
+			buf.WriteString(s)
+		}
 		return buf.String()
 	case "month":
 		result := u.redis.ZRevRangeByScoreWithScores(monthKey,
@@ -324,9 +326,11 @@ func (u *Updater) Statistics(s string) string {
 			buf.WriteString(s)
 			otherUser -= score
 		}
-		s = fmt.Sprintf("其他用户:%.0f / %.2f%% 人均:%.0f\n",
-			otherUser, otherUser/total*100, otherUser/float64(otherCount))
-		buf.WriteString(s)
+		if otherUser > 0 {
+			s = fmt.Sprintf("其他用户:%.0f / %.2f%% 人均:%.0f\n",
+				otherUser, otherUser/total*100, otherUser/float64(otherCount))
+			buf.WriteString(s)
+		}
 		return buf.String()
 	default:
 		return ""
