@@ -292,7 +292,8 @@ func (u *Updater) Statistics(s string) string {
 		buf.WriteString(s)
 		for k := range result {
 			score := result[k].Score
-			user := u.redis.HGet("tgUsersID", result[k].Member.(string)).Val()
+			member := fmt.Sprintf("%s", result[k].Member)
+			user := u.redis.HGet("tgUsersID", member).Val()
 			s := fmt.Sprintf("%s -- %.0f %.2f%%\n", user, score, score/total*100)
 			buf.WriteString(s)
 		}
