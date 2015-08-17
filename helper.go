@@ -287,7 +287,7 @@ func (u *Updater) Statistics(s string) string {
 			redis.ZRangeByScore{Min: "-inf", Max: "+inf", Count: 10}).Val()
 		totalS := u.redis.Get(dayTotalKey).Val()
 		total, _ := strconv.ParseFloat(totalS, 64)
-		otherCount := u.redis.ZCount(dayTotalKey, "-inf", "+inf").Val() - 10
+		otherCount := u.redis.ZCount(monthKey, "-inf", "+inf").Val() - 10
 		otherUser := total
 		var buf bytes.Buffer
 		s := fmt.Sprintf("今日大水比💦Total: %.0f\n", total)
@@ -312,7 +312,7 @@ func (u *Updater) Statistics(s string) string {
 			redis.ZRangeByScore{Min: "-inf", Max: "+inf", Count: 10}).Val()
 		totalS := u.redis.Get(monthTotalKey).Val()
 		total, _ := strconv.ParseFloat(totalS, 64)
-		otherCount := u.redis.ZCount(dayTotalKey, "-inf", "+inf").Val() - 10
+		otherCount := u.redis.ZCount(monthKey, "-inf", "+inf").Val() - 10
 		otherUser := total
 		var buf bytes.Buffer
 		s := fmt.Sprintf("本月大水比:💦Total: %.0f\n", total)
@@ -327,7 +327,7 @@ func (u *Updater) Statistics(s string) string {
 			otherUser -= score
 		}
 		if otherUser > 0 {
-			s = fmt.Sprintf("其他用户:%.0f / %.2f%% 人均:%.0f\n",
+			s = fmt.Sprintf("其他用户:%.0f / %.2f%% 人均:%.2f\n",
 				otherUser, otherUser/total*100, otherUser/float64(otherCount))
 			buf.WriteString(s)
 		}
