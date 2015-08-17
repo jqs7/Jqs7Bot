@@ -13,6 +13,8 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"gopkg.in/redis.v3"
+
 	"github.com/Syfaro/telegram-bot-api"
 	"github.com/antonholmquist/jason"
 	"github.com/fatih/set"
@@ -251,6 +253,91 @@ func (u *Updater) Trans(in string) (out, from string) {
 	w.Wait()
 	out = buf.String()
 	return
+}
+
+func (u *Updater) Analytics() {
+	dayKey := "tgAnalytics:" + GetDate(true)
+	monthKey := "tgAnalytics:" + GetDate(false)
+	dayTotalKey := "tgTotalAnalytics:" + GetDate(true)
+	monthTotalKey := "tgTotalAnalytics:" + GetDate(false)
+
+	u.redis.HSet("tgUsersID", strconv.Itoa(u.update.Message.From.ID), u.FromUserName())
+
+	switch {
+	case u.redis.TTL(dayKey).Val() < 0:
+		u.redis.Expire(dayKey, time.Hour*24*2)
+	case u.redis.TTL(monthKey).Val() < 0:
+		u.redis.Expire(monthKey, time.Hour*24*60)
+	}
+
+	u.redis.Incr(dayTotalKey)
+	u.redis.ZIncrBy(dayKey, 1, strconv.Itoa(u.update.Message.From.ID))
+	u.redis.Incr(monthTotalKey)
+	u.redis.ZIncrBy(monthKey, 1, strconv.Itoa(u.update.Message.From.ID))
+}
+
+func (u *Updater) Statistics(s string) string {
+	dayKey := "tgAnalytics:" + GetDate(true)
+	monthKey := "tgAnalytics:" + GetDate(false)
+	dayTotalKey := "tgTotalAnalytics:" + GetDate(true)
+	monthTotalKey := "tgTotalAnalytics:" + GetDate(false)
+	switch s {
+	case "day":
+		result := u.redis.ZRevRangeByScoreWithScores(dayKey,
+			redis.ZRangeByScore{Min: "-inf", Max: "+inf", Count: 5}).Val()
+		totalS := u.redis.Get(dayTotalKey).Val()
+		total, _ := strconv.ParseFloat(totalS, 64)
+		var buf bytes.Buffer
+		s := fmt.Sprintf("Total: %.0f\n", total)
+		buf.WriteString(s)
+		for k := range result {
+			score := result[k].Score
+			user := u.redis.HGet("tgUsersID", result[k].Member.(string)).Val()
+			s := fmt.Sprintf("%s -- %.0f %.2f%%\n", user, score, score/total*100)
+			buf.WriteString(s)
+		}
+		return buf.String()
+	case "month":
+		result := u.redis.ZRevRangeByScoreWithScores(monthKey,
+			redis.ZRangeByScore{Min: "-inf", Max: "+inf", Count: 5}).Val()
+		totalS := u.redis.Get(monthTotalKey).Val()
+		total, _ := strconv.ParseFloat(totalS, 64)
+		var buf bytes.Buffer
+		s := fmt.Sprintf("Total: %.0f\n", total)
+		buf.WriteString(s)
+		for k := range result {
+			score := result[k].Score
+			s := fmt.Sprintf("%s -- %.0f %.2f%%\n", result[k].Member, score, score/total)
+			buf.WriteString(s)
+		}
+		return buf.String()
+	default:
+		return ""
+	}
+}
+
+func GetDate(day bool) string {
+	now := time.Now()
+	year := strconv.Itoa(now.Year())
+	month := now.Month().String()
+	if day {
+		day := strconv.Itoa(now.Day())
+		return year + month + day
+	}
+	return year + month
+}
+
+func (u *Updater) FromUserName() string {
+	userName := u.update.Message.From.UserName
+	if userName != "" {
+		return "@" + userName
+	}
+	name := u.update.Message.From.FirstName
+	lastName := u.update.Message.From.LastName
+	if lastName != "" {
+		name += " " + lastName
+	}
+	return name
 }
 
 func Google(query string) string {

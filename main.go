@@ -205,6 +205,14 @@ func main() {
 						command := strings.TrimLeft(update.Message.Text, "/")
 						u.BotReply(Stat(command))
 					}
+				case "/stat":
+					if u.IsMaster() {
+						if len(s) >= 2 && s[1] == "month" {
+							u.BotReply(u.Statistics("month"))
+						} else {
+							u.BotReply(u.Statistics("day"))
+						}
+					}
 				case "@" + botname:
 					if len(s) == 1 {
 						u.BotReply("叫奴家是有什么事呢| ω・´)")
@@ -233,6 +241,7 @@ func main() {
 						u.Turing(update.Message.Text)
 					}
 				}
+				u.Analytics()
 			}(u, update)
 		}
 	}
