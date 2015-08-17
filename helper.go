@@ -284,33 +284,47 @@ func (u *Updater) Statistics(s string) string {
 	switch s {
 	case "day":
 		result := u.redis.ZRevRangeByScoreWithScores(dayKey,
-			redis.ZRangeByScore{Min: "-inf", Max: "+inf", Count: 5}).Val()
+			redis.ZRangeByScore{Min: "-inf", Max: "+inf", Count: 10}).Val()
 		totalS := u.redis.Get(dayTotalKey).Val()
 		total, _ := strconv.ParseFloat(totalS, 64)
+		otherCount := u.redis.ZCount(dayTotalKey, "-inf", "+inf").Val() - 10
+		otherUser := total
 		var buf bytes.Buffer
-		s := fmt.Sprintf("Total: %.0f\n", total)
+		s := fmt.Sprintf("今日大水比:\nTotal: %.0f\n", total)
 		buf.WriteString(s)
 		for k := range result {
 			score := result[k].Score
 			member := fmt.Sprintf("%s", result[k].Member)
 			user := u.redis.HGet("tgUsersID", member).Val()
-			s := fmt.Sprintf("%s -- %.0f %.2f%%\n", user, score, score/total*100)
+			s := fmt.Sprintf("%s -- %.0f / %.2f%%\n",
+				user, score, score/total*100)
 			buf.WriteString(s)
+			otherUser -= score
 		}
+		s = fmt.Sprintf("其他用户:%.0f / %.2f%% 人均:%.0f\n",
+			otherUser, otherUser/total*100, otherUser/float64(otherCount))
 		return buf.String()
 	case "month":
 		result := u.redis.ZRevRangeByScoreWithScores(monthKey,
-			redis.ZRangeByScore{Min: "-inf", Max: "+inf", Count: 5}).Val()
+			redis.ZRangeByScore{Min: "-inf", Max: "+inf", Count: 10}).Val()
 		totalS := u.redis.Get(monthTotalKey).Val()
 		total, _ := strconv.ParseFloat(totalS, 64)
+		otherCount := u.redis.ZCount(dayTotalKey, "-inf", "+inf").Val() - 10
+		otherUser := total
 		var buf bytes.Buffer
-		s := fmt.Sprintf("Total: %.0f\n", total)
+		s := fmt.Sprintf("本月大水比:\nTotal: %.0f\n", total)
 		buf.WriteString(s)
 		for k := range result {
 			score := result[k].Score
-			s := fmt.Sprintf("%s -- %.0f %.2f%%\n", result[k].Member, score, score/total)
+			member := fmt.Sprintf("%s", result[k].Member)
+			user := u.redis.HGet("tgUsersID", member).Val()
+			s := fmt.Sprintf("%s -- %.0f / %.2f%%\n",
+				user, score, score/total*100)
 			buf.WriteString(s)
+			otherUser -= score
 		}
+		s = fmt.Sprintf("其他用户:%.0f / %.2f%% 人均:%.0f\n",
+			otherUser, otherUser/total*100, otherUser/float64(otherCount))
 		return buf.String()
 	default:
 		return ""
