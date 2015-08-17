@@ -290,7 +290,7 @@ func (u *Updater) Statistics(s string) string {
 		otherCount := u.redis.ZCount(dayTotalKey, "-inf", "+inf").Val() - 10
 		otherUser := total
 		var buf bytes.Buffer
-		s := fmt.Sprintf("今日大水比:\nTotal: %.0f\n", total)
+		s := fmt.Sprintf("今日大水比💦Total: %.0f\n", total)
 		buf.WriteString(s)
 		for k := range result {
 			score := result[k].Score
@@ -303,6 +303,7 @@ func (u *Updater) Statistics(s string) string {
 		}
 		s = fmt.Sprintf("其他用户:%.0f / %.2f%% 人均:%.0f\n",
 			otherUser, otherUser/total*100, otherUser/float64(otherCount))
+		buf.WriteString(s)
 		return buf.String()
 	case "month":
 		result := u.redis.ZRevRangeByScoreWithScores(monthKey,
@@ -312,7 +313,7 @@ func (u *Updater) Statistics(s string) string {
 		otherCount := u.redis.ZCount(dayTotalKey, "-inf", "+inf").Val() - 10
 		otherUser := total
 		var buf bytes.Buffer
-		s := fmt.Sprintf("本月大水比:\nTotal: %.0f\n", total)
+		s := fmt.Sprintf("本月大水比:💦Total: %.0f\n", total)
 		buf.WriteString(s)
 		for k := range result {
 			score := result[k].Score
@@ -325,6 +326,7 @@ func (u *Updater) Statistics(s string) string {
 		}
 		s = fmt.Sprintf("其他用户:%.0f / %.2f%% 人均:%.0f\n",
 			otherUser, otherUser/total*100, otherUser/float64(otherCount))
+		buf.WriteString(s)
 		return buf.String()
 	default:
 		return ""
