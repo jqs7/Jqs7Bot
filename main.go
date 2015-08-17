@@ -45,6 +45,7 @@ func main() {
 	hitokotoCache, _ := conf.GetInt("hitokotoCache")
 	vimtips := new(Tips).GetChan(int(vimTipsCache))
 	hitokoto := new(Hitokoto).GetChan(int(hitokotoCache))
+	sticker := RandSticker(rc)
 
 	bot, err := tgbotapi.NewBotAPI(botapi)
 	if err != nil {
@@ -109,6 +110,9 @@ func main() {
 				return false
 			})
 
+		u.SaveSticker()
+		u.Analytics()
+
 		if len(s) > 0 {
 			go func(u Updater, update tgbotapi.Update) {
 				switch s[0] {
@@ -136,6 +140,9 @@ func main() {
 						u.BotReply(v.ToString())
 					case h := <-hitokoto:
 						u.BotReply(h.ToString())
+					case sid := <-sticker:
+						s := tgbotapi.NewStickerShare(u.update.Message.Chat.ID, sid)
+						u.bot.SendSticker(s)
 					default:
 						u.BotReply("诶诶?群组娘迷路了呢_(:з」∠)_")
 					}
@@ -241,7 +248,6 @@ func main() {
 						u.Turing(update.Message.Text)
 					}
 				}
-				u.Analytics()
 			}(u, update)
 		}
 	}
