@@ -454,7 +454,7 @@ func Stat(t string) string {
 		checkErr(err)
 		l, err := load.LoadAvg()
 		checkErr(err)
-		c, err := cpu.CPUPercent(time.Second, false)
+		c, err := cpu.CPUPercent(time.Second*3, false)
 		checkErr(err)
 		return fmt.Sprintf(
 			"OSRelease: %s\nHostName: %s\nLoadAdv: %.2f %.2f %.2f\n"+
