@@ -226,8 +226,9 @@ func main() {
 							u.BotReply(u.Statistics(FromUserName(
 								u.update.Message.ReplyToMessage.From)),
 							)
+						} else {
+							u.BotReply(u.Statistics("day"))
 						}
-						u.BotReply(u.Statistics("day"))
 					}
 				case "@" + botname:
 					if len(s) == 1 {
