@@ -4,7 +4,10 @@ import (
 	"bytes"
 	"fmt"
 	"runtime"
+	"strings"
 	"time"
+
+	"gopkg.in/redis.v3"
 
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
@@ -13,7 +16,7 @@ import (
 	"github.com/shirou/gopsutil/mem"
 )
 
-func Stat(t string) string {
+func Stat(t string, rc *redis.Client) string {
 	checkErr := func(err error) string {
 		return "系统酱正在食用作死药丸中..."
 	}
@@ -66,6 +69,24 @@ func Stat(t string) string {
 			h.Platform, h.Hostname, l.Load1, l.Load5, l.Load15,
 			runtime.NumGoroutine(), c[0],
 		)
+	case "redis":
+		info := rc.Info().Val()
+		if info != "" {
+			infos := strings.Split(info, "\r\n")
+			infoMap := make(map[string]string)
+			for k := range infos {
+				line := strings.Split(infos[k], ":")
+				if len(line) > 1 {
+					infoMap[line[0]] = line[1]
+				}
+			}
+			DBSize := rc.DbSize().Val()
+			return fmt.Sprintf("Redis Version: %s\nOS: %s\nUsed Memory: %s\n"+
+				"Used Memory Peak: %s\nDB Size: %d\n",
+				infoMap["redis_version"], infoMap["os"], infoMap["used_memory_human"],
+				infoMap["used_memory_peak_human"], DBSize)
+		}
+		return ""
 	default:
 		return "欢迎来到未知领域(ゝ∀･)"
 	}

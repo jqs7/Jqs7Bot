@@ -207,10 +207,10 @@ func main() {
 						conf, _ = yaml.ReadFile("botconf.yaml")
 						u.BotReply("群组娘已完成弹药重装(ゝ∀･)")
 					}
-				case "/os", "/df", "/free":
+				case "/os", "/df", "/free", "/redis":
 					if u.IsMaster() {
 						command := strings.TrimLeft(update.Message.Text, "/")
-						u.BotReply(Stat(command))
+						u.BotReply(Stat(command, u.redis))
 					}
 				case "/stat":
 					if len(s) >= 2 {
