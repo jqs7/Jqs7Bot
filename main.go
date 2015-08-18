@@ -213,12 +213,15 @@ func main() {
 						u.BotReply(Stat(command))
 					}
 				case "/stat":
-					if u.IsMaster() {
-						if len(s) >= 2 && s[1] == "month" {
+					if len(s) >= 2 {
+						switch {
+						case strings.HasPrefix(s[1], "m"):
 							u.BotReply(u.Statistics("month"))
-						} else {
-							u.BotReply(u.Statistics("day"))
+						case strings.HasPrefix(s[1], "@"):
+							u.BotReply(u.Statistics(s[1]))
 						}
+					} else {
+						u.BotReply(u.Statistics("day"))
 					}
 				case "@" + botname:
 					if len(s) == 1 {

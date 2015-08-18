@@ -16,6 +16,7 @@ func (u *Updater) Analytics() {
 	monthTotalKey := "tgTotalAnalytics:" + GetDate(false)
 
 	u.redis.HSet("tgUsersID", strconv.Itoa(u.update.Message.From.ID), u.FromUserName())
+	u.redis.HSet("tgUsersName", u.FromUserName(), strconv.Itoa(u.update.Message.From.ID))
 
 	switch {
 	case u.redis.TTL(dayKey).Val() < 0:
@@ -93,6 +94,27 @@ func (u *Updater) Statistics(s string) string {
 		buf.WriteString(s)
 		return buf.String()
 	default:
-		return ""
+		userid := u.redis.HGet("tgUsersName", s).Val()
+		if userid == "" {
+			return "舰队阵列手册中查无此人呢喵ˋ( ° ▽、°  )"
+		}
+		dayCount := u.redis.ZScore(dayKey, userid).Val()
+		monthCount := u.redis.ZScore(monthKey, userid).Val()
+		totalTmp := u.redis.Get(dayTotalKey).Val()
+		dayTotal, _ := strconv.ParseFloat(totalTmp, 64)
+		totalTmp = u.redis.Get(monthTotalKey).Val()
+		monthTotal, _ := strconv.ParseFloat(totalTmp, 64)
+		dayRank := u.redis.ZRevRank(dayKey, userid).Val()
+		monthRank := u.redis.ZRevRank(monthKey, userid).Val()
+		s := fmt.Sprintf("ID: %s\n今日: %.0f / %.2f%%\n"+
+			"本月: %.0f / %.2f%%\n",
+			userid, dayCount, dayCount/dayTotal*100,
+			monthCount, monthCount/monthTotal*100)
+		if dayRank < 10 && monthRank < 10 {
+			s += "是个十足的大水比喵！💦"
+		} else if monthRank < 10 {
+			s += "今天水的不够多呢！💦"
+		}
+		return s
 	}
 }
