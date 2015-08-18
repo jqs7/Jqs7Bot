@@ -106,10 +106,10 @@ func (u *Updater) Statistics(s string) string {
 		monthTotal, _ := strconv.ParseFloat(totalTmp, 64)
 		dayRank := u.redis.ZRevRank(dayKey, userid).Val()
 		monthRank := u.redis.ZRevRank(monthKey, userid).Val()
-		s := fmt.Sprintf("ID: %s\n今日: %.0f / %.2f%%\n"+
-			"本月: %.0f / %.2f%%\n",
-			userid, dayCount, dayCount/dayTotal*100,
-			monthCount, monthCount/monthTotal*100)
+		s := fmt.Sprintf("ID: %s\n今日: %.0f / %.2f%% 排名: %d\n"+
+			"本月: %.0f / %.2f%% 排名: %d\n",
+			userid, dayCount, dayCount/dayTotal*100, dayRank+1,
+			monthCount, monthCount/monthTotal*100, monthRank+1)
 		if dayRank < 10 && monthRank < 10 {
 			s += "是个十足的大水比喵！💦"
 		} else if monthRank < 10 {
