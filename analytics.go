@@ -15,8 +15,10 @@ func (u *Updater) Analytics() {
 	dayTotalKey := "tgTotalAnalytics:" + GetDate(true)
 	monthTotalKey := "tgTotalAnalytics:" + GetDate(false)
 
-	u.redis.HSet("tgUsersID", strconv.Itoa(u.update.Message.From.ID), u.FromUserName())
-	u.redis.HSet("tgUsersName", u.FromUserName(), strconv.Itoa(u.update.Message.From.ID))
+	u.redis.HSet("tgUsersID", strconv.Itoa(u.update.Message.From.ID),
+		FromUserName(u.update.Message.From))
+	u.redis.HSet("tgUsersName", FromUserName(u.update.Message.From),
+		strconv.Itoa(u.update.Message.From.ID))
 
 	switch {
 	case u.redis.TTL(dayKey).Val() < 0:

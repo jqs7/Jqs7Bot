@@ -215,12 +215,18 @@ func main() {
 				case "/stat":
 					if len(s) >= 2 {
 						switch {
-						case strings.HasPrefix(s[1], "m"):
+						case s[1] == "m":
 							u.BotReply(u.Statistics("month"))
-						case strings.HasPrefix(s[1], "@"):
-							u.BotReply(u.Statistics(s[1]))
+						default:
+							name := strings.Join(s[1:], " ")
+							u.BotReply(u.Statistics(name))
 						}
 					} else {
+						if u.update.Message.ReplyToMessage != nil {
+							u.BotReply(u.Statistics(FromUserName(
+								u.update.Message.ReplyToMessage.From)),
+							)
+						}
 						u.BotReply(u.Statistics("day"))
 					}
 				case "@" + botname:

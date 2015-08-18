@@ -11,6 +11,7 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/Syfaro/telegram-bot-api"
 	"github.com/fatih/set"
 	"github.com/franela/goreq"
 	"github.com/kylelemons/go-gypsy/yaml"
@@ -94,13 +95,13 @@ func GetDate(day bool) string {
 	return year + month
 }
 
-func (u *Updater) FromUserName() string {
-	userName := u.update.Message.From.UserName
+func FromUserName(user tgbotapi.User) string {
+	userName := user.UserName
 	if userName != "" {
 		return "@" + userName
 	}
-	name := u.update.Message.From.FirstName
-	lastName := u.update.Message.From.LastName
+	name := user.FirstName
+	lastName := user.LastName
 	if lastName != "" {
 		name += " " + lastName
 	}
