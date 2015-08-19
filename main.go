@@ -227,7 +227,7 @@ func main() {
 						command := strings.TrimLeft(update.Message.Text, "/")
 						u.BotReply(Stat(command, u.redis))
 					}
-				case "/stat":
+				case "/cc":
 					if len(s) >= 2 {
 						switch s[1] {
 						case "m":
