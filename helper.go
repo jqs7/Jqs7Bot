@@ -88,19 +88,14 @@ func GetDate(day bool, offset int) string {
 	now := time.Now()
 	year := strconv.Itoa(now.Year())
 	var month string
-	if !day && offset != 0 {
+	if !day {
 		month = (now.Month() + time.Month(offset)).String()
+		return year + month
 	} else {
 		month = now.Month().String()
-	}
-	if day && offset != 0 {
 		day := strconv.Itoa(now.Day() + offset)
 		return year + month + day
-	} else {
-		day := strconv.Itoa(now.Day())
-		return year + month + day
 	}
-	return year + month
 }
 
 func FromUserName(user tgbotapi.User) string {
