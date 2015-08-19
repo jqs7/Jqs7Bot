@@ -84,11 +84,19 @@ func To2dSlice(in []string, x, y int) [][]string {
 	return out
 }
 
-func GetDate(day bool) string {
+func GetDate(day bool, offset int) string {
 	now := time.Now()
 	year := strconv.Itoa(now.Year())
-	month := now.Month().String()
-	if day {
+	var month string
+	if !day && offset != 0 {
+		month = (now.Month() + time.Month(offset)).String()
+	} else {
+		month = now.Month().String()
+	}
+	if day && offset != 0 {
+		day := strconv.Itoa(now.Day() + offset)
+		return year + month + day
+	} else {
 		day := strconv.Itoa(now.Day())
 		return year + month + day
 	}

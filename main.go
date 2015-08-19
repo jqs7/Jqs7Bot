@@ -229,9 +229,13 @@ func main() {
 					}
 				case "/stat":
 					if len(s) >= 2 {
-						switch {
-						case s[1] == "m":
+						switch s[1] {
+						case "m":
 							u.BotReply(u.Statistics("month"))
+						case "^":
+							u.BotReply(u.Statistics("yesterday"))
+						case "^m":
+							u.BotReply(u.Statistics("last_month"))
 						default:
 							name := strings.Join(s[1:], " ")
 							u.BotReply(u.Statistics(name))
