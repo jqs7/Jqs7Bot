@@ -135,16 +135,31 @@ func main() {
 				case "/cancel":
 					u.Cancel()
 				case "/rand":
-					select {
-					case v := <-vimtips:
-						u.BotReply(v.ToString())
-					case h := <-hitokoto:
-						u.BotReply(h.ToString())
-					case sid := <-sticker:
-						s := tgbotapi.NewStickerShare(u.update.Message.Chat.ID, sid)
-						u.bot.SendSticker(s)
-					default:
-						u.BotReply("诶诶?群组娘迷路了呢_(:з」∠)_")
+					if len(s) >= 2 {
+						switch s[1] {
+						case "v":
+							v := <-vimtips
+							u.BotReply(v.ToString())
+						case "h":
+							h := <-hitokoto
+							u.BotReply(h.ToString())
+						case "s":
+							sid := <-sticker
+							s := tgbotapi.NewStickerShare(u.update.Message.Chat.ID, sid)
+							u.bot.SendSticker(s)
+						}
+					} else {
+						select {
+						case v := <-vimtips:
+							u.BotReply(v.ToString())
+						case h := <-hitokoto:
+							u.BotReply(h.ToString())
+						case sid := <-sticker:
+							s := tgbotapi.NewStickerShare(u.update.Message.Chat.ID, sid)
+							u.bot.SendSticker(s)
+						default:
+							u.BotReply("诶诶?群组娘迷路了呢_(:з」∠)_")
+						}
 					}
 				case "/setrule":
 					if len(s) >= 2 {
