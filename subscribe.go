@@ -12,7 +12,7 @@ func (u *Updater) Subscribe() {
 	isSubscribe, _ := strconv.ParseBool(u.redis.HGet("tgSubscribe",
 		chatIDStr).Val())
 
-	if u.update.Message.Chat.ID < 0 {
+	if u.update.Message.IsGroup() {
 		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
 			"群组订阅功能已取消，需要订阅功能的话，请私聊奴家呢o(￣ˇ￣)o")
 		u.bot.SendMessage(msg)
@@ -60,7 +60,7 @@ func (u *Updater) UnSubscribe() {
 }
 
 func (u *Updater) PreBroadcast() {
-	if u.IsMaster() && u.update.Message.Chat.ID > 0 {
+	if u.IsMaster() && !u.update.Message.IsGroup() {
 		u.BotReply("Send me the Broadcast (＾o＾)ﾉ")
 		u.SetStatus("broadcast")
 	}

@@ -22,15 +22,17 @@ func (u *Updater) Analytics() {
 
 	switch {
 	case u.redis.TTL(dayKey).Val() < 0:
-		u.redis.Expire(dayKey, time.Hour*24*2)
+		u.redis.Expire(dayKey, time.Hour*26*2)
 	case u.redis.TTL(monthKey).Val() < 0:
-		u.redis.Expire(monthKey, time.Hour*24*60)
+		u.redis.Expire(monthKey, time.Hour*24*63)
 	}
 
-	u.redis.Incr(dayTotalKey)
-	u.redis.ZIncrBy(dayKey, 1, strconv.Itoa(u.update.Message.From.ID))
-	u.redis.Incr(monthTotalKey)
-	u.redis.ZIncrBy(monthKey, 1, strconv.Itoa(u.update.Message.From.ID))
+	if u.update.Message.IsGroup() {
+		u.redis.Incr(dayTotalKey)
+		u.redis.ZIncrBy(dayKey, 1, strconv.Itoa(u.update.Message.From.ID))
+		u.redis.Incr(monthTotalKey)
+		u.redis.ZIncrBy(monthKey, 1, strconv.Itoa(u.update.Message.From.ID))
+	}
 }
 
 func (u *Updater) Statistics(s string) string {
