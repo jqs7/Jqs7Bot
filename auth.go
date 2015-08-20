@@ -31,7 +31,7 @@ func (u *Updater) Auth(answer string) {
 				"验证成功喵~！\n原来你不是外星人呢😊")
 			u.SetStatus("")
 			u.bot.SendMessage(msg)
-			u.Start()
+			u.Start("/start")
 		} else {
 			log.Printf("%d --- %s Auth Fail",
 				u.update.Message.From.ID, u.update.Message.From.UserName)
