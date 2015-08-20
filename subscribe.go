@@ -3,74 +3,49 @@ package main
 import (
 	"log"
 	"strconv"
+	"strings"
 
 	"github.com/Syfaro/telegram-bot-api"
 )
 
-func (u *Updater) Subscribe() {
-	chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
-	isSubscribe, _ := strconv.ParseBool(u.redis.HGet("tgSubscribe",
-		chatIDStr).Val())
+func (p *Processor) subscribe(command ...string) {
+	f := func() {
+		chatIDStr := strconv.Itoa(p.chatid())
+		isSubscribe, _ := strconv.ParseBool(rc.HGet("tgSubscribe",
+			chatIDStr).Val())
 
-	if u.update.Message.IsGroup() {
-		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-			"群组订阅功能已取消，需要订阅功能的话，请私聊奴家呢o(￣ˇ￣)o")
-		u.bot.SendMessage(msg)
-		return
-	}
-
-	if !u.IsAuthed() {
-		u.SendQuestion()
-		return
-	}
-
-	if isSubscribe {
-		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-			"已经订阅过，就不要重复订阅啦😘")
-		u.bot.SendMessage(msg)
-	} else {
-		u.redis.HSet("tgSubscribe", chatIDStr, strconv.FormatBool(true))
-		u.redis.HIncrBy("tgSubscribeTimes", chatIDStr, 1)
-		msg := tgbotapi.NewMessage(u.update.Message.Chat.ID,
-			"订阅成功\n以后奴家知道新的群组的话，会第一时间告诉你哟😊\n"+
-				"(订阅仅对当前会话有效)")
-		u.bot.SendMessage(msg)
-	}
-}
-
-func (u *Updater) UnSubscribe() {
-	chatIDStr := strconv.Itoa(u.update.Message.Chat.ID)
-	var msg tgbotapi.MessageConfig
-	if u.redis.HExists("tgSubscribe", chatIDStr).Val() {
-		u.redis.HDel("tgSubscribe", chatIDStr)
-		times, _ := u.redis.HIncrBy("tgSubscribeTimes", chatIDStr, 1).Result()
-		if times > 5 {
-			msg = tgbotapi.NewMessage(u.update.Message.Chat.ID,
-				"订了退，退了订，你烦不烦嘛！！！⊂彡☆))∀`)`")
-			u.redis.HDel("tgSubscribeTimes", chatIDStr)
-		} else {
-			msg = tgbotapi.NewMessage(u.update.Message.Chat.ID,
-				"好伤心，退订了就不能愉快的玩耍了呢😭")
+		if p.update.Message.IsGroup() {
+			msg := tgbotapi.NewMessage(p.chatid(),
+				"群组订阅功能已取消，需要订阅功能的话，请私聊奴家呢o(￣ˇ￣)o")
+			bot.SendMessage(msg)
+			return
 		}
-	} else {
-		msg = tgbotapi.NewMessage(u.update.Message.Chat.ID,
-			"你都还没订阅，让人家怎么退订嘛！o(≧口≦)o")
+
+		if !p.isAuthed() {
+			p.sendQuestion()
+			return
+		}
+
+		if isSubscribe {
+			msg := tgbotapi.NewMessage(p.chatid(),
+				"已经订阅过，就不要重复订阅啦😘")
+			bot.SendMessage(msg)
+		} else {
+			rc.HSet("tgSubscribe", chatIDStr, strconv.FormatBool(true))
+			rc.HIncrBy("tgSubscribeTimes", chatIDStr, 1)
+			msg := tgbotapi.NewMessage(p.chatid(),
+				"订阅成功\n以后奴家知道新的群组的话，会第一时间告诉你哟😊\n"+
+					"(订阅仅对当前会话有效)")
+			bot.SendMessage(msg)
+		}
 	}
-	u.bot.SendMessage(msg)
+	p.hitter(f, command...)
 }
 
-func (u *Updater) PreBroadcast() {
-	if u.IsMaster() && !u.update.Message.IsGroup() {
-		u.BotReply("Send me the Broadcast (＾o＾)ﾉ")
-		u.SetStatus("broadcast")
-	}
-}
-
-func (u *Updater) Broadcast(msgText string) {
-	if u.IsMaster() &&
-		u.redis.Exists("tgSubscribe").Val() {
-
-		subStates := u.redis.HGetAllMap("tgSubscribe").Val()
+func (p *Processor) _broadcast(text string) {
+	if p.isMaster() &&
+		rc.Exists("tgSubscribe").Val() {
+		subStates := rc.HGetAllMap("tgSubscribe").Val()
 
 		for k, v := range subStates {
 			chatid, _ := strconv.Atoi(k)
@@ -78,12 +53,54 @@ func (u *Updater) Broadcast(msgText string) {
 
 			if subState && chatid > 0 {
 				log.Printf("sending boardcast to %d ...", chatid)
-				msg := tgbotapi.NewMessage(chatid, msgText)
+				msg := tgbotapi.NewMessage(chatid, text)
 				go func(k string) {
-					u.bot.SendMessage(msg)
+					bot.SendMessage(msg)
 					log.Printf("%s --- done", k)
 				}(k)
 			}
 		}
 	}
+}
+
+func (p *Processor) unsubscribe(command ...string) {
+	f := func() {
+		chatIDStr := strconv.Itoa(p.chatid())
+		var msg tgbotapi.MessageConfig
+		if rc.HExists("tgSubscribe", chatIDStr).Val() {
+			rc.HDel("tgSubscribe", chatIDStr)
+			times, _ := rc.HIncrBy("tgSubscribeTimes", chatIDStr, 1).Result()
+			if times > 5 {
+				msg = tgbotapi.NewMessage(p.chatid(),
+					"订了退，退了订，你烦不烦嘛！！！⊂彡☆))∀`)`")
+				rc.HDel("tgSubscribeTimes", chatIDStr)
+			} else {
+				msg = tgbotapi.NewMessage(p.chatid(),
+					"好伤心，退订了就不能愉快的玩耍了呢😭")
+			}
+		} else {
+			msg = tgbotapi.NewMessage(p.chatid(),
+				"你都还没订阅，让人家怎么退订嘛！o(≧口≦)o")
+		}
+		bot.SendMessage(msg)
+	}
+	p.hitter(f, command...)
+}
+
+func (p *Processor) broadcast(command ...string) {
+	f := func() {
+		if len(p.s) == 1 && p.isMaster() &&
+			!p.update.Message.IsGroup() {
+			msg := tgbotapi.NewMessage(p.chatid(),
+				"Send me the Broadcast (＾o＾)ﾉ")
+			bot.SendMessage(msg)
+			p.setStatus("broadcast")
+			return
+		}
+		if len(p.s) >= 2 {
+			text := strings.Join(p.s[1:], " ")
+			p._broadcast(text)
+		}
+	}
+	p.hitter(f, command...)
 }

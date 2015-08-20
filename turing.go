@@ -123,9 +123,22 @@ Req:
 	}
 }
 
-func (u *Updater) Turing(text string) {
-	if !u.IsAuthed() {
-		u.SendQuestion()
+func (p *Processor) turing(command ...string) {
+	f := func() {
+		if len(p.s) == 1 {
+			msg := tgbotapi.NewMessage(p.chatid(), "叫奴家是有什么事呢| ω・´)")
+			bot.SendMessage(msg)
+		} else if len(p.s) >= 2 {
+			in := strings.Join(p.s[1:], " ")
+			p._turing(in)
+		}
+	}
+	p.hitter(f, command...)
+}
+
+func (p *Processor) _turing(text string) {
+	if !p.isAuthed() {
+		p.sendQuestion()
 		return
 	}
 	msgText := make(chan string)
@@ -133,44 +146,90 @@ func (u *Updater) Turing(text string) {
 	asGroupMsg := false
 	go func() {
 		var userid string
-		if u.update.Message.Chat.ID < 0 &&
+		if p.update.Message.IsGroup() &&
 			strings.HasPrefix(text, "-") {
 			text = strings.TrimPrefix(text, "-")
 			asGroupMsg = true
-			userid = strconv.Itoa(u.update.Message.Chat.ID)
+			userid = strconv.Itoa(p.update.Message.Chat.ID)
 		} else {
-			userid = strconv.Itoa(u.update.Message.From.ID)
+			userid = strconv.Itoa(p.update.Message.From.ID)
 		}
 		//语言检测，如果不是中文，则使用翻译后的结果
 		reZh := regexp.MustCompile(`[\p{Han}]`).
 			FindAllString(text, -1)
 		if float32(len(reZh))/float32(utf8.RuneCountInString(text)) < 0.4 {
-			result, from := u.Trans(text)
+			result, from := p.translator(text)
 			if from != "zh" {
 				text = result
 			}
 		}
-
-		msgText <- TuringBot(u.configs.turingAPI, userid, text)
+		msgText <- TuringBot(turingAPI, userid, text)
 	}()
 
-	go func() {
-		typing := tgbotapi.
-			NewChatAction(u.update.Message.Chat.ID, "typing")
-		u.bot.SendChatAction(typing)
-		chatAction <- true
-	}()
+	p.sendTyping(chatAction)
 	<-chatAction
 	result := <-msgText
 	if asGroupMsg {
 		result = fmt.Sprintf("- %s", result)
 	}
 
-	msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, result)
+	msg := tgbotapi.NewMessage(p.chatid(), result)
 	msg.DisableWebPagePreview = true
-	if u.update.Message.Chat.ID < 0 {
-		msg.ReplyToMessageID = u.update.Message.MessageID
+	if p.update.Message.IsGroup() {
+		msg.ReplyToMessageID = p.update.Message.MessageID
 	}
-	u.bot.SendMessage(msg)
+	bot.SendMessage(msg)
 	return
 }
+
+//func (u *Updater) Turing(text string) {
+//if !u.IsAuthed() {
+//u.SendQuestion()
+//return
+//}
+//msgText := make(chan string)
+//chatAction := make(chan bool)
+//asGroupMsg := false
+//go func() {
+//var userid string
+//if u.update.Message.Chat.ID < 0 &&
+//strings.HasPrefix(text, "-") {
+//text = strings.TrimPrefix(text, "-")
+//asGroupMsg = true
+//userid = strconv.Itoa(u.update.Message.Chat.ID)
+//} else {
+//userid = strconv.Itoa(u.update.Message.From.ID)
+//}
+////语言检测，如果不是中文，则使用翻译后的结果
+//reZh := regexp.MustCompile(`[\p{Han}]`).
+//FindAllString(text, -1)
+//if float32(len(reZh))/float32(utf8.RuneCountInString(text)) < 0.4 {
+//result, from := u.Trans(text)
+//if from != "zh" {
+//text = result
+//}
+//}
+
+//msgText <- TuringBot(u.configs.turingAPI, userid, text)
+//}()
+
+//go func() {
+//typing := tgbotapi.
+//NewChatAction(u.update.Message.Chat.ID, "typing")
+//u.bot.SendChatAction(typing)
+//chatAction <- true
+//}()
+//<-chatAction
+//result := <-msgText
+//if asGroupMsg {
+//result = fmt.Sprintf("- %s", result)
+//}
+
+//msg := tgbotapi.NewMessage(u.update.Message.Chat.ID, result)
+//msg.DisableWebPagePreview = true
+//if u.update.Message.Chat.ID < 0 {
+//msg.ReplyToMessageID = u.update.Message.MessageID
+//}
+//u.bot.SendMessage(msg)
+//return
+//}

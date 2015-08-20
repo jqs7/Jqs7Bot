@@ -4,12 +4,15 @@ import (
 	"bytes"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
+
+	"github.com/Syfaro/telegram-bot-api"
 
 	"gopkg.in/redis.v3"
 )
 
-func (u *Updater) Analytics() {
+func (p *Processor) analytics() {
 	day, month := true, false
 	key := func(getDay bool) string {
 		return "tgAnalytics:" + GetDate(getDay, 0)
@@ -18,27 +21,59 @@ func (u *Updater) Analytics() {
 		return "tgTotalAnalytics:" + GetDate(getDay, 0)
 	}
 
-	u.redis.HSet("tgUsersID", strconv.Itoa(u.update.Message.From.ID),
-		FromUserName(u.update.Message.From))
-	u.redis.HSet("tgUsersName", FromUserName(u.update.Message.From),
-		strconv.Itoa(u.update.Message.From.ID))
+	rc.HSet("tgUsersID", strconv.Itoa(p.update.Message.From.ID),
+		FromUserName(p.update.Message.From))
+	rc.HSet("tgUsersName", FromUserName(p.update.Message.From),
+		strconv.Itoa(p.update.Message.From.ID))
 
 	switch {
-	case u.redis.TTL(key(day)).Val() < 0:
-		u.redis.Expire(key(day), time.Hour*26*2)
-	case u.redis.TTL(key(month)).Val() < 0:
-		u.redis.Expire(key(month), time.Hour*24*63)
+	case rc.TTL(key(day)).Val() < 0:
+		rc.Expire(key(day), time.Hour*26*2)
+	case rc.TTL(key(month)).Val() < 0:
+		rc.Expire(key(month), time.Hour*24*63)
 	}
 
-	if u.update.Message.IsGroup() {
-		u.redis.Incr(totalKey(day))
-		u.redis.ZIncrBy(key(day), 1, strconv.Itoa(u.update.Message.From.ID))
-		u.redis.Incr(totalKey(month))
-		u.redis.ZIncrBy(key(month), 1, strconv.Itoa(u.update.Message.From.ID))
+	if p.update.Message.IsGroup() {
+		rc.Incr(totalKey(day))
+		rc.ZIncrBy(key(day), 1, strconv.Itoa(p.update.Message.From.ID))
+		rc.Incr(totalKey(month))
+		rc.ZIncrBy(key(month), 1, strconv.Itoa(p.update.Message.From.ID))
 	}
 }
 
-func (u *Updater) Statistics(s string) string {
+func (p *Processor) statistics(command ...string) {
+	f := func() {
+		msg := tgbotapi.NewMessage(p.chatid(), " ")
+		if len(p.s) >= 2 {
+			switch p.s[1] {
+			case "m":
+				msg = tgbotapi.NewMessage(p.chatid(), Statistics("month"))
+			case "^":
+				msg = tgbotapi.NewMessage(p.chatid(), Statistics("yesterday"))
+			case "^m":
+				msg = tgbotapi.NewMessage(p.chatid(), Statistics("last_month"))
+			default:
+				name := strings.Join(p.s[1:], " ")
+				msg = tgbotapi.NewMessage(p.chatid(), Statistics(name))
+			}
+			bot.SendMessage(msg)
+		} else {
+			if p.update.Message.ReplyToMessage != nil {
+				msg = tgbotapi.NewMessage(p.chatid(),
+					Statistics(FromUserName(
+						p.update.Message.ReplyToMessage.From)),
+				)
+				bot.SendMessage(msg)
+			} else {
+				msg = tgbotapi.NewMessage(p.chatid(), Statistics("day"))
+				bot.SendMessage(msg)
+			}
+		}
+	}
+	p.hitter(f, command...)
+}
+
+func Statistics(s string) string {
 	day, month := true, false
 	key := func(getDay bool, offset int) string {
 		return "tgAnalytics:" + GetDate(getDay, offset)
@@ -48,13 +83,13 @@ func (u *Updater) Statistics(s string) string {
 	}
 
 	report := func(getDay bool, offset int) string {
-		result := u.redis.ZRevRangeByScoreWithScores(key(getDay, offset),
+		result := rc.ZRevRangeByScoreWithScores(key(getDay, offset),
 			redis.ZRangeByScore{Min: "-inf", Max: "+inf", Count: 10}).Val()
 
-		totalS := u.redis.Get(totalKey(getDay, offset)).Val()
+		totalS := rc.Get(totalKey(getDay, offset)).Val()
 		total, _ := strconv.ParseFloat(totalS, 64)
 
-		count := u.redis.ZCount(key(getDay, offset), "-inf", "+inf").Val()
+		count := rc.ZCount(key(getDay, offset), "-inf", "+inf").Val()
 		otherUser := total
 		var buf bytes.Buffer
 		title := GetDate(getDay, offset) + " "
@@ -70,7 +105,7 @@ func (u *Updater) Statistics(s string) string {
 		for k := range result {
 			score := result[k].Score
 			member := fmt.Sprintf("%s", result[k].Member)
-			user := u.redis.HGet("tgUsersID", member).Val()
+			user := rc.HGet("tgUsersID", member).Val()
 			s := fmt.Sprintf("%s : %.0f / %.2f%%\n",
 				user, score, score/total*100)
 			buf.WriteString(s)
@@ -97,21 +132,21 @@ func (u *Updater) Statistics(s string) string {
 	case "last_month":
 		return report(false, -1)
 	default:
-		userid := u.redis.HGet("tgUsersName", s).Val()
+		userid := rc.HGet("tgUsersName", s).Val()
 		if userid == "" {
 			return "舰队阵列手册中查无此人呢喵ˋ( ° ▽、°  )"
 		}
-		dayCount := u.redis.ZScore(key(day, 0), userid).Val()
-		monthCount := u.redis.ZScore(key(month, 0), userid).Val()
+		dayCount := rc.ZScore(key(day, 0), userid).Val()
+		monthCount := rc.ZScore(key(month, 0), userid).Val()
 
-		totalTmp := u.redis.Get(totalKey(day, 0)).Val()
+		totalTmp := rc.Get(totalKey(day, 0)).Val()
 		dayTotal, _ := strconv.ParseFloat(totalTmp, 64)
 
-		totalTmp = u.redis.Get(totalKey(month, 0)).Val()
+		totalTmp = rc.Get(totalKey(month, 0)).Val()
 		monthTotal, _ := strconv.ParseFloat(totalTmp, 64)
 
-		dayRank := u.redis.ZRevRank(key(day, 0), userid).Val()
-		monthRank := u.redis.ZRevRank(key(month, 0), userid).Val()
+		dayRank := rc.ZRevRank(key(day, 0), userid).Val()
+		monthRank := rc.ZRevRank(key(month, 0), userid).Val()
 		s := fmt.Sprintf("ID: %s\n今日: %.0f / %.2f%% 排名: %d\n"+
 			"本月: %.0f / %.2f%% 排名: %d\n",
 			userid, dayCount, dayCount/dayTotal*100, dayRank+1,

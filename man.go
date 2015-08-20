@@ -1,47 +1,77 @@
 package main
 
-import "strconv"
+import (
+	"strconv"
+	"strings"
 
-func (u *Updater) ListMan() {
-	if u.update.Message.Chat.ID < 0 {
+	"github.com/Syfaro/telegram-bot-api"
+)
+
+func (p *Processor) listMan() {
+	chatid := p.update.Message.Chat.ID
+	if p.update.Message.IsGroup() {
 		var result string
-		fields := u.redis.HGetAllMap("tgMan:" +
-			strconv.Itoa(u.update.Message.Chat.ID)).Val()
+		fields := rc.HGetAllMap("tgMan:" +
+			strconv.Itoa(p.update.Message.Chat.ID)).Val()
 		for k := range fields {
 			result += k + "\n"
 		}
-		u.BotReply(result)
+		msg := tgbotapi.NewMessage(chatid, result)
+		bot.SendMessage(msg)
 	}
 }
 
-func (u *Updater) Man(field string) {
-	if u.update.Message.Chat.ID < 0 {
-		if field == "man" && !u.redis.HExists("tgMan:"+
-			strconv.Itoa(u.update.Message.Chat.ID), "man").Val() {
-			u.BotReply("你在慢慢个什么鬼啦！(σﾟ∀ﾟ)σ")
-			return
+func (p *Processor) setMan(command ...string) {
+	f := func() {
+		if len(p.s) >= 3 {
+			value := strings.Join(p.s[2:], " ")
+			if !p.isAuthed() {
+				p.sendQuestion()
+				return
+			}
+
+			if p.update.Message.IsGroup() {
+				rc.HSet("tgMan:"+strconv.Itoa(p.chatid()),
+					p.s[1], value)
+				msg := tgbotapi.NewMessage(p.chatid(), p.s[1]+":\n"+value)
+				bot.SendMessage(msg)
+			}
 		}
-		u.BotReply(u.redis.HGet("tgMan:"+
-			strconv.Itoa(u.update.Message.Chat.ID), field).Val())
 	}
+	p.hitter(f, command...)
 }
 
-func (u *Updater) SetMan(field, value string) {
-	if !u.IsAuthed() {
-		u.SendQuestion()
-		return
+func (p *Processor) rmMan(command ...string) {
+	f := func() {
+		fields := p.s[1:]
+		for k := range fields {
+			rc.HDel("tgMan:"+
+				strconv.Itoa(p.update.Message.Chat.ID), fields[k])
+		}
+		p.listMan()
 	}
-
-	if u.update.Message.Chat.ID < 0 {
-		u.redis.HSet("tgMan:"+strconv.Itoa(u.update.Message.Chat.ID),
-			field, value)
-		u.BotReply(field + ":\n" + value)
-	}
+	p.hitter(f, command...)
 }
 
-func (u *Updater) RmMan(fields ...string) {
-	for k := range fields {
-		u.redis.HDel("tgMan:"+strconv.Itoa(u.update.Message.Chat.ID), fields[k])
+func (p *Processor) man(command ...string) {
+	f := func() {
+		if len(p.s) == 1 {
+			p.listMan()
+		} else {
+			if !p.update.Message.IsGroup() {
+				return
+			}
+			if p.s[1] == "man" && !rc.HExists("tgMan:"+
+				strconv.Itoa(p.chatid()), "man").Val() {
+				msg := tgbotapi.NewMessage(p.chatid(),
+					"你在慢慢个什么鬼啦！(σﾟ∀ﾟ)σ")
+				bot.SendMessage(msg)
+				return
+			}
+			msg := tgbotapi.NewMessage(p.chatid(),
+				rc.HGet("tgMan:"+strconv.Itoa(p.chatid()), p.s[1]).Val())
+			bot.SendMessage(msg)
+		}
 	}
-	u.ListMan()
+	p.hitter(f, command...)
 }

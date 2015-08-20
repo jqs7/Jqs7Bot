@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Syfaro/telegram-bot-api"
 	"github.com/franela/goreq"
 	"gopkg.in/redis.v3"
 )
@@ -70,10 +71,10 @@ func (h Hitokoto) ToString() string {
 	return "「" + strings.Trim(h.Source, "《》") + "」" + "\n" + h.Hitokoto
 }
 
-func (u *Updater) SaveSticker() {
-	if u.update.Message.Sticker.FileID != "" &&
-		u.IsMaster() {
-		u.redis.SAdd("tgStickers", u.update.Message.Sticker.FileID)
+func (p *Processor) saveSticker() {
+	if p.update.Message.Sticker.FileID != "" &&
+		p.isMaster() {
+		rc.SAdd("tgStickers", p.update.Message.Sticker.FileID)
 	}
 }
 
@@ -86,4 +87,45 @@ func RandSticker(redis *redis.Client) (out chan string) {
 		}
 	}()
 	return out
+}
+
+func (p *Processor) rand(command ...string) {
+	f := func() {
+		chatid := p.chatid()
+		if len(p.s) >= 2 {
+			switch p.s[1] {
+			case "v":
+				v := <-vimtips
+				msg := tgbotapi.NewMessage(chatid, v.ToString())
+				bot.SendMessage(msg)
+			case "h":
+				h := <-hitokoto
+				msg := tgbotapi.NewMessage(chatid, h.ToString())
+				bot.SendMessage(msg)
+			case "s":
+				sid := <-sticker
+				s := tgbotapi.
+					NewStickerShare(p.update.Message.Chat.ID, sid)
+				bot.SendSticker(s)
+			}
+		} else {
+			select {
+			case v := <-vimtips:
+				msg := tgbotapi.NewMessage(chatid, v.ToString())
+				bot.SendMessage(msg)
+			case h := <-hitokoto:
+				msg := tgbotapi.NewMessage(chatid, h.ToString())
+				bot.SendMessage(msg)
+			case sid := <-sticker:
+				s := tgbotapi.
+					NewStickerShare(p.update.Message.Chat.ID, sid)
+				bot.SendSticker(s)
+			default:
+				msg := tgbotapi.NewMessage(chatid,
+					"诶诶?群组娘迷路了呢_(:з」∠)_")
+				bot.SendMessage(msg)
+			}
+		}
+	}
+	p.hitter(f, command...)
 }

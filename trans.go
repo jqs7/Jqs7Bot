@@ -6,10 +6,8 @@ import (
 	"log"
 	"net/url"
 	"strings"
-	"sync"
 	"time"
 
-	"github.com/Syfaro/telegram-bot-api"
 	"github.com/antonholmquist/jason"
 	"github.com/franela/goreq"
 	"github.com/st3v/translator/microsoft"
@@ -85,31 +83,34 @@ func MsTranslate(clientID, clientSecret, text string) (out, from string, err err
 	}
 }
 
-func (u *Updater) Trans(in string) (out, from string) {
+func (p *Processor) translator(in string) (string, string) {
 	sp := strings.Split(in, "\n")
 
-	var w sync.WaitGroup
-	var buf bytes.Buffer
-	w.Add(2)
+	type resultStruct struct {
+		out  string
+		from string
+	}
+	resultChan := make(chan resultStruct)
+	typingChan := make(chan bool)
+	p.sendTyping(typingChan)
 	go func() {
-		typing := tgbotapi.
-			NewChatAction(u.update.Message.Chat.ID, "typing")
-		u.bot.SendChatAction(typing)
-		w.Done()
-	}()
-	go func() {
-		var err error
+		var buf bytes.Buffer
+		var from string
 		for _, s := range sp {
-			out, from, err = MsTranslate(u.configs.msID, u.configs.msSecret, s)
+			out, from, err := MsTranslate(msID,
+				msSecret, s)
 			if err != nil {
-				out, from = BaiduTranslate(u.configs.baiduAPI, in)
+				out, from = BaiduTranslate(baiduAPI, in)
+				r := resultStruct{out, from}
+				resultChan <- r
 				return
 			}
 			buf.WriteString(out + "\n")
 		}
-		w.Done()
+		resultChan <- resultStruct{buf.String(), from}
 	}()
-	w.Wait()
-	out = buf.String()
-	return
+
+	<-typingChan
+	r := <-resultChan
+	return r.out, r.from
 }
