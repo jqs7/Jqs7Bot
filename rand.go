@@ -72,7 +72,7 @@ func (h Hitokoto) ToString() string {
 
 func (u *Updater) SaveSticker() {
 	if u.update.Message.Sticker.FileID != "" &&
-		u.update.Message.Chat.Title == "群组娘的后宫" {
+		u.IsMaster() {
 		u.redis.SAdd("tgStickers", u.update.Message.Sticker.FileID)
 	}
 }

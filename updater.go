@@ -2,6 +2,7 @@ package main
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/Syfaro/telegram-bot-api"
 	"github.com/kylelemons/go-gypsy/yaml"
@@ -23,7 +24,11 @@ type Config struct {
 	msSecret  string
 }
 
-func (u *Updater) Start() {
+func (u *Updater) Start(command string) {
+	if !strings.Contains(command, "@") &&
+		u.update.Message.IsGroup() {
+		return
+	}
 	u.BotReply(YamlList2String(u.conf, "help"))
 }
 

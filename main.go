@@ -117,7 +117,7 @@ func main() {
 			go func(u Updater, update tgbotapi.Update) {
 				switch s[0] {
 				case "/help", "/start", "/help@" + botname, "/start@" + botname:
-					u.Start()
+					u.Start(s[0])
 				case "/rules", "/rules@" + botname:
 					u.Rule(update.Message.Chat.ID)
 				case "/about", "/about@" + botname:
