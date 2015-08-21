@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"log"
 	"net/url"
@@ -10,7 +9,6 @@ import (
 
 	"github.com/antonholmquist/jason"
 	"github.com/franela/goreq"
-	"github.com/st3v/translator/microsoft"
 )
 
 func BaiduTranslate(apiKey, in string) (out, from string) {
@@ -61,56 +59,101 @@ Req:
 	return out, from
 }
 
-func MsTranslate(clientID, clientSecret, text string) (out, from string, err error) {
-	t := microsoft.NewTranslator(clientID, clientSecret)
-	from, err = t.Detect(text)
-	if err != nil {
-		return "", "", err
+func YandexTrans(yandexID, in string) string {
+	escapedIn := url.QueryEscape(in)
+	retry := 0
+Req:
+	var to string
+	from := YandexDetect(ydTransAPI, in)
+	if from == "zh" {
+		to = "en"
+	} else {
+		to = "zh"
 	}
-	switch from {
-	case "zh-CHS", "zh-CHT":
-		out, err = t.Translate(text, from, "en")
-		if err != nil {
-			return "", from, err
+	res, err := goreq.Request{
+		Uri: fmt.Sprintf("https://translate.yandex.net"+
+			"/api/v1.5/tr.json/translate?"+
+			"key=%s&lang=%s&text=%s",
+			yandexID, to, escapedIn),
+		Timeout: 17 * time.Second,
+	}.Do()
+	if err != nil {
+		if retry < 2 {
+			retry++
+			goto Req
+		} else {
+			log.Println("Translation Timeout!")
+			return "群组娘连接母舰失败，请稍后重试"
 		}
-		return
+	}
+
+	jasonObj, _ := jason.NewObjectFromReader(res.Body)
+	code, _ := jasonObj.GetInt64("code")
+	switch code {
+	case 200:
+		text, _ := jasonObj.GetStringArray("text")
+		return strings.Join(text, "\n")
+	case 401: //未授权用户
+		return "大概男盆友用错API Key啦，大家快去蛤他！σ`∀´)`"
+	case 402: //API被屏蔽
+		return "可怜的群组娘被母舰放逐了X﹏X"
+	case 403, 404: //请求次数已用完
+		return "今天弹药不足，明天再来吧(＃°Д°)"
+	case 413: //文本太长
+		return "警报！弹药系统过载！请放宽后重试"
+	case 422: //文本不可翻译
+		return "咦？这是外星语喵？"
+	case 501: //不支持的语种
+		return "恭喜你触发了母舰的迷之G点"
 	default:
-		out, err = t.Translate(text, from, "zh-CHS")
-		if err != nil {
-			return "", from, err
-		}
-		return
+		return "发生了理论上不可能出现的错误，你是不是穿越了喵？"
 	}
 }
 
-func (p *Processor) translator(in string) (string, string) {
-	sp := strings.Split(in, "\n")
-
-	type resultStruct struct {
-		out  string
-		from string
+func YandexDetect(yandexID, in string) string {
+	in = url.QueryEscape(in)
+	retry := 0
+Req:
+	res, err := goreq.Request{
+		Uri: fmt.Sprintf("https://translate.yandex.net/api/v1.5/tr.json/detect?"+
+			"key=%s&text=%s",
+			yandexID, in),
+		Timeout: 17 * time.Second,
+	}.Do()
+	if err != nil {
+		if retry < 2 {
+			retry++
+			goto Req
+		} else {
+			log.Println("Translation Timeout!")
+			return "群组娘连接母舰失败，请稍后重试"
+		}
 	}
-	resultChan := make(chan resultStruct)
+
+	jasonObj, _ := jason.NewObjectFromReader(res.Body)
+	code, _ := jasonObj.GetInt64("code")
+	switch code {
+	case 200:
+		lang, _ := jasonObj.GetString("lang")
+		return lang
+	case 401: //未授权用户
+		return "大概男盆友用错API Key啦，大家快去蛤他！σ`∀´)`"
+	case 402:
+		return "可怜的群组娘被母舰放逐了X﹏X"
+	case 403, 404: //请求次数已用完
+		return "今天弹药不足，明天再来吧(＃°Д°)"
+	default:
+		return "发生了理论上不可能出现的错误，你是不是穿越了喵？"
+	}
+}
+
+func (p *Processor) translator(in string) string {
+	result := make(chan string)
 	typingChan := make(chan bool)
 	p.sendTyping(typingChan)
 	go func() {
-		var buf bytes.Buffer
-		var from string
-		for _, s := range sp {
-			out, from, err := MsTranslate(msID,
-				msSecret, s)
-			if err != nil {
-				out, from = BaiduTranslate(baiduAPI, in)
-				r := resultStruct{out, from}
-				resultChan <- r
-				return
-			}
-			buf.WriteString(out + "\n")
-		}
-		resultChan <- resultStruct{buf.String(), from}
+		result <- YandexTrans(ydTransAPI, in)
 	}()
-
 	<-typingChan
-	r := <-resultChan
-	return r.out, r.from
+	return <-result
 }

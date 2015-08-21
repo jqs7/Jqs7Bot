@@ -17,11 +17,9 @@ var (
 	vimtips       chan Tips
 	hitokoto      chan Hitokoto
 	sticker       chan string
-	baiduAPI      string
 	turingAPI     string
-	msID          string
-	msSecret      string
 	categoriesSet set.Interface
+	ydTransAPI    string
 )
 
 func init() {
@@ -47,10 +45,8 @@ func init() {
 	}
 
 	botapi, _ := conf.Get("botapi")
-	baiduAPI, _ = conf.Get("baiduTransKey")
 	turingAPI, _ = conf.Get("turingBotKey")
-	msID, _ = conf.Get("msTransId")
-	msSecret, _ = conf.Get("msTransSecret")
+	ydTransAPI, _ = conf.Get("yandexTransAPI")
 	vimTipsCache, _ := conf.GetInt("vimTipsCache")
 	hitokotoCache, _ := conf.GetInt("hitokotoCache")
 	vimtips = new(Tips).GetChan(int(vimTipsCache))

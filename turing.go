@@ -158,9 +158,9 @@ func (p *Processor) _turing(text string) {
 		reZh := regexp.MustCompile(`[\p{Han}]`).
 			FindAllString(text, -1)
 		if float32(len(reZh))/float32(utf8.RuneCountInString(text)) < 0.4 {
-			result, from := p.translator(text)
+			from := YandexDetect(ydTransAPI, text)
 			if from != "zh" {
-				text = result
+				text = YandexTrans(ydTransAPI, text)
 			}
 		}
 		msgText <- TuringBot(turingAPI, userid, text)

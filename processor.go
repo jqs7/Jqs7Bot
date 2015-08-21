@@ -137,12 +137,12 @@ func (p *Processor) trans(command ...string) {
 			p.update.Message.ReplyToMessage.Text != "" &&
 			len(p.s) < 2 {
 			in := p.update.Message.ReplyToMessage.Text
-			result, _ := p.translator(in)
+			result := p.translator(in)
 			msg := tgbotapi.NewMessage(p.chatid(), result)
 			bot.SendMessage(msg)
 		} else if len(p.s) >= 2 {
 			in := strings.Join(p.s[1:], " ")
-			result, _ := p.translator(in)
+			result := p.translator(in)
 			msg := tgbotapi.NewMessage(p.chatid(), result)
 			bot.SendMessage(msg)
 		}
