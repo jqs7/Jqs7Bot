@@ -38,21 +38,15 @@ func init() {
 		categoriesSet.Add(v)
 	}
 
-	var err error
-	conf, err = yaml.ReadFile("botconf.yaml")
-	if err != nil {
-		log.Panic(err)
-	}
-
+	LoadConf()
 	botapi, _ := conf.Get("botapi")
-	turingAPI, _ = conf.Get("turingBotKey")
-	ydTransAPI, _ = conf.Get("yandexTransAPI")
 	vimTipsCache, _ := conf.GetInt("vimTipsCache")
 	hitokotoCache, _ := conf.GetInt("hitokotoCache")
 	vimtips = new(Tips).GetChan(int(vimTipsCache))
 	hitokoto = new(Hitokoto).GetChan(int(hitokotoCache))
 	sticker = RandSticker(rc)
 
+	var err error
 	bot, err = tgbotapi.NewBotAPI(botapi)
 	if err != nil {
 		log.Panic(err)
@@ -61,4 +55,14 @@ func init() {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 	bot.UpdatesChan(u)
+}
+
+func LoadConf() {
+	var err error
+	conf, err = yaml.ReadFile("botconf.yaml")
+	if err != nil {
+		log.Panic(err)
+	}
+	turingAPI, _ = conf.Get("turingBotKey")
+	ydTransAPI, _ = conf.Get("yandexTransAPI")
 }

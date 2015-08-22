@@ -3,11 +3,8 @@ package main
 import (
 	"log"
 	"regexp"
-	"strconv"
 	"strings"
 	"time"
-
-	"github.com/Syfaro/telegram-bot-api"
 )
 
 func main() {
@@ -44,24 +41,7 @@ func main() {
 
 		p := Processor{false, s, update}
 
-		// Auto Rule When New Member Join Group
-		if update.Message.NewChatParticipant.ID != 0 {
-			chatIDStr := strconv.Itoa(update.Message.Chat.ID)
-			if rc.Exists("tgGroupAutoRule:" + chatIDStr).Val() {
-				go func() {
-					msg := tgbotapi.NewMessage(update.Message.NewChatParticipant.ID,
-						"欢迎加入 "+update.Message.Chat.Title+"\n 以下是群组规则：")
-					bot.SendMessage(msg)
-					if rc.Exists("tgGroupRule:" + chatIDStr).Val() {
-						msg := tgbotapi.NewMessage(
-							update.Message.NewChatParticipant.ID,
-							rc.Get("tgGroupRule:"+chatIDStr).Val())
-						bot.SendMessage(msg)
-					}
-				}()
-			}
-		}
-
+		p._autoRule()
 		p.saveSticker()
 		p.analytics()
 

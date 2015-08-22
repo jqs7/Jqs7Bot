@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/Syfaro/telegram-bot-api"
-	"github.com/kylelemons/go-gypsy/yaml"
 )
 
 type Processor struct {
@@ -152,22 +151,30 @@ func (p *Processor) trans(command ...string) {
 
 func (p *Processor) reload(command ...string) {
 	f := func() {
-		conf, _ = yaml.ReadFile("botconf.yaml")
+		LoadConf()
 		msg := tgbotapi.NewMessage(p.chatid(), "群组娘已完成弹药重装(ゝ∀･)")
 		bot.SendMessage(msg)
 	}
 	p.hitter(f, command...)
 }
 
-func (p *Processor) stat(command ...string) {
-	f := func() {
-		if p.isMaster() {
-			command := strings.TrimLeft(p.s[0], "/")
-			msg := tgbotapi.NewMessage(p.chatid(), Stat(command, rc))
-			bot.SendMessage(msg)
+func (p *Processor) _autoRule() {
+	if p.update.Message.NewChatParticipant.ID != 0 {
+		chatIDStr := strconv.Itoa(p.chatid())
+		if rc.Exists("tgGroupAutoRule:" + chatIDStr).Val() {
+			go func() {
+				msg := tgbotapi.NewMessage(p.update.Message.NewChatParticipant.ID,
+					"欢迎加入 "+p.update.Message.Chat.Title+"\n 以下是群组规则：")
+				bot.SendMessage(msg)
+				if rc.Exists("tgGroupRule:" + chatIDStr).Val() {
+					msg := tgbotapi.NewMessage(
+						p.update.Message.NewChatParticipant.ID,
+						rc.Get("tgGroupRule:"+chatIDStr).Val())
+					bot.SendMessage(msg)
+				}
+			}()
 		}
 	}
-	p.hitter(f, command...)
 }
 
 func (p *Processor) _default() {

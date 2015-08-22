@@ -74,7 +74,12 @@ func (h Hitokoto) ToString() string {
 func (p *Processor) saveSticker() {
 	if p.update.Message.Sticker.FileID != "" &&
 		p.isMaster() {
-		rc.SAdd("tgStickers", p.update.Message.Sticker.FileID)
+		r, _ := rc.SAdd("tgStickers", p.update.Message.Sticker.FileID).Result()
+		if r == 1 {
+			msg := tgbotapi.NewMessage(p.chatid(),
+				"又学会了一种新的姿势了呢(＾o＾)ﾉ")
+			bot.SendMessage(msg)
+		}
 	}
 }
 

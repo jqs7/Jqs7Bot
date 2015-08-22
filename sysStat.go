@@ -9,12 +9,24 @@ import (
 
 	"gopkg.in/redis.v3"
 
+	"github.com/Syfaro/telegram-bot-api"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/host"
 	"github.com/shirou/gopsutil/load"
 	"github.com/shirou/gopsutil/mem"
 )
+
+func (p *Processor) stat(command ...string) {
+	f := func() {
+		if p.isMaster() {
+			command := strings.TrimLeft(p.s[0], "/")
+			msg := tgbotapi.NewMessage(p.chatid(), Stat(command, rc))
+			bot.SendMessage(msg)
+		}
+	}
+	p.hitter(f, command...)
+}
 
 func Stat(t string, rc *redis.Client) string {
 	checkErr := func(err error) string {
@@ -59,14 +71,15 @@ func Stat(t string, rc *redis.Client) string {
 	case "os":
 		h, err := host.HostInfo()
 		checkErr(err)
+		uptime := time.Duration(time.Now().Unix()-int64(h.Uptime)) * time.Second
 		l, err := load.LoadAvg()
 		checkErr(err)
 		c, err := cpu.CPUPercent(time.Second*3, false)
 		checkErr(err)
 		return fmt.Sprintf(
-			"OSRelease: %s\nHostName: %s\nLoadAdv: %.2f %.2f %.2f\n"+
+			"OSRelease: %s\nHostName: %s\nUptime: %s\nLoadAdv: %.2f %.2f %.2f\n"+
 				"Goroutine: %d\nCPU: %.2f%%",
-			h.Platform, h.Hostname, l.Load1, l.Load5, l.Load15,
+			h.Platform, h.Hostname, uptime.String(), l.Load1, l.Load5, l.Load15,
 			runtime.NumGoroutine(), c[0],
 		)
 	case "redis":
