@@ -1,19 +1,14 @@
 package main
 
 import (
-	"bytes"
-	"encoding/base64"
 	"fmt"
 	"log"
-	"net/url"
 	"strconv"
 	"strings"
 	"time"
-	"unicode/utf8"
 
 	"github.com/Syfaro/telegram-bot-api"
 	"github.com/fatih/set"
-	"github.com/franela/goreq"
 	"github.com/kylelemons/go-gypsy/yaml"
 	"github.com/pyk/byten"
 )
@@ -111,48 +106,6 @@ func FromUserName(user tgbotapi.User) string {
 	return name
 }
 
-func Google(query string) string {
-	query = url.QueryEscape(query)
-	retry := 0
-Req:
-	res, err := goreq.Request{
-		Uri: fmt.Sprintf("http://ajax.googleapis.com/"+
-			"ajax/services/search/web?v=1.0&rsz=3&q=%s", query),
-		Timeout: 17 * time.Second,
-	}.Do()
-	if err != nil {
-		if retry < 2 {
-			retry++
-			goto Req
-		} else {
-			log.Println("Google Timeout!")
-			return "群组娘连接母舰失败，请稍后重试"
-		}
-	}
-
-	var google struct {
-		ResponseData struct {
-			Results []struct {
-				URL               string
-				TitleNoFormatting string
-			}
-		}
-	}
-
-	err = res.Body.FromJsonTo(&google)
-	if err != nil {
-		return "转换失败，母舰大概是快没油了Orz"
-	}
-
-	var buf bytes.Buffer
-	for _, item := range google.ResponseData.Results {
-		u, _ := url.QueryUnescape(item.URL)
-		t, _ := url.QueryUnescape(item.TitleNoFormatting)
-		buf.WriteString(t + "\n" + u + "\n")
-	}
-	return buf.String()
-}
-
 func humanByte(in ...interface{}) (out []interface{}) {
 	for _, v := range in {
 		switch v.(type) {
@@ -168,19 +121,4 @@ func humanByte(in ...interface{}) (out []interface{}) {
 		}
 	}
 	return out
-}
-
-func E64(in string) string {
-	return base64.StdEncoding.EncodeToString([]byte(in))
-}
-
-func D64(in string) string {
-	out, err := base64.StdEncoding.DecodeString(in)
-	if err != nil {
-		return "解码系统出现故障，请查看弹药是否填充无误"
-	}
-	if utf8.Valid(out) {
-		return string(out)
-	}
-	return "解码结果包含不明物体，群组娘已将之上交国家"
 }

@@ -7,9 +7,29 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Syfaro/telegram-bot-api"
 	"github.com/antonholmquist/jason"
 	"github.com/franela/goreq"
 )
+
+func (p *Processor) trans(command ...string) {
+	f := func() {
+		if p.update.Message.ReplyToMessage != nil &&
+			p.update.Message.ReplyToMessage.Text != "" &&
+			len(p.s) < 2 {
+			in := p.update.Message.ReplyToMessage.Text
+			result := p.translator(in)
+			msg := tgbotapi.NewMessage(p.chatid(), result)
+			bot.SendMessage(msg)
+		} else if len(p.s) >= 2 {
+			in := strings.Join(p.s[1:], " ")
+			result := p.translator(in)
+			msg := tgbotapi.NewMessage(p.chatid(), result)
+			bot.SendMessage(msg)
+		}
+	}
+	p.hitter(f, command...)
+}
 
 func BaiduTranslate(apiKey, in string) (out, from string) {
 	in = url.QueryEscape(in)

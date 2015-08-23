@@ -2,7 +2,6 @@ package main
 
 import (
 	"strconv"
-	"strings"
 
 	"github.com/Syfaro/telegram-bot-api"
 )
@@ -87,62 +86,6 @@ func (p *Processor) cancel(command ...string) {
 			msg.ReplyMarkup = tgbotapi.ReplyKeyboardHide{
 				HideKeyboard: true,
 			}
-			bot.SendMessage(msg)
-		}
-	}
-	p.hitter(f, command...)
-}
-
-func (p *Processor) base64(command ...string) {
-	f := func() {
-		switch p.s[0] {
-		case "/e64":
-			if p.update.Message.ReplyToMessage != nil &&
-				p.update.Message.ReplyToMessage.Text != "" {
-				msg := tgbotapi.NewMessage(p.chatid(),
-					E64(p.update.Message.ReplyToMessage.Text))
-				bot.SendMessage(msg)
-			} else if len(p.s) >= 2 {
-				in := strings.Join(p.s[1:], " ")
-				msg := tgbotapi.NewMessage(p.chatid(), E64(in))
-				bot.SendMessage(msg)
-			}
-		case "/d64":
-			if len(p.s) >= 2 {
-				in := strings.Join(p.s[1:], " ")
-				msg := tgbotapi.NewMessage(p.chatid(), D64(in))
-				bot.SendMessage(msg)
-			}
-		}
-	}
-	p.hitter(f, command...)
-}
-
-func (p *Processor) google(command ...string) {
-	f := func() {
-		if len(p.s) >= 2 {
-			q := strings.Join(p.s[1:], " ")
-			msg := tgbotapi.NewMessage(p.chatid(), Google(q))
-			msg.DisableWebPagePreview = true
-			bot.SendMessage(msg)
-		}
-	}
-	p.hitter(f, command...)
-}
-
-func (p *Processor) trans(command ...string) {
-	f := func() {
-		if p.update.Message.ReplyToMessage != nil &&
-			p.update.Message.ReplyToMessage.Text != "" &&
-			len(p.s) < 2 {
-			in := p.update.Message.ReplyToMessage.Text
-			result := p.translator(in)
-			msg := tgbotapi.NewMessage(p.chatid(), result)
-			bot.SendMessage(msg)
-		} else if len(p.s) >= 2 {
-			in := strings.Join(p.s[1:], " ")
-			result := p.translator(in)
-			msg := tgbotapi.NewMessage(p.chatid(), result)
 			bot.SendMessage(msg)
 		}
 	}
