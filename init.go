@@ -19,7 +19,8 @@ var (
 	sticker       chan string
 	turingAPI     string
 	categoriesSet set.Interface
-	ydTransAPI    string
+	msID          string
+	msSecret      string
 )
 
 func init() {
@@ -64,5 +65,6 @@ func LoadConf() {
 		log.Panic(err)
 	}
 	turingAPI, _ = conf.Get("turingBotKey")
-	ydTransAPI, _ = conf.Get("yandexTransAPI")
+	msID, _ = conf.Get("msTransId")
+	msSecret, _ = conf.Get("msTransSecret")
 }
