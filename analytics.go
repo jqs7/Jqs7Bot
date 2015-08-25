@@ -152,7 +152,7 @@ func Statistics(s string) string {
 		rank := (2.0 / float64(dayRank+1+monthRank+1)) * 100
 		s := fmt.Sprintf("ID: %s\n今日: %.0f / %.2f%% 排名: %d\n"+
 			"本月: %.0f / %.2f%% 排名: %d\n"+
-			"水值: %.2f%%",
+			"水值: %.2f%%\n",
 			userid, dayCount, dayCount/dayTotal*100, dayRank+1,
 			monthCount, monthCount/monthTotal*100, monthRank+1,
 			rank,
