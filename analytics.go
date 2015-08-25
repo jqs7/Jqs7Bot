@@ -121,12 +121,6 @@ func Statistics(s string) string {
 			total/float64(count))
 		buf.WriteString(s)
 
-		totalTmp = rc.Get(totalKey(getDay, offset-1)).Val()
-		yesterdayTotal, _ := strconv.ParseFloat(totalTmp, 64)
-		s = fmt.Sprintf("环比增长: %.2f%%\n",
-			(total-yesterdayTotal)/yesterdayTotal*100)
-		buf.WriteString(s)
-
 		return buf.String()
 	}
 
@@ -150,24 +144,21 @@ func Statistics(s string) string {
 		totalTmp := rc.Get(totalKey(day, 0)).Val()
 		dayTotal, _ := strconv.ParseFloat(totalTmp, 64)
 
-		totalTmp = rc.Get(totalKey(day, -1)).Val()
-		yesterdayTotal, _ := strconv.ParseFloat(totalTmp, 64)
-
 		totalTmp = rc.Get(totalKey(month, 0)).Val()
 		monthTotal, _ := strconv.ParseFloat(totalTmp, 64)
 
 		dayRank := rc.ZRevRank(key(day, 0), userid).Val()
 		monthRank := rc.ZRevRank(key(month, 0), userid).Val()
+		rank := (2.0 / float64(dayRank+1+monthRank+1)) * 100
 		s := fmt.Sprintf("ID: %s\n今日: %.0f / %.2f%% 排名: %d\n"+
-			"环比增长: %.2f%%\n"+
-			"本月: %.0f / %.2f%% 排名: %d\n",
+			"本月: %.0f / %.2f%% 排名: %d\n"+
+			"水值: %.2f%%",
 			userid, dayCount, dayCount/dayTotal*100, dayRank+1,
-			(dayTotal-yesterdayTotal)/yesterdayTotal*100,
-			monthCount, monthCount/monthTotal*100, monthRank+1)
-		if dayRank < 10 && monthRank < 10 {
+			monthCount, monthCount/monthTotal*100, monthRank+1,
+			rank,
+		)
+		if rank > 50 {
 			s += "是个十足的大水比喵！💦"
-		} else if monthRank < 10 {
-			s += "今天水的不够多呢！💦"
 		}
 		return s
 	}
