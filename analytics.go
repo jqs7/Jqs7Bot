@@ -157,7 +157,7 @@ func Statistics(s string) string {
 			monthCount, monthCount/monthTotal*100, monthRank+1,
 			rank,
 		)
-		if rank > 50 {
+		if rank > 10 {
 			s += "是个十足的大水比喵！💦"
 		}
 		return s
