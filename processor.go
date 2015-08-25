@@ -39,7 +39,7 @@ func (p *Processor) start(command ...string) {
 func (p *Processor) about(command ...string) {
 	f := func() {
 		msg := tgbotapi.NewMessage(p.chatid(),
-			YamlList2String(conf, "help"))
+			YamlList2String(conf, "about"))
 		bot.SendMessage(msg)
 	}
 	p.hitter(f, command...)
