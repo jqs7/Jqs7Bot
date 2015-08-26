@@ -55,9 +55,15 @@ func (p *Processor) statistics(command ...string) {
 			case "me":
 				msg = tgbotapi.NewMessage(p.chatid(),
 					Statistics(FromUserName(p.update.Message.From)))
+				if p.update.Message.IsGroup() {
+					msg.ReplyToMessageID = p.update.Message.MessageID
+				}
 			default:
 				name := strings.Join(p.s[1:], " ")
 				msg = tgbotapi.NewMessage(p.chatid(), Statistics(name))
+				if p.update.Message.IsGroup() {
+					msg.ReplyToMessageID = p.update.Message.MessageID
+				}
 			}
 			bot.SendMessage(msg)
 		} else {
