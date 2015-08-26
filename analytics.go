@@ -52,6 +52,9 @@ func (p *Processor) statistics(command ...string) {
 				msg = tgbotapi.NewMessage(p.chatid(), Statistics("yesterday"))
 			case "^m":
 				msg = tgbotapi.NewMessage(p.chatid(), Statistics("last_month"))
+			case "me":
+				msg = tgbotapi.NewMessage(p.chatid(),
+					Statistics(FromUserName(p.update.Message.From)))
 			default:
 				name := strings.Join(p.s[1:], " ")
 				msg = tgbotapi.NewMessage(p.chatid(), Statistics(name))

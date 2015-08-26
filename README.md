@@ -21,7 +21,7 @@ https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
 - `/gg [内容]` - Google搜索
 - `/e64 [内容]` - base64加密
 - `/d64 [内容]` - base64解密
-- `/rain [m|^m|username with @]` - 查看群组娘统计信息
+- `/rain [^|m|^m|username with @|me]` - 查看群组娘统计信息
 - `@Jqs7Bot [内容]` - 召唤萌萌哒群组娘
 
 ![Jqs7Bot](http://ww2.sinaimg.cn/large/71d9577dgw1eu5kuwdr3yj21kw1k7qhp.jpg)
