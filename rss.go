@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"log"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -57,6 +58,7 @@ func (p *Processor) rssItem(feed *rss.Feed,
 
 func (p *Processor) rssList() {
 	r := rc.SMembers("tgRss:" + strconv.Itoa(p.chatid())).Val()
+	sort.Strings(r)
 	s := strings.Join(r, "\n")
 	msg := tgbotapi.NewMessage(p.chatid(), s)
 	bot.SendMessage(msg)
