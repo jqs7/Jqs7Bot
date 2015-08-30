@@ -92,12 +92,15 @@ func Statistics(s string) string {
 	}
 
 	report := func(getDay bool, offset int) string {
+		//前10个活跃用户
 		result := rc.ZRevRangeByScoreWithScores(key(getDay, offset),
 			redis.ZRangeByScore{Min: "-inf", Max: "+inf", Count: 10}).Val()
 
+		//发言总量
 		totalTmp := rc.Get(totalKey(getDay, offset)).Val()
 		total, _ := strconv.ParseFloat(totalTmp, 64)
 
+		//活跃用户数
 		count := rc.ZCount(key(getDay, offset), "-inf", "+inf").Val()
 		otherUser := total
 		var buf bytes.Buffer
@@ -108,6 +111,8 @@ func Statistics(s string) string {
 		if !getDay && offset == 0 {
 			title = "本月"
 		}
+
+		//输出格式
 		s := fmt.Sprintf("%s大水比💦 Total: %.0f / %d\n",
 			title, total, count)
 		buf.WriteString(s)
@@ -143,6 +148,7 @@ func Statistics(s string) string {
 	case "last_month":
 		return report(false, -1)
 	default:
+		//指定用户日|月发言量
 		userid := rc.HGet("tgUsersName", s).Val()
 		if userid == "" {
 			return "舰队阵列手册中查无此人呢喵ˋ( ° ▽、°  )"
@@ -150,15 +156,28 @@ func Statistics(s string) string {
 		dayCount := rc.ZScore(key(day, 0), userid).Val()
 		monthCount := rc.ZScore(key(month, 0), userid).Val()
 
+		//所有用户日|月总发言量
 		totalTmp := rc.Get(totalKey(day, 0)).Val()
 		dayTotal, _ := strconv.ParseFloat(totalTmp, 64)
-
 		totalTmp = rc.Get(totalKey(month, 0)).Val()
 		monthTotal, _ := strconv.ParseFloat(totalTmp, 64)
 
+		//日|月排名
 		dayRank := rc.ZRevRank(key(day, 0), userid).Val()
 		monthRank := rc.ZRevRank(key(month, 0), userid).Val()
 		rank := (2.0 / float64(dayRank+1+monthRank+1)) * 100
+
+		//日|月总活跃人数
+		countDay := rc.ZCount(key(day, 0), "-inf", "+inf").Val()
+		countMonth := rc.ZCount(key(month, 0), "-inf", "+inf").Val()
+		if dayCount == 0 {
+			dayRank = countDay + 1
+		}
+		if monthCount == 0 {
+			monthRank = countMonth + 1
+		}
+
+		//输出格式
 		s := fmt.Sprintf("ID: %s\n今日: %.0f / %.2f%% 排名: %d\n"+
 			"本月: %.0f / %.2f%% 排名: %d\n"+
 			"水值: %.2f%%\n",

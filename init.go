@@ -56,6 +56,8 @@ func init() {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 	bot.UpdatesChan(u)
+
+	initRss()
 }
 
 func LoadConf() {

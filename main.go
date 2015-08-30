@@ -68,6 +68,8 @@ func main() {
 				p.reload("/reload")
 				p.stat("/os", "/df", "/free", "/redis")
 				p.statistics("/rain")
+				p.rss("/rss")
+				p.rmrss("/rmrss")
 				p.turing("@" + botname)
 				p._default()
 			}(p)
