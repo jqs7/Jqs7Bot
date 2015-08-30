@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"io"
 	"log"
 	"strconv"
@@ -69,10 +68,13 @@ func initRss() {
 		feeds := rc.SMembers("tgRss:" + chats[k]).Val()
 		id, _ := strconv.Atoi(chats[k])
 		chat := &chat{id}
-		for k := range feeds {
-			feed := rss.New(1, true, rssChan, chat.rssItem)
-			loopFeed(feed, feeds[k])
-		}
+		go func(feeds []string) {
+			for k := range feeds {
+				feed := rss.New(1, true, rssChan, chat.rssItem)
+				loopFeed(feed, feeds[k])
+				time.Sleep(time.Minute)
+			}
+		}(feeds)
 	}
 }
 
@@ -85,7 +87,7 @@ func (c *chat) rssItem(feed *rss.Feed,
 
 func rssItem(feed *rss.Feed,
 	ch *rss.Channel, newitems []*rss.Item, chatID int) {
-	fmt.Printf("%d new item(s) in %s\n", len(newitems), feed.Url)
+	log.Printf("%d new item(s) in %s\n", len(newitems), feed.Url)
 	var buf bytes.Buffer
 	buf.WriteString(ch.Title + "\n")
 	for k, v := range newitems {
@@ -107,7 +109,7 @@ func rssItem(feed *rss.Feed,
 }
 
 func rssChan(feed *rss.Feed, newchannels []*rss.Channel) {
-	fmt.Printf("%d new channel(s) in %s\n", len(newchannels), feed.Url)
+	log.Printf("%d new channel(s) in %s\n", len(newchannels), feed.Url)
 }
 
 func charsetReader(charset string, r io.Reader) (io.Reader, error) {
