@@ -92,6 +92,7 @@ func rssItem(feed *rss.Feed,
 	log.Printf("%d new item(s) in %s\n", len(newitems), feed.Url)
 	var buf bytes.Buffer
 	buf.WriteString(ch.Title + "\n")
+	counter := 0
 	for k, v := range newitems {
 		if v.Links[0].Href == rc.Get("tgRssLatest:"+
 			strconv.Itoa(chatID)+":"+feed.Url).Val() {
@@ -99,13 +100,16 @@ func rssItem(feed *rss.Feed,
 		}
 		if k < 25 {
 			buf.WriteString(v.Title + "\n" + v.Links[0].Href + "\n")
+			counter++
 		}
 	}
 	rc.Set("tgRssLatest:"+strconv.Itoa(chatID)+":"+feed.Url,
 		newitems[0].Links[0].Href, -1)
 	if buf.String() != ch.Title+"\n" {
 		msg := tgbotapi.NewMessage(chatID, buf.String())
-		msg.DisableWebPagePreview = true
+		if counter > 2 {
+			msg.DisableWebPagePreview = true
+		}
 		bot.SendMessage(msg)
 	}
 }
