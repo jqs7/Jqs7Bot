@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -25,7 +24,7 @@ func (p *Processor) auth(answer string) {
 
 		if qs[index].A.Has(answer) {
 			rc.SAdd("tgAuthUser", strconv.Itoa(p.update.Message.From.ID))
-			log.Printf("%d --- %s Auth OK",
+			loger.Infof("%d --- %s Auth OK",
 				p.update.Message.From.ID, p.update.Message.From.UserName)
 			msg := tgbotapi.NewMessage(p.chatid(),
 				"验证成功喵~！\n原来你不是外星人呢😊")
@@ -33,7 +32,7 @@ func (p *Processor) auth(answer string) {
 			bot.SendMessage(msg)
 			p.start("/start")
 		} else {
-			log.Printf("%d --- %s Auth Fail",
+			loger.Infof("%d --- %s Auth Fail",
 				p.update.Message.From.ID, p.update.Message.From.UserName)
 			msg := tgbotapi.NewMessage(p.chatid(),
 				"答案不对不对！你一定是外星人！不跟你玩了喵！\n"+

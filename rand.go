@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"strings"
 	"time"
 
@@ -25,7 +24,7 @@ func (t Tips) GetChan(bufferSize int) (out chan Tips) {
 				Timeout: 777 * time.Millisecond,
 			}.Do()
 			if err != nil {
-				log.Println("Fail to get vim-tips , retry ...")
+				loger.Warning("Fail to get vim-tips , retry ...")
 				continue
 			}
 			res.Body.FromJsonTo(&tips)
@@ -54,7 +53,7 @@ func (h Hitokoto) GetChan(bufferSize int) (out chan Hitokoto) {
 				Timeout: 777 * time.Millisecond,
 			}.Do()
 			if err != nil {
-				log.Println("Fail to get Hitokoto , retry ...")
+				loger.Warning("Fail to get Hitokoto , retry ...")
 				continue
 			}
 			res.Body.FromJsonTo(&h)

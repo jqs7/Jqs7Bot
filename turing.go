@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -31,7 +30,7 @@ Req:
 			retry++
 			goto Req
 		} else {
-			log.Println("Turing Timeout!")
+			loger.Warning("Turing Timeout!")
 			return "群组娘连接母舰失败，请稍后重试"
 		}
 	}

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -25,7 +24,7 @@ func YamlList2String(config *yaml.File, text string) string {
 func YamlList2Slice(config *yaml.File, text string) []string {
 	count, err := config.Count(text)
 	if err != nil {
-		log.Println(err)
+		loger.Error(err)
 		return nil
 	}
 
@@ -33,7 +32,7 @@ func YamlList2Slice(config *yaml.File, text string) []string {
 	for i := 0; i < count; i++ {
 		v, err := config.Get(text + "[" + strconv.Itoa(i) + "]")
 		if err != nil {
-			log.Println(err)
+			loger.Error(err)
 			return nil
 		}
 		result = append(result, v)

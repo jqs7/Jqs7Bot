@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"strconv"
 	"strings"
 
@@ -52,11 +51,11 @@ func (p *Processor) _broadcast(text string) {
 			subState, _ := strconv.ParseBool(v)
 
 			if subState && chatid > 0 {
-				log.Printf("sending boardcast to %d ...", chatid)
+				loger.Infof("sending boardcast to %d ...", chatid)
 				msg := tgbotapi.NewMessage(chatid, text)
 				go func(k string) {
 					bot.SendMessage(msg)
-					log.Printf("%s --- done", k)
+					loger.Infof("%s --- done", k)
 				}(k)
 			}
 		}

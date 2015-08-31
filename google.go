@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"net/url"
 	"strings"
 	"time"
@@ -26,7 +25,7 @@ Req:
 			retry++
 			goto Req
 		} else {
-			log.Println("Google Timeout!")
+			loger.Warning("Google Timeout!")
 			return "群组娘连接母舰失败，请稍后重试"
 		}
 	}

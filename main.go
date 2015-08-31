@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"regexp"
 	"strings"
 	"time"
@@ -20,10 +19,11 @@ func main() {
 		}
 
 		// Logger
+		loger.Debugf("%+v", update)
 		startWithSlash, _ := regexp.MatchString("^/", update.Message.Text)
 		atBot, _ := regexp.MatchString("@"+botname, update.Message.Text)
 		if update.Message.Chat.ID > 0 || startWithSlash || atBot {
-			log.Printf("[%d](%s) -- [%s] -- %s",
+			loger.Infof("[%d](%s) -- [%s] -- %s",
 				update.Message.Chat.ID, update.Message.Chat.Title,
 				update.Message.From.UserName, update.Message.Text,
 			)

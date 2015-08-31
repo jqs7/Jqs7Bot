@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"io"
-	"log"
 	"sort"
 	"strconv"
 	"strings"
@@ -30,7 +29,7 @@ func (p *Processor) rss(command ...string) {
 			msg := tgbotapi.NewMessage(p.chatid(),
 				"弹药检测失败，请检查后重试")
 			bot.SendMessage(msg)
-			log.Println(err)
+			loger.Warning(err)
 			return
 		}
 		rc.SAdd("tgRssChats", strconv.Itoa(p.chatid()))
@@ -89,7 +88,7 @@ func (c *chat) rssItem(feed *rss.Feed,
 
 func rssItem(feed *rss.Feed,
 	ch *rss.Channel, newitems []*rss.Item, chatID int) {
-	log.Printf("%d new item(s) in %s\n", len(newitems), feed.Url)
+	loger.Info("%d new item(s) in %s\n", len(newitems), feed.Url)
 	var buf bytes.Buffer
 	buf.WriteString(ch.Title + "\n")
 	counter := 0
@@ -115,7 +114,7 @@ func rssItem(feed *rss.Feed,
 }
 
 func rssChan(feed *rss.Feed, newchannels []*rss.Channel) {
-	log.Printf("%d new channel(s) in %s\n", len(newchannels), feed.Url)
+	loger.Infof("%d new channel(s) in %s\n", len(newchannels), feed.Url)
 }
 
 func charsetReader(charset string, r io.Reader) (io.Reader, error) {
@@ -137,7 +136,7 @@ func loopFeed(feed *rss.Feed, url string) {
 	go func() {
 		for {
 			if err := feed.Fetch(url, charsetReader); err != nil {
-				log.Println("failed to fetch rss, " +
+				loger.Warning("failed to fetch rss, " +
 					"retry in 3 seconds...")
 				time.Sleep(time.Second * 3)
 				continue

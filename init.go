@@ -1,8 +1,8 @@
 package main
 
 import (
-	"log"
-
+	"github.com/Sirupsen/logrus"
+	"github.com/Sirupsen/logrus/hooks/papertrail"
 	"github.com/Syfaro/telegram-bot-api"
 	"github.com/fatih/set"
 	"github.com/kylelemons/go-gypsy/yaml"
@@ -10,6 +10,7 @@ import (
 )
 
 var (
+	loger         = logrus.New()
 	bot           *tgbotapi.BotAPI
 	conf          *yaml.File
 	rc            *redis.Client
@@ -39,6 +40,8 @@ func init() {
 		categoriesSet.Add(v)
 	}
 
+	loger.Level = logrus.DebugLevel
+
 	LoadConf()
 	botapi, _ := conf.Get("botapi")
 	vimTipsCache, _ := conf.GetInt("vimTipsCache")
@@ -46,11 +49,19 @@ func init() {
 	vimtips = new(Tips).GetChan(int(vimTipsCache))
 	hitokoto = new(Hitokoto).GetChan(int(hitokotoCache))
 	sticker = RandSticker(rc)
+	papertrailUrl, _ := conf.Get("papertrailUrl")
+	papertrailPort, _ := conf.GetInt("papertrailPort")
 
-	var err error
+	hook, err := logrus_papertrail.NewPapertrailHook(papertrailUrl, int(papertrailPort), "nyan")
+	if err != nil {
+		loger.Println(err)
+	} else {
+		loger.Hooks.Add(hook)
+	}
+
 	bot, err = tgbotapi.NewBotAPI(botapi)
 	if err != nil {
-		log.Panic(err)
+		loger.Panic(err)
 	}
 
 	u := tgbotapi.NewUpdate(0)
@@ -64,7 +75,7 @@ func LoadConf() {
 	var err error
 	conf, err = yaml.ReadFile("botconf.yaml")
 	if err != nil {
-		log.Panic(err)
+		loger.Panic(err)
 	}
 	turingAPI, _ = conf.Get("turingBotKey")
 	msID, _ = conf.Get("msTransId")
