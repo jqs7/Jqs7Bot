@@ -88,7 +88,7 @@ func (c *chat) rssItem(feed *rss.Feed,
 
 func rssItem(feed *rss.Feed,
 	ch *rss.Channel, newitems []*rss.Item, chatID int) {
-	loger.Info("%d new item(s) in %s\n", len(newitems), feed.Url)
+	loger.Infof("%d new item(s) in %s\n", len(newitems), feed.Url)
 	var buf bytes.Buffer
 	buf.WriteString(ch.Title + "\n")
 	counter := 0
