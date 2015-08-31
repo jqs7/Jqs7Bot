@@ -14,6 +14,8 @@ import (
 	"github.com/qiniu/iconv"
 )
 
+var stopRssLoop = make(map[string]chan bool)
+
 func (p *Processor) rss(command ...string) {
 	f := func() {
 		if p.update.Message.IsGroup() {
@@ -34,7 +36,8 @@ func (p *Processor) rss(command ...string) {
 		}
 		rc.SAdd("tgRssChats", strconv.Itoa(p.chatid()))
 		rc.SAdd("tgRss:"+strconv.Itoa(p.chatid()), p.s[1])
-		loopFeed(feed, p.s[1])
+		stopRssLoop[strconv.Itoa(p.chatid())+":"+p.s[1]] = make(chan bool)
+		loopFeed(feed, p.s[1], p.chatid())
 	}
 	p.hitter(f, command...)
 }
@@ -44,7 +47,9 @@ func (p *Processor) rmrss(command ...string) {
 		if len(p.s) < 2 {
 			return
 		}
-		rc.SRem("tgRss:"+strconv.Itoa(p.chatid()), p.s[1:]...)
+		rc.Del("tgRssLatest:" + strconv.Itoa(p.chatid()) + ":" + p.s[1])
+		stopRssLoop[strconv.Itoa(p.chatid())+":"+p.s[1]] <- true
+		rc.SRem("tgRss:"+strconv.Itoa(p.chatid()), p.s[1])
 		p.rssList()
 	}
 	p.hitter(f, command...)
@@ -72,7 +77,8 @@ func initRss() {
 		go func(feeds []string) {
 			for k := range feeds {
 				feed := rss.New(1, true, rssChan, chat.rssItem)
-				loopFeed(feed, feeds[k])
+				stopRssLoop[strconv.Itoa(chat.id)+":"+feeds[k]] = make(chan bool)
+				loopFeed(feed, feeds[k], chat.id)
 				time.Sleep(time.Minute)
 			}
 		}(feeds)
@@ -91,7 +97,6 @@ func rssItem(feed *rss.Feed,
 	loger.Infof("%d new item(s) in %s\n", len(newitems), feed.Url)
 	var buf bytes.Buffer
 	buf.WriteString(ch.Title + "\n")
-	counter := 0
 	for k, v := range newitems {
 		if v.Links[0].Href == rc.Get("tgRssLatest:"+
 			strconv.Itoa(chatID)+":"+feed.Url).Val() {
@@ -99,16 +104,13 @@ func rssItem(feed *rss.Feed,
 		}
 		if k < 25 {
 			buf.WriteString(v.Title + "\n" + v.Links[0].Href + "\n")
-			counter++
 		}
 	}
 	rc.Set("tgRssLatest:"+strconv.Itoa(chatID)+":"+feed.Url,
 		newitems[0].Links[0].Href, -1)
 	if buf.String() != ch.Title+"\n" {
 		msg := tgbotapi.NewMessage(chatID, buf.String())
-		if counter > 2 {
-			msg.DisableWebPagePreview = true
-		}
+		msg.DisableWebPagePreview = true
 		bot.SendMessage(msg)
 	}
 }
@@ -132,16 +134,22 @@ func charsetReader(charset string, r io.Reader) (io.Reader, error) {
 	return nil, errors.New("Unsupported character set encoding: " + charset)
 }
 
-func loopFeed(feed *rss.Feed, url string) {
+func loopFeed(feed *rss.Feed, url string, chatid int) {
 	go func() {
+	Loop:
 		for {
-			if err := feed.Fetch(url, charsetReader); err != nil {
-				loger.Warning("failed to fetch rss, " +
-					"retry in 3 seconds...")
-				time.Sleep(time.Second * 3)
-				continue
+			select {
+			case <-stopRssLoop[strconv.Itoa(chatid)+":"+url]:
+				break Loop
+			default:
+				if err := feed.Fetch(url, charsetReader); err != nil {
+					loger.Warningf("failed to fetch rss, "+
+						"retry in 3 seconds... [ %s ]", url)
+					time.Sleep(time.Second * 3)
+					continue
+				}
+				<-time.After(time.Minute * 10)
 			}
-			<-time.After(time.Minute * 5)
 		}
 	}()
 }

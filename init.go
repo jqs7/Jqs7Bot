@@ -52,7 +52,8 @@ func init() {
 	papertrailUrl, _ := conf.Get("papertrailUrl")
 	papertrailPort, _ := conf.GetInt("papertrailPort")
 
-	hook, err := logrus_papertrail.NewPapertrailHook(papertrailUrl, int(papertrailPort), "nyan")
+	hook, err := logrus_papertrail.NewPapertrailHook(
+		papertrailUrl, int(papertrailPort), "nyan")
 	if err != nil {
 		loger.Println(err)
 	} else {
