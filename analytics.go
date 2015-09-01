@@ -46,21 +46,29 @@ func (p *Processor) statistics(command ...string) {
 		msg := tgbotapi.NewMessage(p.chatid(), " ")
 		if len(p.s) >= 2 {
 			switch p.s[1] {
+			case "@":
+				msg = tgbotapi.NewMessage(p.chatid(), Statistics("day", true))
 			case "m":
-				msg = tgbotapi.NewMessage(p.chatid(), Statistics("month"))
+				msg = tgbotapi.NewMessage(p.chatid(), Statistics("month", false))
+			case "m@":
+				msg = tgbotapi.NewMessage(p.chatid(), Statistics("month", true))
 			case "^":
-				msg = tgbotapi.NewMessage(p.chatid(), Statistics("yesterday"))
+				msg = tgbotapi.NewMessage(p.chatid(), Statistics("yesterday", false))
+			case "^@":
+				msg = tgbotapi.NewMessage(p.chatid(), Statistics("yesterday", true))
 			case "^m":
-				msg = tgbotapi.NewMessage(p.chatid(), Statistics("last_month"))
+				msg = tgbotapi.NewMessage(p.chatid(), Statistics("last_month", false))
+			case "^m@":
+				msg = tgbotapi.NewMessage(p.chatid(), Statistics("last_month", true))
 			case "me":
 				msg = tgbotapi.NewMessage(p.chatid(),
-					Statistics(FromUserName(p.update.Message.From)))
+					Statistics(FromUserName(p.update.Message.From), true))
 				if p.update.Message.IsGroup() {
 					msg.ReplyToMessageID = p.update.Message.MessageID
 				}
 			default:
 				name := strings.Join(p.s[1:], " ")
-				msg = tgbotapi.NewMessage(p.chatid(), Statistics(name))
+				msg = tgbotapi.NewMessage(p.chatid(), Statistics(name, true))
 				if p.update.Message.IsGroup() {
 					msg.ReplyToMessageID = p.update.Message.MessageID
 				}
@@ -70,11 +78,11 @@ func (p *Processor) statistics(command ...string) {
 			if p.update.Message.ReplyToMessage != nil {
 				msg = tgbotapi.NewMessage(p.chatid(),
 					Statistics(FromUserName(
-						p.update.Message.ReplyToMessage.From)),
+						p.update.Message.ReplyToMessage.From), true),
 				)
 				bot.SendMessage(msg)
 			} else {
-				msg = tgbotapi.NewMessage(p.chatid(), Statistics("day"))
+				msg = tgbotapi.NewMessage(p.chatid(), Statistics("day", false))
 				bot.SendMessage(msg)
 			}
 		}
@@ -82,7 +90,7 @@ func (p *Processor) statistics(command ...string) {
 	p.hitter(f, command...)
 }
 
-func Statistics(s string) string {
+func Statistics(s string, withAt bool) string {
 	day, month := true, false
 	key := func(getDay bool, offset int) string {
 		return "tgAnalytics:" + GetDate(getDay, offset)
@@ -120,6 +128,9 @@ func Statistics(s string) string {
 			score := result[k].Score
 			member := fmt.Sprintf("%s", result[k].Member)
 			user := rc.HGet("tgUsersID", member).Val()
+			if !withAt {
+				user = strings.TrimPrefix(user, "@")
+			}
 			s := fmt.Sprintf("%s : %.0f / %.2f%%\n",
 				user, score, score/total*100)
 			buf.WriteString(s)
