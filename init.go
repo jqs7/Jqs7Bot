@@ -1,6 +1,9 @@
 package main
 
 import (
+	"net/http"
+	_ "net/http/pprof"
+
 	"github.com/Sirupsen/logrus"
 	"github.com/Sirupsen/logrus/hooks/papertrail"
 	"github.com/Syfaro/telegram-bot-api"
@@ -70,6 +73,7 @@ func init() {
 	bot.UpdatesChan(u)
 
 	initRss()
+	go http.ListenAndServe(":6060", nil)
 }
 
 func LoadConf() {
