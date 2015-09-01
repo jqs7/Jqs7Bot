@@ -31,7 +31,7 @@ func (p *Processor) rss(command ...string) {
 			msg := tgbotapi.NewMessage(p.chatid(),
 				"弹药检测失败，请检查后重试")
 			bot.SendMessage(msg)
-			loger.Warning(err)
+			loge.Warning(err)
 			return
 		}
 		rc.SAdd("tgRssChats", strconv.Itoa(p.chatid()))
@@ -94,7 +94,7 @@ func (c *chat) rssItem(feed *rss.Feed,
 
 func rssItem(feed *rss.Feed,
 	ch *rss.Channel, newitems []*rss.Item, chatID int) {
-	loger.Infof("%d new item(s) in %s\n", len(newitems), feed.Url)
+	loge.Infof("%d new item(s) in %s\n", len(newitems), feed.Url)
 	var buf bytes.Buffer
 	buf.WriteString(ch.Title + "\n")
 	for k, v := range newitems {
@@ -116,7 +116,7 @@ func rssItem(feed *rss.Feed,
 }
 
 func rssChan(feed *rss.Feed, newchannels []*rss.Channel) {
-	loger.Infof("%d new channel(s) in %s\n", len(newchannels), feed.Url)
+	loge.Infof("%d new channel(s) in %s\n", len(newchannels), feed.Url)
 }
 
 func charsetReader(charset string, r io.Reader) (io.Reader, error) {
@@ -143,7 +143,7 @@ func loopFeed(feed *rss.Feed, url string, chatid int) {
 				break Loop
 			default:
 				if err := feed.Fetch(url, charsetReader); err != nil {
-					loger.Warningf("failed to fetch rss, "+
+					loge.Warningf("failed to fetch rss, "+
 						"retry in 3 seconds... [ %s ]", url)
 					time.Sleep(time.Second * 3)
 					continue

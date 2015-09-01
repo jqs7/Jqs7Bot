@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	loger         = logrus.New()
+	loge          = logrus.New()
 	bot           *tgbotapi.BotAPI
 	conf          *yaml.File
 	rc            *redis.Client
@@ -43,7 +43,7 @@ func init() {
 		categoriesSet.Add(v)
 	}
 
-	loger.Level = logrus.DebugLevel
+	loge.Level = logrus.DebugLevel
 
 	LoadConf()
 	botapi, _ := conf.Get("botapi")
@@ -58,14 +58,14 @@ func init() {
 	hook, err := logrus_papertrail.NewPapertrailHook(
 		papertrailUrl, int(papertrailPort), "nyan")
 	if err != nil {
-		loger.Println(err)
+		loge.Println(err)
 	} else {
-		loger.Hooks.Add(hook)
+		loge.Hooks.Add(hook)
 	}
 
 	bot, err = tgbotapi.NewBotAPI(botapi)
 	if err != nil {
-		loger.Panic(err)
+		loge.Panic(err)
 	}
 
 	u := tgbotapi.NewUpdate(0)
@@ -80,7 +80,7 @@ func LoadConf() {
 	var err error
 	conf, err = yaml.ReadFile("botconf.yaml")
 	if err != nil {
-		loger.Panic(err)
+		loge.Panic(err)
 	}
 	turingAPI, _ = conf.Get("turingBotKey")
 	msID, _ = conf.Get("msTransId")

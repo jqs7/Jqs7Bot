@@ -51,11 +51,11 @@ func (p *Processor) _broadcast(text string) {
 			subState, _ := strconv.ParseBool(v)
 
 			if subState && chatid > 0 {
-				loger.Infof("sending boardcast to %d ...", chatid)
+				loge.Infof("sending boardcast to %d ...", chatid)
 				msg := tgbotapi.NewMessage(chatid, text)
 				go func(k string) {
 					bot.SendMessage(msg)
-					loger.Infof("%s --- done", k)
+					loge.Infof("%s --- done", k)
 				}(k)
 			}
 		}

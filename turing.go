@@ -30,7 +30,7 @@ Req:
 			retry++
 			goto Req
 		} else {
-			loger.Warning("Turing Timeout!")
+			loge.Warning("Turing Timeout!")
 			return "群组娘连接母舰失败，请稍后重试"
 		}
 	}

@@ -16,7 +16,7 @@ func (p *Processor) setRule(command ...string) {
 		rule := strings.Join(p.s[1:], " ")
 		if p.isAuthed() {
 			chatIDStr := strconv.Itoa(p.chatid())
-			loger.Infof("setting rule %s to %s", rule, chatIDStr)
+			loge.Infof("setting rule %s to %s", rule, chatIDStr)
 			rc.Set("tgGroupRule:"+chatIDStr, rule, -1)
 			msg := tgbotapi.NewMessage(p.chatid(),
 				"新的群组规则Get！✔️\n以下是新的规则：\n\n"+rule)

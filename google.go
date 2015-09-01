@@ -25,7 +25,7 @@ Req:
 			retry++
 			goto Req
 		} else {
-			loger.Warning("Google Timeout!")
+			loge.Warning("Google Timeout!")
 			return "群组娘连接母舰失败，请稍后重试"
 		}
 	}
