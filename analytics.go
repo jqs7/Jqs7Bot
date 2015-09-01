@@ -165,7 +165,6 @@ func Statistics(s string) string {
 		//日|月排名
 		dayRank := rc.ZRevRank(key(day, 0), userid).Val()
 		monthRank := rc.ZRevRank(key(month, 0), userid).Val()
-		rank := (2.0 / float64(dayRank+1+monthRank+1)) * 100
 
 		//日|月总活跃人数
 		countDay := rc.ZCount(key(day, 0), "-inf", "+inf").Val()
@@ -176,6 +175,8 @@ func Statistics(s string) string {
 		if monthCount == 0 {
 			monthRank = countMonth + 1
 		}
+
+		rank := (2.0 / float64(dayRank+1+monthRank+1)) * 100
 
 		//输出格式
 		s := fmt.Sprintf("ID: %s\n今日: %.0f / %.2f%% 排名: %d\n"+
