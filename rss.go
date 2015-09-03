@@ -136,19 +136,19 @@ func charsetReader(charset string, r io.Reader) (io.Reader, error) {
 
 func loopFeed(feed *rss.Feed, url string, chatid int) {
 	go func() {
+		t := time.After(time.Minute * 7)
 	Loop:
 		for {
 			select {
 			case <-stopRssLoop[strconv.Itoa(chatid)+":"+url]:
 				break Loop
-			default:
+			case <-t:
 				if err := feed.Fetch(url, charsetReader); err != nil {
 					loge.Warningf("failed to fetch rss, "+
 						"retry in 3 seconds... [ %s ]", url)
 					time.Sleep(time.Second * 3)
 					continue
 				}
-				<-time.After(time.Minute * 10)
 			}
 		}
 	}()
