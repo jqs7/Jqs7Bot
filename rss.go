@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"io"
+	"math/rand"
 	"sort"
 	"strconv"
 	"strings"
@@ -79,7 +80,7 @@ func initRss() {
 				feed := rss.New(1, true, rssChan, chat.rssItem)
 				stopRssLoop[strconv.Itoa(chat.id)+":"+feeds[k]] = make(chan bool)
 				loopFeed(feed, feeds[k], chat.id)
-				time.Sleep(time.Minute)
+				time.Sleep(time.Second * time.Duration(rand.Intn(60)))
 			}
 		}(feeds)
 	}
