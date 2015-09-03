@@ -37,7 +37,6 @@ func (p *Processor) rss(command ...string) {
 		}
 		rc.SAdd("tgRssChats", strconv.Itoa(p.chatid()))
 		rc.SAdd("tgRss:"+strconv.Itoa(p.chatid()), p.s[1])
-		stopRssLoop[strconv.Itoa(p.chatid())+":"+p.s[1]] = make(chan bool)
 		loopFeed(feed, p.s[1], p.chatid())
 	}
 	p.hitter(f, command...)
@@ -78,7 +77,6 @@ func initRss() {
 		go func(feeds []string) {
 			for k := range feeds {
 				feed := rss.New(1, true, rssChan, chat.rssItem)
-				stopRssLoop[strconv.Itoa(chat.id)+":"+feeds[k]] = make(chan bool)
 				loopFeed(feed, feeds[k], chat.id)
 				time.Sleep(time.Second * time.Duration(rand.Intn(60)))
 			}
@@ -137,6 +135,7 @@ func charsetReader(charset string, r io.Reader) (io.Reader, error) {
 
 func loopFeed(feed *rss.Feed, url string, chatid int) {
 	go func() {
+		stopRssLoop[strconv.Itoa(chatid)+":"+url] = make(chan bool)
 		t := time.Tick(time.Minute * 7)
 	Loop:
 		for {
