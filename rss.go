@@ -136,7 +136,7 @@ func charsetReader(charset string, r io.Reader) (io.Reader, error) {
 
 func loopFeed(feed *rss.Feed, url string, chatid int) {
 	go func() {
-		t := time.After(time.Minute * 7)
+		t := time.Tick(time.Minute * 7)
 	Loop:
 		for {
 			select {
