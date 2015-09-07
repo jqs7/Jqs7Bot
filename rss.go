@@ -78,7 +78,6 @@ func initRss() {
 			for k := range feeds {
 				feed := rss.New(1, true, rssChan, chat.rssItem)
 				loopFeed(feed, feeds[k], chat.id)
-				time.Sleep(time.Second * time.Duration(rand.Intn(60)))
 			}
 		}(feeds)
 	}
@@ -135,8 +134,13 @@ func charsetReader(charset string, r io.Reader) (io.Reader, error) {
 
 func loopFeed(feed *rss.Feed, url string, chatid int) {
 	go func() {
+		interval := 7
 		stopRssLoop[strconv.Itoa(chatid)+":"+url] = make(chan bool)
-		t := time.Tick(time.Minute * 7)
+
+		time.Sleep(time.Duration(rand.Intn(interval)) * time.Minute)
+		t := time.Tick(time.Minute*time.Duration(interval-1) +
+			time.Second*time.Duration(rand.Intn(120)))
+
 	Loop:
 		for {
 			select {
@@ -151,5 +155,6 @@ func loopFeed(feed *rss.Feed, url string, chatid int) {
 				}
 			}
 		}
+
 	}()
 }
