@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/Syfaro/telegram-bot-api"
+	"github.com/st3v/translator"
 	"github.com/st3v/translator/microsoft"
 )
 
@@ -26,22 +27,34 @@ func (p *Processor) trans(command ...string) {
 	p.hitter(f, command...)
 }
 
-func MsDetect(clientID, clientSecret, in string) (string, error) {
-	t := microsoft.NewTranslator(clientID, clientSecret)
-	return t.Detect(in)
+type MsTrans struct {
+	t translator.Translator
 }
 
-func MsTrans(clientID, clientSecret, in string) (out string) {
-	t := microsoft.NewTranslator(clientID, clientSecret)
-	from, err := MsDetect(clientID, clientSecret, in)
+func (m *MsTrans) New() {
+	m.t = microsoft.NewTranslator(msID, msSecret)
+}
+
+func (m *MsTrans) Detect(in string) (string, error) {
+	return m.t.Detect(in)
+}
+
+func (m *MsTrans) Trans(in, from, to string) (string, error) {
+	return m.t.Translate(in, from, to)
+}
+
+func ZhTrans(in string) (out string) {
+	m := &MsTrans{}
+	m.New()
+	from, err := m.Detect(in)
 	if err != nil {
 		return "警报！弹药系统过载！请放宽后重试"
 	}
 	switch from {
 	case "zh-CHS", "zh-CHT":
-		out, err = t.Translate(in, from, "en")
+		out, err = m.Trans(in, from, "en")
 	default:
-		out, err = t.Translate(in, from, "zh-CHS")
+		out, err = m.Trans(in, from, "zh-CHS")
 	}
 	if err != nil {
 		return "可怜的群组娘被母舰放逐了X﹏X"
@@ -54,7 +67,7 @@ func (p *Processor) translator(in string) string {
 	typingChan := make(chan bool)
 	p.sendTyping(typingChan)
 	go func() {
-		result <- MsTrans(msID, msSecret, in)
+		result <- ZhTrans(in)
 	}()
 	<-typingChan
 	return <-result

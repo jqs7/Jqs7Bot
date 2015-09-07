@@ -157,7 +157,18 @@ func (p *Processor) _turing(text string) {
 		reZh := regexp.MustCompile(`[\p{Han}]`).
 			FindAllString(text, -1)
 		if float32(len(reZh))/float32(utf8.RuneCountInString(text)) < 0.4 {
-			text = MsTrans(msID, msSecret, text)
+			m := &MsTrans{}
+			m.New()
+			from, err := m.Detect(text)
+			if err != nil {
+			}
+			switch from {
+			case "zh-CHS", "zh-CHT":
+			default:
+				text, err = m.Trans(text, from, "zh-CHS")
+			}
+			if err != nil {
+			}
 		}
 		msgText <- TuringBot(turingAPI, userid, text)
 	}()
