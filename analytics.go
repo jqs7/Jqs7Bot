@@ -222,9 +222,11 @@ func dailySave() {
 
 	//每日总发言量统计
 	go M("dailyTotal", func(c *mgo.Collection) {
-		c.Upsert(bson.M{"date": date}, bson.M{
-			"total": rc.Get("tgTotalAnalytics:" + GetDate(true, -1)),
-		})
+		c.Upsert(bson.M{"date": date},
+			bson.M{
+				"date":  date,
+				"total": rc.Get("tgTotalAnalytics:" + GetDate(true, -1)).Val(),
+			})
 	})
 
 	//每日前10名用户
@@ -246,13 +248,15 @@ func dailySave() {
 			}
 			u = append(u, user)
 		}
-		c.Upsert(bson.M{"date": date}, bson.M{"rank": &u})
+		c.Upsert(bson.M{"date": date},
+			bson.M{"date": date, "rank": u})
 	})
 
 	//每日活跃用户量
 	go M("dailyUsersCount", func(c *mgo.Collection) {
 		count := rc.ZCount("tgAnalytics:"+GetDate(true, -1), "-inf", "+inf").Val()
-		c.Upsert(bson.M{"date": date}, bson.M{"userCount": count})
+		c.Upsert(bson.M{"date": date},
+			bson.M{"date": date, "userCount": count})
 	})
 
 	//每个用户每日发言量
@@ -260,13 +264,19 @@ func dailySave() {
 		var cursor int64
 		for {
 			var result []string
-			cursor, result, _ = rc.HScan("tgUsersID", cursor, "", 10).Result()
+			var err error
+			cursor, result, err = rc.HScan("tgUsersID", cursor, "", 10).Result()
+			if err != nil {
+				loge.Errorln("error when scan tgUsersID!")
+				break
+			}
 			if cursor == 0 {
 				break
 			}
 			for _, v := range result {
 				score := rc.ZScore("tgAnalytics:"+GetDate(true, -1), v).Val()
-				c.Upsert(bson.M{"date": date, "user": v}, bson.M{"count": score})
+				c.Upsert(bson.M{"date": date, "user": v},
+					bson.M{"date": date, "user": v, "count": score})
 			}
 		}
 	})
@@ -276,14 +286,14 @@ func MIndex() {
 	for _, v := range []string{"dailyTotal", "dailyRank", "dailyUsersCount"} {
 		M(v, func(c *mgo.Collection) {
 			c.EnsureIndex(mgo.Index{
-				Key:    []string{"date"},
+				Key:    []string{"-date"},
 				Unique: true,
 			})
 		})
 	}
 	M("dailyUser", func(c *mgo.Collection) {
 		c.EnsureIndex(mgo.Index{
-			Key:    []string{"date", "user"},
+			Key:    []string{"-date", "user"},
 			Unique: true,
 		})
 	})
@@ -293,7 +303,15 @@ func GinServer() {
 	r := gin.Default()
 	r.LoadHTMLGlob("html/*")
 	r.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", nil)
+		type R struct {
+			Date  string
+			Total string
+		}
+		var result []R
+		M("dailyTotal", func(c *mgo.Collection) {
+			c.Find(nil).Sort("-date").All(&result)
+		})
+		c.HTML(http.StatusOK, "index.html", result)
 	})
 	ginpprof.Wrapper(r)
 	r.Run(":6060")

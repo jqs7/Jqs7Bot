@@ -5,6 +5,11 @@
 </head>
 <body>
 <div id="main" style="height:500px;width:1200px"></div>
+{{range $element := .}}
+  {{with $element}}
+    {{.Date}}
+  {{end}}
+{{end}}
 </body>
 </html>
 <script src="//cdn.bootcss.com/echarts/2.2.7/echarts.js"></script>
