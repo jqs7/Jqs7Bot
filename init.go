@@ -1,14 +1,13 @@
 package main
 
 import (
-	"net/http"
-	_ "net/http/pprof"
-
 	"github.com/Sirupsen/logrus"
 	"github.com/Sirupsen/logrus/hooks/papertrail"
 	"github.com/Syfaro/telegram-bot-api"
+	"github.com/carlescere/scheduler"
 	"github.com/fatih/set"
 	"github.com/kylelemons/go-gypsy/yaml"
+	"gopkg.in/mgo.v2"
 	"gopkg.in/redis.v3"
 )
 
@@ -17,6 +16,7 @@ var (
 	bot           *tgbotapi.BotAPI
 	conf          *yaml.File
 	rc            *redis.Client
+	mc            *mgo.Session
 	categories    []string
 	vimtips       chan Tips
 	hitokoto      chan Hitokoto
@@ -28,6 +28,7 @@ var (
 )
 
 func init() {
+	var err error
 	rc = redis.NewClient(&redis.Options{
 		Addr: "localhost:6379",
 	})
@@ -73,7 +74,9 @@ func init() {
 	bot.UpdatesChan(u)
 
 	initRss()
-	go http.ListenAndServe(":6060", nil)
+	MIndex()
+	scheduler.Every().Day().At("00:10").Run(dailySave)
+	go GinServer()
 }
 
 func LoadConf() {

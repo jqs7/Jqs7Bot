@@ -1,0 +1,61 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ECharts</title>
+</head>
+<body>
+<div id="main" style="height:500px;width:1200px"></div>
+</body>
+</html>
+<script src="//cdn.bootcss.com/echarts/2.2.7/echarts.js"></script>
+<script type="text/javascript">
+  require.config({
+    paths: {
+      echarts: '//cdn.bootcss.com/echarts/2.2.7'
+    }
+  });
+  require(
+          [
+            'echarts',
+            'echarts/chart/line',
+          ],
+          function (ec) {
+            var Chart = ec.init(document.getElementById('main'));
+
+            var option = {
+              tooltip: {
+                show: true,
+                formatter: function (params, ticket, callback) {
+                  console.log(params);
+                  var res = 'Function formatter : <br/>' + '<a href="http://baidu.com" target="_blank">' + params['data'] + '</a>';
+                  for (var i = 0, l = params.length; i < l; i++) {
+                    res += '<br/>' + params[i].seriesName + ' : ' + params[i].value;
+                  }
+                  setTimeout(function () {
+                    callback(ticket, res);
+                  }, 1000);
+                  return 'loading';
+                },
+                showDelay: 300,
+                hideDelay: 9999,
+                transitionDuration: 0
+              },
+              yAxis: [],
+              xAxis: [
+                {
+                  data: ["2015-09-07", "2015-09-08"]
+                }
+              ],
+              series: [
+                {
+                  "name": "total",
+                  "type": "line",
+                  "data": [7738, 407]
+                },
+              ]
+            };
+            Chart.setOption(option);
+          }
+  );
+</script>
+</script>

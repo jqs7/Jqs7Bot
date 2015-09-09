@@ -3,12 +3,17 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"net/http"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/DeanThompson/ginpprof"
 	"github.com/Syfaro/telegram-bot-api"
+	"github.com/gin-gonic/gin"
 
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/redis.v3"
 )
 
@@ -202,4 +207,94 @@ func Statistics(s string, withAt bool) string {
 		}
 		return s
 	}
+}
+
+type userRank struct {
+	name    string
+	count   float64
+	percent float64
+}
+
+func dailySave() {
+	t := time.Now().AddDate(0, 0, -1)
+	date := time.Date(t.Year(), t.Month(), t.Day(),
+		0, 0, 0, 0, t.Location())
+
+	//每日总发言量统计
+	go M("dailyTotal", func(c *mgo.Collection) {
+		c.Upsert(bson.M{"date": date}, bson.M{
+			"total": rc.Get("tgTotalAnalytics:" + GetDate(true, -1)),
+		})
+	})
+
+	//每日前10名用户
+	go M("dailyRank", func(c *mgo.Collection) {
+		//前10个活跃用户
+		result := rc.ZRevRangeByScoreWithScores("tgAnalytics:"+GetDate(true, -1),
+			redis.ZRangeByScore{Min: "-inf", Max: "+inf", Count: 10}).Val()
+		//发言总量
+		totalTmp := rc.Get("tgTotalAnalytics:" + GetDate(true, -1)).Val()
+		total, _ := strconv.ParseFloat(totalTmp, 64)
+
+		var u []userRank
+		for _, v := range result {
+			name := fmt.Sprintf("%s", v.Member)
+			user := userRank{
+				name:    name,
+				count:   v.Score,
+				percent: v.Score / total * 100,
+			}
+			u = append(u, user)
+		}
+		c.Upsert(bson.M{"date": date}, bson.M{"rank": &u})
+	})
+
+	//每日活跃用户量
+	go M("dailyUsersCount", func(c *mgo.Collection) {
+		count := rc.ZCount("tgAnalytics:"+GetDate(true, -1), "-inf", "+inf").Val()
+		c.Upsert(bson.M{"date": date}, bson.M{"userCount": count})
+	})
+
+	//每个用户每日发言量
+	go M("dailyUser", func(c *mgo.Collection) {
+		var cursor int64
+		for {
+			var result []string
+			cursor, result, _ = rc.HScan("tgUsersID", cursor, "", 10).Result()
+			if cursor == 0 {
+				break
+			}
+			for _, v := range result {
+				score := rc.ZScore("tgAnalytics:"+GetDate(true, -1), v).Val()
+				c.Upsert(bson.M{"date": date, "user": v}, bson.M{"count": score})
+			}
+		}
+	})
+}
+
+func MIndex() {
+	for _, v := range []string{"dailyTotal", "dailyRank", "dailyUsersCount"} {
+		M(v, func(c *mgo.Collection) {
+			c.EnsureIndex(mgo.Index{
+				Key:    []string{"date"},
+				Unique: true,
+			})
+		})
+	}
+	M("dailyUser", func(c *mgo.Collection) {
+		c.EnsureIndex(mgo.Index{
+			Key:    []string{"date", "user"},
+			Unique: true,
+		})
+	})
+}
+
+func GinServer() {
+	r := gin.Default()
+	r.LoadHTMLGlob("html/*")
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", nil)
+	})
+	ginpprof.Wrapper(r)
+	r.Run(":6060")
 }
