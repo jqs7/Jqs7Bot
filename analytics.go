@@ -209,10 +209,10 @@ func Statistics(s string, withAt bool) string {
 	}
 }
 
-type userRank struct {
-	name    string
-	count   float64
-	percent float64
+type UserRank struct {
+	Name    string
+	Count   float64
+	Percent float64
 }
 
 func dailySave() {
@@ -238,13 +238,13 @@ func dailySave() {
 		totalTmp := rc.Get("tgTotalAnalytics:" + GetDate(true, -1)).Val()
 		total, _ := strconv.ParseFloat(totalTmp, 64)
 
-		var u []userRank
+		var u []UserRank
 		for _, v := range result {
 			name := fmt.Sprintf("%s", v.Member)
-			user := userRank{
-				name:    name,
-				count:   v.Score,
-				percent: v.Score / total * 100,
+			user := UserRank{
+				Name:    name,
+				Count:   v.Score,
+				Percent: v.Score / total * 100,
 			}
 			u = append(u, user)
 		}
@@ -264,19 +264,14 @@ func dailySave() {
 		var cursor int64
 		for {
 			var result []string
-			var err error
-			cursor, result, err = rc.HScan("tgUsersID", cursor, "", 10).Result()
-			if err != nil {
-				loge.Errorln("error when scan tgUsersID!")
-				break
-			}
-			if cursor == 0 {
-				break
-			}
+			cursor, result = rc.HScan("tgUsersID", cursor, "", 10).Val()
 			for _, v := range result {
 				score := rc.ZScore("tgAnalytics:"+GetDate(true, -1), v).Val()
 				c.Upsert(bson.M{"date": date, "user": v},
 					bson.M{"date": date, "user": v, "count": score})
+			}
+			if cursor == 0 {
+				break
 			}
 		}
 	})
