@@ -85,7 +85,7 @@
                 {
                   "name": "total",
                   "type": "line",
-                  "data": [{{range $element := .users}}{{with $element}}{{.total}},{{end}}{{end}}]
+                  "data": [{{range $element := .users}}{{with $element}}{{.userCount}},{{end}}{{end}}]
                 },
               ]
             };
