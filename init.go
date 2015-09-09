@@ -75,7 +75,7 @@ func init() {
 
 	initRss()
 	MIndex()
-	scheduler.Every().Day().At("01:10").Run(dailySave)
+	scheduler.Every().Day().At("00:05").Run(dailySave)
 	go GinServer()
 }
 

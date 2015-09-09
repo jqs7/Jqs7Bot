@@ -298,14 +298,11 @@ func GinServer() {
 	r := gin.Default()
 	r.LoadHTMLGlob("html/*")
 	r.GET("/", func(c *gin.Context) {
-		type R struct {
-			Date  string
-			Total string
-		}
-		var result []R
+		var result []interface{}
 		M("dailyTotal", func(c *mgo.Collection) {
-			c.Find(nil).Sort("-date").All(&result)
+			c.Find(nil).All(&result)
 		})
+		loge.Println(result)
 		c.HTML(http.StatusOK, "index.html", result)
 	})
 	ginpprof.Wrapper(r)
