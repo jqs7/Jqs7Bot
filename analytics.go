@@ -222,10 +222,14 @@ func dailySave() {
 
 	//每日总发言量统计
 	go M("dailyTotal", func(c *mgo.Collection) {
+		total := rc.Get("tgTotalAnalytics:" + GetDate(true, -1)).Val()
+		if total == "" {
+			total = "0"
+		}
 		c.Upsert(bson.M{"date": date},
 			bson.M{
 				"date":  date,
-				"total": rc.Get("tgTotalAnalytics:" + GetDate(true, -1)).Val(),
+				"total": total,
 			})
 	})
 
@@ -298,12 +302,16 @@ func GinServer() {
 	r := gin.Default()
 	r.LoadHTMLGlob("html/*")
 	r.GET("/", func(c *gin.Context) {
-		var result []interface{}
+		var total []interface{}
 		M("dailyTotal", func(c *mgo.Collection) {
-			c.Find(nil).All(&result)
+			c.Find(nil).All(&total)
 		})
-		loge.Println(result)
-		c.HTML(http.StatusOK, "index.html", result)
+		var users []interface{}
+		M("dailyUsersCount", func(c *mgo.Collection) {
+			c.Find(nil).All(&users)
+		})
+		c.HTML(http.StatusOK, "index.html",
+			gin.H{"total": total, "users": users})
 	})
 	ginpprof.Wrapper(r)
 	r.Run(":6060")
