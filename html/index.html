@@ -55,10 +55,9 @@
                 },
                 hideDelay: 9999
               },
-              yAxis: [{
-                type: "value",
+              yAxis: [{},{
                 scale: true
-              },{}],
+              }],
               xAxis: [
                 {
                   data: [{{range $element := .total}}{{with $element}}{{.date.Format "2006-01-02"}},{{end}}{{end}}]
@@ -68,7 +67,6 @@
                 {
                   "name": "日发言量",
                   "type": "line",
-
                   "data": [{{range $element := .total}}{{with $element}}{{.total}},{{end}}{{end}}]
                 },
                 {
