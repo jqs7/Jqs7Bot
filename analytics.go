@@ -306,11 +306,11 @@ func GinServer() {
 	r.GET("/", func(c *gin.Context) {
 		var total []interface{}
 		M("dailyTotal", func(c *mgo.Collection) {
-			c.Find(nil).Limit(1).All(&total)
+			c.Find(nil).Limit(-1).All(&total)
 		})
 		var users []interface{}
 		M("dailyUsersCount", func(c *mgo.Collection) {
-			c.Find(nil).Limit(1).All(&users)
+			c.Find(nil).Limit(-1).All(&users)
 		})
 		c.HTML(http.StatusOK, "index.html",
 			gin.H{"total": total, "users": users})
@@ -338,7 +338,7 @@ func GinServer() {
 		var result []interface{}
 		userid := rc.HGet("tgUsersName", s).Val()
 		M("dailyUser", func(c *mgo.Collection) {
-			c.Find(gin.H{"user": userid}).Limit(1).All(&result)
+			c.Find(gin.H{"user": userid}).Limit(-1).All(&result)
 		})
 		c.HTML(http.StatusOK, "user.html",
 			result)
