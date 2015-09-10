@@ -24,11 +24,14 @@
             var total = ec.init(document.getElementById('total'));
 
             var total_option = {
+              legend:{
+                data:["日发言量","日活跃用户"]
+              },
               tooltip: {
                 show: true,
                 formatter: function (params, ticket, callback) {
-                  if (params['seriesName']=="日发言量"){
-                    return params['name'] + "活跃用户量 : " + params['data']
+                  if (params['seriesName']=="日活跃用户"){
+                    return params['name'] + '</br>' + "活跃用户量 : " + params['data']
                   }
                   if (params['data'] == "") {
                     params['data'] = "0"
@@ -58,7 +61,6 @@
               },{}],
               xAxis: [
                 {
-                  boundaryGap : false,
                   data: [{{range $element := .total}}{{with $element}}{{.date.Format "2006-01-02"}},{{end}}{{end}}]
                 }
               ],
