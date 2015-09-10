@@ -5,7 +5,6 @@
 </head>
 <body>
 <div id = "total" style = "height:500px;width:1200px"></div>
-<!--<div id = "users" style = "height:500px;width:1200px"></div>-->
 </body>
 </html>
 <script src = "//cdn.bootcss.com/echarts/2.2.7/echarts.js"></script>
@@ -23,12 +22,14 @@
           ],
           function (ec) {
             var total = ec.init(document.getElementById('total'));
-            var users = ec.init(document.getElementById('users'));
 
             var total_option = {
               tooltip: {
                 show: true,
                 formatter: function (params, ticket, callback) {
+                  if (params['seriesName']=="日发言量"){
+                    return params['name'] + "活跃用户量 : " + params['data']
+                  }
                   if (params['data'] == "") {
                     params['data'] = "0"
                   }
@@ -51,9 +52,13 @@
                 },
                 hideDelay: 9999
               },
-              yAxis: [{},{}],
+              yAxis: [{
+                type: "value",
+                scale: true
+              },{}],
               xAxis: [
                 {
+                  boundaryGap : false,
                   data: [{{range $element := .total}}{{with $element}}{{.date.Format "2006-01-02"}},{{end}}{{end}}]
                 }
               ],
@@ -61,37 +66,18 @@
                 {
                   "name": "日发言量",
                   "type": "line",
-                  "yAxisIndex":1,
+
                   "data": [{{range $element := .total}}{{with $element}}{{.total}},{{end}}{{end}}]
                 },
                 {
                   "name": "日活跃用户",
                   "type": "line",
+                  "yAxisIndex":1,
                   "data": [{{range $element := .users}}{{with $element}}{{.userCount}},{{end}}{{end}}]
                 }
               ]
             };
-
-//            var users_option = {
-//              tooltip: {
-//                show: true
-//              },
-//              yAxis: [],
-//              xAxis: [
-//                {
-//                  data: [{{range $element := .users}}{{with $element}}{{.date.Format "2006-01-02"}},{{end}}{{end}}]
-//                }
-//              ],
-//              series: [
-//                {
-//                  "name": "total",
-//                  "type": "line",
-//                  "data": [{{range $element := .users}}{{with $element}}{{.userCount}},{{end}}{{end}}]
-//                },
-//              ]
-//            };
             total.setOption(total_option);
-//            users.setOption(users_option);
           }
   );
 </script>
