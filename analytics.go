@@ -304,7 +304,7 @@ func GinServer() {
 	r := gin.Default()
 	r.LoadHTMLGlob("html/*")
 	r.GET("/", func(c *gin.Context) {
-		limit := time.Now().AddDate(0, 0, -1)
+		limit := time.Now().AddDate(0, 0, -100)
 		var total []interface{}
 		M("dailyTotal", func(c *mgo.Collection) {
 			c.Find(bson.M{
@@ -336,7 +336,7 @@ func GinServer() {
 	})
 
 	r.GET("/user/:name", func(c *gin.Context) {
-		limit := time.Now().AddDate(0, 0, -1)
+		limit := time.Now().AddDate(0, 0, -100)
 		s, err := url.QueryUnescape(c.Params.ByName("name"))
 		if err != nil {
 			return
