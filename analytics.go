@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -328,6 +329,21 @@ func GinServer() {
 		})
 		c.JSON(http.StatusOK, result)
 	})
+
+	r.GET("/user/:name", func(c *gin.Context) {
+		s, err := url.QueryUnescape(c.Params.ByName("name"))
+		if err != nil {
+			return
+		}
+		var result []interface{}
+		userid := rc.HGet("tgUsersName", s).Val()
+		M("dailyUser", func(c *mgo.Collection) {
+			c.Find(gin.H{"user": userid}).All(&result)
+		})
+		c.HTML(http.StatusOK, "user.html",
+			result)
+	})
+
 	ginpprof.Wrapper(r)
 	r.Run(":6060")
 }

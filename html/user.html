@@ -1,0 +1,62 @@
+<html>
+<head>
+  <meta charset = "utf-8">
+  <title>Jqs7Bot</title>
+</head>
+<body>
+<div id = "user" style = "height:500px;width:1200px"></div>
+</body>
+</html>
+<script src = "//cdn.bootcss.com/echarts/2.2.7/echarts.js"></script>
+<script src = "http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script type = "text/javascript">
+  require.config({
+    paths: {
+      echarts: '//cdn.bootcss.com/echarts/2.2.7'
+    }
+  });
+  require(
+          [
+            'echarts',
+            'echarts/chart/line',
+          ],
+          function (ec) {
+            var user = ec.init(document.getElementById('user'));
+
+            var user_option = {
+              tooltip: {
+                show: true,
+//                formatter: function (params, ticket, callback) {
+//                  console.log(params);
+//                  var res = 'Function formatter : <br/>' + '<a href="http://baidu.com" target="_blank">' + params['data'] + '</a>';
+//                  for (var i = 0, l = params.length; i < l; i++) {
+//                    res += '<br/>' + params[i].seriesName + ' : ' + params[i].value;
+//                  }
+//                  setTimeout(function () {
+//                    callback(ticket, res);
+//                  }, 1000);
+//                  return 'loading';
+//                },
+//                showDelay: 300,
+//                hideDelay: 9999,
+//                transitionDuration: 0
+              },
+              yAxis: [],
+              xAxis: [
+                {
+                  data: [{{range $element := .}}{{with $element}}{{.date.Format "2006-01-02"}},{{end}}{{end}}]
+                }
+              ],
+              series: [
+                {
+                  "name": "total",
+                  "type": "line",
+                  "data": [{{range $element := .}}{{with $element}}{{.count}},{{end}}{{end}}]
+                },
+              ]
+            };
+            user.setOption(user_option);
+          }
+  );
+</script>
+</script>
