@@ -42,13 +42,14 @@
                       percent = percent.toFixed(2);
                       var name = data['rank'][i]['name']
                       var count = data['rank'][i]['count']
-                      res += '<a src="/user/"' + encodeURI(name) + '>' + name + '</a>' +
+                      res += '<a href="/user/' + encodeURI(name) + '">' + name + '</a>' +
                               " : " + count + "/" + percent + '%</br>';
                     }
                     callback(ticket, res);
                   });
                   return 'loading';
-                }
+                },
+                hideDelay: 9999
               },
               yAxis: [],
               xAxis: [
