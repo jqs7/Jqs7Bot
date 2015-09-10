@@ -287,14 +287,14 @@ func MIndex() {
 	for _, v := range []string{"dailyTotal", "dailyRank", "dailyUsersCount"} {
 		M(v, func(c *mgo.Collection) {
 			c.EnsureIndex(mgo.Index{
-				Key:    []string{"-date"},
+				Key:    []string{"date"},
 				Unique: true,
 			})
 		})
 	}
 	M("dailyUser", func(c *mgo.Collection) {
 		c.EnsureIndex(mgo.Index{
-			Key:    []string{"-date", "user"},
+			Key:    []string{"date", "user"},
 			Unique: true,
 		})
 	})
@@ -304,13 +304,18 @@ func GinServer() {
 	r := gin.Default()
 	r.LoadHTMLGlob("html/*")
 	r.GET("/", func(c *gin.Context) {
+		limit := time.Now().AddDate(0, 0, -1)
 		var total []interface{}
 		M("dailyTotal", func(c *mgo.Collection) {
-			c.Find(nil).All(&total)
+			c.Find(bson.M{
+				"date": bson.M{"$gt": limit}}).
+				Sort("date").All(&total)
 		})
 		var users []interface{}
 		M("dailyUsersCount", func(c *mgo.Collection) {
-			c.Find(nil).All(&users)
+			c.Find(bson.M{
+				"date": bson.M{"$gt": limit}}).
+				Sort("date").All(&users)
 		})
 		c.HTML(http.StatusOK, "index.html",
 			gin.H{"total": total, "users": users})
@@ -325,12 +330,13 @@ func GinServer() {
 		}
 		var result interface{}
 		M("dailyRank", func(c *mgo.Collection) {
-			c.Find(gin.H{"date": date}).One(&result)
+			c.Find(bson.M{"date": date}).One(&result)
 		})
 		c.JSON(http.StatusOK, result)
 	})
 
 	r.GET("/user/:name", func(c *gin.Context) {
+		limit := time.Now().AddDate(0, 0, -1)
 		s, err := url.QueryUnescape(c.Params.ByName("name"))
 		if err != nil {
 			return
@@ -338,7 +344,10 @@ func GinServer() {
 		var result []interface{}
 		userid := rc.HGet("tgUsersName", s).Val()
 		M("dailyUser", func(c *mgo.Collection) {
-			c.Find(gin.H{"user": userid}).All(&result)
+			c.Find(bson.M{
+				"user": userid,
+				"date": bson.M{"$gt": limit}}).
+				All(&result)
 		})
 		c.HTML(http.StatusOK, "user.html",
 			result)
