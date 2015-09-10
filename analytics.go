@@ -304,14 +304,28 @@ func GinServer() {
 	r.GET("/", func(c *gin.Context) {
 		var total []interface{}
 		M("dailyTotal", func(c *mgo.Collection) {
-			c.Find(nil).All(&total)
+			c.Find(nil).Sort("-date").All(&total)
 		})
 		var users []interface{}
 		M("dailyUsersCount", func(c *mgo.Collection) {
-			c.Find(nil).All(&users)
+			c.Find(nil).Sort("-date").All(&users)
 		})
 		c.HTML(http.StatusOK, "index.html",
 			gin.H{"total": total, "users": users})
+	})
+
+	r.GET("/rank/:date", func(c *gin.Context) {
+		s := c.Params.ByName("date")
+		loc, _ := time.LoadLocation("Asia/Shanghai")
+		date, err := time.ParseInLocation("2006-01-02", s, loc)
+		if err != nil {
+			return
+		}
+		var result interface{}
+		M("dailyRank", func(c *mgo.Collection) {
+			c.Find(gin.H{"date": date}).One(&result)
+		})
+		c.JSON(http.StatusOK, result)
 	})
 	ginpprof.Wrapper(r)
 	r.Run(":6060")
