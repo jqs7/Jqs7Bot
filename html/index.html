@@ -5,7 +5,7 @@
 </head>
 <body>
 <div id = "total" style = "height:500px;width:1200px"></div>
-<div id = "users" style = "height:500px;width:1200px"></div>
+<!--<div id = "users" style = "height:500px;width:1200px"></div>-->
 </body>
 </html>
 <script src = "//cdn.bootcss.com/echarts/2.2.7/echarts.js"></script>
@@ -51,7 +51,7 @@
                 },
                 hideDelay: 9999
               },
-              yAxis: [],
+              yAxis: [{},{}],
               xAxis: [
                 {
                   data: [{{range $element := .total}}{{with $element}}{{.date.Format "2006-01-02"}},{{end}}{{end}}]
@@ -59,47 +59,39 @@
               ],
               series: [
                 {
-                  "name": "total",
+                  "name": "日发言量",
                   "type": "line",
+                  "yAxisIndex":1,
                   "data": [{{range $element := .total}}{{with $element}}{{.total}},{{end}}{{end}}]
                 },
+                {
+                  "name": "日活跃用户",
+                  "type": "line",
+                  "data": [{{range $element := .users}}{{with $element}}{{.userCount}},{{end}}{{end}}]
+                }
               ]
             };
 
-            var users_option = {
-              tooltip: {
-                show: true,
-//                formatter: function (params, ticket, callback) {
-//                  console.log(params);
-//                  var res = 'Function formatter : <br/>' + '<a href="http://baidu.com" target="_blank">' + params['data'] + '</a>';
-//                  for (var i = 0, l = params.length; i < l; i++) {
-//                    res += '<br/>' + params[i].seriesName + ' : ' + params[i].value;
-//                  }
-//                  setTimeout(function () {
-//                    callback(ticket, res);
-//                  }, 1000);
-//                  return 'loading';
+//            var users_option = {
+//              tooltip: {
+//                show: true
+//              },
+//              yAxis: [],
+//              xAxis: [
+//                {
+//                  data: [{{range $element := .users}}{{with $element}}{{.date.Format "2006-01-02"}},{{end}}{{end}}]
+//                }
+//              ],
+//              series: [
+//                {
+//                  "name": "total",
+//                  "type": "line",
+//                  "data": [{{range $element := .users}}{{with $element}}{{.userCount}},{{end}}{{end}}]
 //                },
-//                showDelay: 300,
-//                hideDelay: 9999,
-//                transitionDuration: 0
-              },
-              yAxis: [],
-              xAxis: [
-                {
-                  data: [{{range $element := .users}}{{with $element}}{{.date.Format "2006-01-02"}},{{end}}{{end}}]
-                }
-              ],
-              series: [
-                {
-                  "name": "total",
-                  "type": "line",
-                  "data": [{{range $element := .users}}{{with $element}}{{.userCount}},{{end}}{{end}}]
-                },
-              ]
-            };
+//              ]
+//            };
             total.setOption(total_option);
-            users.setOption(users_option);
+//            users.setOption(users_option);
           }
   );
 </script>
