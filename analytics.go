@@ -244,7 +244,8 @@ func dailySave() {
 
 		var u []UserRank
 		for _, v := range result {
-			name := fmt.Sprintf("%s", v.Member)
+			id := fmt.Sprintf("%s", v.Member)
+			name := rc.HGet("tgUsersID", id).Val()
 			user := UserRank{
 				Name:    name,
 				Count:   v.Score,
