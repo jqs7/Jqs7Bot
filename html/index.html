@@ -29,18 +29,26 @@
               tooltip: {
                 show: true,
                 formatter: function (params, ticket, callback) {
-                  if (params['data']==""){
-                    params['data']="0"
+                  if (params['data'] == "") {
+                    params['data'] = "0"
                   }
-                  var res = params['name'] + " : " + params['data'] + '</br>';
+                  var res = params['name'] + " : " + params['data'] + '</br></br>';
                   $.ajax({
-                    url: "/rank/"+params['name']
+                    url: "/rank/" + params['name']
                   }).done(function (data) {
-                    console.log(data)
+                    console.log(data);
+                    for (var i in data['rank']) {
+                      var percent = Number(data['rank'][i]['percent']);
+                      percent = percent.toFixed(2);
+                      var name = data['rank'][i]['name']
+                      var count = data['rank'][i]['count']
+                      res += '<a src="/user/"' + encodeURI(name) + '>' + name + '</a>' +
+                              " : " + count + "/" + percent + '%</br>';
+                    }
                     callback(ticket, res);
                   });
                   return 'loading';
-                },
+                }
               },
               yAxis: [],
               xAxis: [
