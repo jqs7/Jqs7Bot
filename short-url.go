@@ -11,7 +11,7 @@ import (
 func ShortUrl(url string) string {
 	res, err := goreq.Request{
 		Uri: fmt.Sprintf(
-			"http://v.gd/create.php?format=json&url=",
+			"http://v.gd/create.php?format=json&url=%s",
 			url),
 		Timeout: 17 * time.Second,
 	}.Do()
