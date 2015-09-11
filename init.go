@@ -17,6 +17,7 @@ var (
 	conf          *yaml.File
 	rc            *redis.Client
 	mc            *mgo.Session
+	mgoUrl        string
 	categories    []string
 	vimtips       chan Tips
 	hitokoto      chan Hitokoto
@@ -29,10 +30,6 @@ var (
 
 func init() {
 	var err error
-	rc = redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
-	})
-
 	// Init categories
 	categories = []string{
 		"Linux", "Programming", "Software",
@@ -48,14 +45,23 @@ func init() {
 
 	LoadConf()
 	botapi, _ := conf.Get("botapi")
+	redisPass, _ := conf.Get("redisPass")
+	mgoUrl, _ = conf.Get("mgoUrl")
 	vimTipsCache, _ := conf.GetInt("vimTipsCache")
 	hitokotoCache, _ := conf.GetInt("hitokotoCache")
 	vimtips = new(Tips).GetChan(int(vimTipsCache))
 	hitokoto = new(Hitokoto).GetChan(int(hitokotoCache))
-	sticker = RandSticker(rc)
 	papertrailUrl, _ := conf.Get("papertrailUrl")
 	papertrailPort, _ := conf.GetInt("papertrailPort")
 
+	rc = redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: redisPass,
+	})
+
+	sticker = RandSticker(rc)
+
+	//logger
 	hook, err := logrus_papertrail.NewPapertrailHook(
 		papertrailUrl, int(papertrailPort), "nyan")
 	if err != nil {
@@ -64,6 +70,7 @@ func init() {
 		loge.Hooks.Add(hook)
 	}
 
+	//bot init
 	bot, err = tgbotapi.NewBotAPI(botapi)
 	if err != nil {
 		loge.Panic(err)
@@ -75,6 +82,7 @@ func init() {
 
 	initRss()
 	MIndex()
+	dailySave()
 	scheduler.Every().Day().At("00:05").Run(dailySave)
 	go GinServer()
 }
