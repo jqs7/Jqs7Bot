@@ -102,7 +102,8 @@ func rssItem(feed *rss.Feed,
 		if k != 0 && k%10 == 0 {
 			i++
 		}
-		buf[i].WriteString(v.Title + "\n" + v.Links[0].Href + "\n")
+		link := ShortUrl(v.Links[0].Href)
+		buf[i].WriteString(v.Title + "\n" + link + "\n")
 	}
 	rc.Set("tgRssLatest:"+strconv.Itoa(chatID)+":"+feed.Url,
 		newitems[0].Links[0].Href, -1)
