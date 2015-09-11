@@ -13,22 +13,21 @@ import (
 
 func GinServer() {
 	r := gin.Default()
+	gin.SetMode(gin.ReleaseMode)
+
 	r.LoadHTMLGlob("html/*")
 	r.GET("/", func(c *gin.Context) {
-		//limit := time.Now().AddDate(0, 0, -100)
-		var total []interface{}
+		var total, users []interface{}
+		limit := time.Now().AddDate(0, 0, -100)
 		M("dailyTotal", func(c *mgo.Collection) {
-			c.Find(nil).All(&total)
-			//c.Find(bson.M{
-			//"date": bson.M{"$gt": limit}}).
-			//Sort("date").All(&total)
+			c.Find(bson.M{
+				"date": bson.M{"$gt": limit}}).
+				Sort("date").All(&total)
 		})
-		var users []interface{}
 		M("dailyUsersCount", func(c *mgo.Collection) {
-			c.Find(nil).All(&users)
-			//c.Find(bson.M{
-			//"date": bson.M{"$gt": limit}}).
-			//Sort("date").All(&users)
+			c.Find(bson.M{
+				"date": bson.M{"$gt": limit}}).
+				Sort("date").All(&users)
 		})
 		c.HTML(http.StatusOK, "index.html",
 			gin.H{"total": total, "users": users})
