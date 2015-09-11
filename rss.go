@@ -93,27 +93,26 @@ func (c *chat) rssItem(feed *rss.Feed,
 func rssItem(feed *rss.Feed,
 	ch *rss.Channel, newitems []*rss.Item, chatID int) {
 	loge.Infof("%d new item(s) in %s\n", len(newitems), feed.Url)
-	buf, i := make([]bytes.Buffer, 20), 0
+	var buf bytes.Buffer
 	for k, v := range newitems {
 		if v.Links[0].Href == rc.Get("tgRssLatest:"+
 			strconv.Itoa(chatID)+":"+feed.Url).Val() {
 			break
 		}
-		if k != 0 && k%10 == 0 {
-			i++
-		}
 		link := ShortUrl(v.Links[0].Href)
-		buf[i].WriteString(v.Title + "\n" + link + "\n")
+		buf.WriteString(v.Title + "\n" + link + "\n")
+
+		if (k != 0 && k%10 == 0) || k == len(newitems)-1 {
+			if buf.String() != "" {
+				msg := tgbotapi.NewMessage(chatID, ch.Title+"\n"+buf.String())
+				msg.DisableWebPagePreview = true
+				bot.SendMessage(msg)
+			}
+			buf.Reset()
+		}
 	}
 	rc.Set("tgRssLatest:"+strconv.Itoa(chatID)+":"+feed.Url,
 		newitems[0].Links[0].Href, -1)
-	for _, v := range buf {
-		if v.String() != "" {
-			msg := tgbotapi.NewMessage(chatID, ch.Title+"\n"+v.String())
-			msg.DisableWebPagePreview = true
-			bot.SendMessage(msg)
-		}
-	}
 }
 
 func rssChan(feed *rss.Feed, newchannels []*rss.Channel) {
