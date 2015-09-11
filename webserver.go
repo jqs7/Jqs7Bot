@@ -16,6 +16,7 @@ func GinServer() {
 	gin.SetMode(gin.ReleaseMode)
 
 	r.LoadHTMLGlob("html/*")
+	r.Static("/assets", "./assets")
 	r.GET("/", func(c *gin.Context) {
 		var total, users []interface{}
 		limit := time.Now().AddDate(0, 0, -100)
