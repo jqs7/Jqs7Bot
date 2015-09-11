@@ -41,7 +41,7 @@
                 window.location.href = '/user/@'+user;
               }
             });
-            $("#total").backstretch(['../assets/bg.jpg',{duration: 4000}]);
+            //$("#total").backstretch(['../assets/bg.jpg',{duration: 4000}]);
             var total_option = {
               legend:{
                 data:["日发言量","日活跃用户"]
@@ -61,7 +61,6 @@
                     url: "/rank/" + params['name']
                   }).done(function (data) {
                     console.log(data);
-                    //res += '<div class="ui model">';
                     for (var i in data['rank']) {
                       var percent = Number(data['rank'][i]['percent']);
                       percent = percent.toFixed(2);
@@ -74,12 +73,11 @@
                       //res += '<a href="/user/' + encodeURI(name) + '">' + name + '</a>' +
                       //        " : " + count + "/" + percent + '%</br>';
                     }
-                    res += '</div>';
                     callback(ticket, res);
                   });
                   return 'loading';
                 },
-                hideDelay: 9999
+                hideDelay: 1000
               },
               yAxis: [{},{
                 scale: true
