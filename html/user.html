@@ -1,16 +1,20 @@
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset = "utf-8">
   <title>Jqs7Bot</title>
 </head>
 <body>
-<div id = "user" style = "background: url('../assets/bg.jpg');height:500px;width:1200px"></div>
+<div id="main" align="center">
+  <div id = "user" style = "height:500px;width:1200px"></div>
+</div>
 </body>
 </html>
-
 <script src = "//cdn.bootcss.com/echarts/2.2.7/echarts.js"></script>
 <script src = "http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src ="https://cdnjs.cloudflare.com/ajax/libs/jquery-backstretch/2.0.4/jquery.backstretch.min.js"></script>
 <link href="http://cdn.bootcss.com/semantic-ui/2.1.3/semantic.min.css" rel="stylesheet">
+<script src="//cdn.bootcss.com/semantic-ui/2.1.3/semantic.min.js"></script>
 <script type = "text/javascript">
   require.config({
     paths: {
@@ -20,35 +24,42 @@
   require(
           [
             'echarts',
-            'echarts/chart/line',
+            'echarts/chart/line'
           ],
           function (ec) {
             var user = ec.init(document.getElementById('user'));
-            var h1 = '<h2 align="center">';
-            var h2 = '</h2>';
-            $("#user").before(h1+user.replace( /@/,"")+"的每日发言量"+h2);
+            var h1 = '<h1 id="title">';
+            var h2 = '</h1>';
+            $("#user").before(h1+user.replace(/@/,"")+'的每日发言量'+h2);
+            $("#main").backstretch(['../assets/bg.jpg',{duration: 4000}]);
             var user_option = {
               tooltip: {
-                show: true
-                formatter: function (params){
-                  return 'total</br><div class="ui blue label">'+params['name']+ '</div></br>'+ +params['data']+'</br>';
-                }
+                show: true,
+                formatter: function (params, ticket, callback) {
+                  console.log(params);
+                  var res = 'total<br/><div class="ui blue label">'+params['name'] + '</div><br/>  ' + params['data'];
+                  setTimeout(function () {
+                    callback(ticket, res);
+                  }, 1000);
+                  return 'loading';
+                },
+                hideDelay: 3000
               },
               yAxis: [],
               xAxis: [
                 {
-                  data: [{{range $element := .}}{{with $element}}{{.date.Format "2006-01-02"}},{{end}}{{end}}]
+                    data: data: [{{range $element := .}}{{with $element}}{{.date.Format "2006-01-02"}},{{end}}{{end}}]
                 }
-              ],
+               ],
               series: [
                 {
-                  "name": "total",
-                  "type": "line",
-                  "data": [{{range $element := .}}{{with $element}}{{.count}},{{end}}{{end}}]
-                }
-              ]
+                    "name": "total",
+                    "type": "line",
+                    "data": [{{range $element := .}}{{with $element}}{{.count}},{{end}}{{end}}]
+                 },
+                 ]
             };
-            user.setOption(user_option);
+                user.setOption(user_option);
           }
-  );
+       );
 </script>

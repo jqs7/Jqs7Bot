@@ -4,11 +4,11 @@
   <title>Jqs7Bot</title>
 </head>
 <body>
-<div  class="item"  id="search" align="center">
+<div id="search" align="center" class="item">
   <h1 style="text-align:center;">Telegram 中文群组数据统计</h1>
   <div  class="ui  center icon input">
     <input id="user" type="text" placeholder="UserName...">
-    <i  class="search link icon"></i>
+    <i id="us" class="search link icon"></i>
   </div>
 </div>
 <div  align="center">
@@ -35,11 +35,16 @@
           ],
           function (ec) {
             var total = ec.init(document.getElementById('total'));
-            $("#user").keyup(function(){
-              if(event.keyCode==13){
-                var user = localStorage.user = $("#user").val();
-                window.location.href = '/user/@'+user;
+            var user;
+            $("#user").keyup(function () {
+              if (event.keyCode == 13) {
+                user = localStorage.user = $("#user").val();
+                window.location.href = '/user/@' + user;
               }
+            });
+            $("#us").click(function () {
+              user = localStorage.user = $("#user").val();
+              window.location.href = '/user/@'+user;
             });
             $("#total").backstretch(['../assets/bg.jpg',{duration: 4000}]);
             var total_option = {
