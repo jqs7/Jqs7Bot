@@ -63,7 +63,8 @@ func GinServer() {
 				All(&result)
 		})
 		c.HTML(http.StatusOK, "user.html",
-			result)
+			gin.H{"result": result,
+				"userName": s})
 	})
 
 	ginpprof.Wrapper(r)

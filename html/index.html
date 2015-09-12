@@ -1,12 +1,14 @@
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset = "utf-8">
   <title>Jqs7Bot</title>
 </head>
-<body id="body" style="background-color: #fff8dd">
+<body id="body">
 <div align="center">
-  <div id="search" align="center" class=" item" style="opacity:0.8;margin-bottom: 10px ;height: 90px;width: 1200px">
-    <h1 style="color: black" >Telegram 中文群组数据统计</h1>
+  <div id="search" align="center" class="item" 
+      style="opacity:0.8;margin-bottom:10px;margin-top:20px;height:90px;width:1200px">
+    <h1 style="color: #3C3C3C">群组娘第二舰队活动图</h1>
     <div  class="ui  icon input">
       <input id="user" type="text" placeholder="UserName...">
       <i id="us" class="search link icon"></i>
@@ -20,14 +22,12 @@
 </html>
 
 <script src = "http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-<script src ="https://cdnjs.cloudflare.com/ajax/libs/jquery-backstretch/2.0.4/jquery.backstretch.min.js"></script>
-<link href="http://cdn.bootcss.com/semantic-ui/2.1.3/semantic.min.css" rel="stylesheet">
-<script src="//cdn.bootcss.com/semantic-ui/2.1.3/semantic.min.js"></script>
+<link href="//cdn.bootcss.com/semantic-ui/2.1.3/semantic.min.css" rel="stylesheet">
 <script src = "//cdn.bootcss.com/echarts/2.2.7/echarts.js"></script>
 <script type = "text/javascript">
   require.config({
     paths: {
-      echarts: 'http://cdn.bootcss.com/echarts/2.2.7'
+      echarts: '//cdn.bootcss.com/echarts/2.2.7'
     }
   });
   require(
@@ -48,9 +48,6 @@
               user = localStorage.user = $("#user").val();
               window.location.href = '/user/@'+user;
             });
-            //$("#body").backstretch(['http://i.imghub.co/qdaF4.jpg',{duration: 4000}]);
-            $("#search").backstretch(['http://i.imghub.co/qda6z.png',{duration: 4000}]);
-            $("#total").backstretch(['http://i.imghub.co/qdavM.jpg',{duration: 4000}]);
             var total_option = {
               legend:{
                 data:["日发言量","日活跃用户"]
@@ -60,12 +57,12 @@
                 formatter: function (params, ticket, callback) {
                   if (params['seriesName']=="日活跃用户"){
                     return '<div class="ui blue label">'+params['name']+ '</div></br>'+ +params['data']+'</br>';
-                    //return params['name'] + '</br>' + "活跃用户量 : " + params['data']
                   }
                   if (params['data'] == "") {
                     params['data'] = "0"
                   }
-                  var res = params['name'] + " : " + params['data'] + '</br></br>';
+                  var res = '<div style="margin-bottom:10px"><div class="ui blue label" style="margin-right:10px">' +
+                      params['name'] + '</div><div class="ui blue label">' + params['data'] + '</div></div>';
                   $.ajax({
                     url: "/rank/" + params['name']
                   }).done(function (data) {
@@ -83,7 +80,7 @@
                   });
                   return 'loading';
                 },
-                hideDelay: 1000
+                hideDelay: 3000
               },
               yAxis: [{},{
                 scale: true
