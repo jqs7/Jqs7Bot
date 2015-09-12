@@ -4,7 +4,7 @@
   <title>Jqs7Bot</title>
 </head>
 <body>
-<div id="search" align="center" class="item">
+<div id="search" align="center" class="item" style="margin-bottom: 10px">
   <h1 style="text-align:center;">Telegram 中文群组数据统计</h1>
   <div  class="ui  center icon input">
     <input id="user" type="text" placeholder="UserName...">
@@ -70,10 +70,10 @@
                       percent = percent.toFixed(2);
                       var name = data['rank'][i]['name']
                       var count = data['rank'][i]['count']
-                      res += '<div class="ui circular pink label" style="margin-bottom=10px"><a href="/user/' +
+                      res += '<div style="margin-bottom:1px"><div class="ui circular pink label"><a href="/user/' +
                               encodeURI(name) + '">' + name + '</a></div>' +
                               '<div class="ui circular yellow label">' + count +
-                              '</div><div class="ui circular violet label">'+percent+'%</div></br>';
+                              '</div><div class="ui circular violet label">'+percent+'%</div></div></br>';
                       //res += '<a href="/user/' + encodeURI(name) + '">' + name + '</a>' +
                       //        " : " + count + "/" + percent + '%</br>';
                     }
