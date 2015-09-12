@@ -30,7 +30,7 @@
             var user = ec.init(document.getElementById('user'));
             var h1 = '<h1 id="title">';
             var h2 = '</h1>';
-            $("#user").before(h1+/*user.replace(/@/,"")+*/'的每日发言量'+h2);
+            $("#user").before(h1+user.replace(/@/,"")+'的每日发言量'+h2);
             $("#main").backstretch(['../assets/bg.jpg',{duration: 4000}]);
             var user_option = {
               tooltip: {
