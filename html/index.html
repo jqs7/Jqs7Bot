@@ -3,8 +3,8 @@
   <meta charset = "utf-8">
   <title>Jqs7Bot</title>
 </head>
-<body style="background: url(/assets/bg.jpg);background-size: cover;">
-<div style="background-color: #204d74" id="search" align="center"  class="item">
+<body>
+<div id="search" align="center" class="item">
   <h1 style="text-align:center;">Telegram 中文群组数据统计</h1>
   <div  class="ui  center icon input">
     <input id="user" type="text" placeholder="UserName...">
@@ -41,7 +41,7 @@
                 window.location.href = '/user/@'+user;
               }
             });
-            //$("#total").backstretch(['../assets/bg.jpg',{duration: 4000}]);
+            $("#total").backstretch(['../assets/bg.jpg',{duration: 4000}]);
             var total_option = {
               legend:{
                 data:["日发言量","日活跃用户"]
