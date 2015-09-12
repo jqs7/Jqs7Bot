@@ -3,7 +3,7 @@
   <meta charset = "utf-8">
   <title>Jqs7Bot</title>
 </head>
-<body style="background-color: rgba(35, 80, 136, 0.79)">
+<body id="body" style="background-color: #fff8dd">
 <div align="center">
   <div id="search" align="center" class=" item" style="opacity:0.8;margin-bottom: 10px ;height: 90px;width: 1200px">
     <h1 style="color: black" >Telegram 中文群组数据统计</h1>
@@ -48,6 +48,7 @@
               user = localStorage.user = $("#user").val();
               window.location.href = '/user/@'+user;
             });
+            //$("#body").backstretch(['http://i.imghub.co/qdaF4.jpg',{duration: 4000}]);
             $("#search").backstretch(['http://i.imghub.co/qda6z.png',{duration: 4000}]);
             $("#total").backstretch(['http://i.imghub.co/qdavM.jpg',{duration: 4000}]);
             var total_option = {
