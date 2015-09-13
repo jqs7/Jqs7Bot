@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
 	"math/rand"
 	"sort"
@@ -97,8 +98,10 @@ func rssItem(feed *rss.Feed,
 	for k, v := range newitems {
 		sendMsg := func() {
 			if buf.String() != "" {
-				msg := tgbotapi.NewMessage(chatID, ch.Title+"\n"+buf.String())
+				msg := tgbotapi.NewMessage(chatID,
+					"*"+ch.Title+"*\n"+buf.String())
 				msg.DisableWebPagePreview = true
+				msg.ParseMode = tgbotapi.ModeMarkdown
 				bot.SendMessage(msg)
 			}
 		}
@@ -107,10 +110,10 @@ func rssItem(feed *rss.Feed,
 			sendMsg()
 			break
 		}
-		link := ShortUrl(v.Links[0].Href)
-		buf.WriteString(v.Title + "\n" + link + "\n")
+		format := fmt.Sprintf("%s [link](%s)\n", v.Title, v.Links[0].Href)
+		buf.WriteString(format)
 
-		if (k != 0 && k%10 == 0) || k == len(newitems)-1 {
+		if (k != 0 && k%8 == 0) || k == len(newitems)-1 {
 			sendMsg()
 			buf.Reset()
 		}

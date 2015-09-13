@@ -77,7 +77,7 @@ func Stat(t string, rc *redis.Client) string {
 		c, err := cpu.CPUPercent(time.Second*3, false)
 		checkErr(err)
 		return fmt.Sprintf(
-			"OSRelease: %s\nHostName: %s\nUptime: %s\nLoadAdv: %.2f %.2f %.2f\n"+
+			"OSRelease: %s\nHostName: %s\nUptime: %s\nLoadAvg: %.2f %.2f %.2f\n"+
 				"Goroutine: %d\nCPU: %.2f%%",
 			h.Platform, h.Hostname, uptime.String(), l.Load1, l.Load5, l.Load15,
 			runtime.NumGoroutine(), c[0],
