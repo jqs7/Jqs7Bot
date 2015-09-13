@@ -60,7 +60,7 @@ func GinServer() {
 			c.Find(bson.M{
 				"user": userid,
 				"date": bson.M{"$gt": limit}}).
-				All(&result)
+				Sort("date").All(&result)
 		})
 		c.HTML(http.StatusOK, "user.html",
 			gin.H{"result": result,
