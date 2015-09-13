@@ -30,11 +30,14 @@
             'echarts/chart/line'
           ],
           function (ec) {
-            var user = ec.init(document.getElementById('user'), 'helianthus');
+            var user = ec.init(document.getElementById('user'));
             var user_option = {
               tooltip: {
                 show: true,
                 formatter: function (params, ticket, callback) {
+                  if ($.inArray(params['name'],["avg","min","max"]) != -1){
+                    return '<div class="ui blue label">'+params['name'] + '</div><br/>  ' + params['data']['value'];
+                  }
                   return '<div class="ui blue label">'+params['name'] + '</div><br/>  ' + params['data'];
                 },
                 hideDelay: 3000
@@ -47,12 +50,19 @@
               ],
               series: [
                 {
-                  "name": "total",
-                  "type": "line",
-                  "data": [{{range $element := .result}}{{with $element}}{{.count}},{{end}}{{end}}],
-                  markLine : {
-                    data : [
-                      {type : 'average', name : 'avg'}
+                  name: "total",
+                  type: "line",
+                  smooth: true,
+                  data: [{{range $element := .result}}{{with $element}}{{.count}},{{end}}{{end}}],
+                  markLine: {
+                    data: [
+                      {type: 'average', name: 'avg'}
+                    ]
+                  },
+                  markPoint: {
+                    data: [
+                      {type: 'min',name: 'min'},
+                      {type: 'max',name: 'max'}
                     ]
                   }
                 },

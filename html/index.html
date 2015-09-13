@@ -38,7 +38,7 @@
             'echarts/chart/line'
           ],
           function (ec) {
-            var total = ec.init(document.getElementById('total'), 'helianthus');
+            var total = ec.init(document.getElementById('total'));
             var user;
             $("#user").keyup(function () {
               if (event.keyCode == 13) {
@@ -58,10 +58,16 @@
                 show: true,
                 formatter: function (params, ticket, callback) {
                   if (params['seriesName']=="日活跃用户"){
-                    return '<div class="ui blue label">'+params['name']+ '</div></br>'+ +params['data']+'</br>';
+                    if ($.inArray(params['name'],["avg","min","max"]) != -1){
+                      return '<div class="ui blue label">'+params['name']+ '</div></br>'+ params['data']['value']+'</br>';
+                    }
+                    return '<div class="ui blue label">'+params['name']+ '</div></br>'+ params['data']+'</br>';
                   }
                   if (params['data'] == "") {
                     params['data'] = "0"
+                  }
+                  if ($.inArray(params['name'],["avg","min","max"]) != -1){
+                    return '<div class="ui blue label">'+params['name']+ '</div></br>'+ params['data']['value']+'</br>';
                   }
                   var res = '<div style="margin-bottom:10px"><div class="ui blue label" style="margin-right:10px">' +
                       params['name'] + '</div><div class="ui blue label">' + params['data'] + '</div></div>';
@@ -96,10 +102,13 @@
                 {
                   name: "日发言量",
                   type: "line",
-                  "data": [{{range $element := .total}}{{with $element}}{{.total}},{{end}}{{end}}],
-                  markLine : {
-                    data : [
-                      {type : 'average', name : 'avg'}
+                  yAxisIndex:0,
+                  smooth: true,
+                  data: [{{range $element := .total}}{{with $element}}{{.total}},{{end}}{{end}}],
+                  markPoint: {
+                    data: [
+                      {type: 'max',name: 'max'},
+                      {type: 'min',name: 'min'},
                     ]
                   }
                 },
@@ -107,10 +116,17 @@
                   name: "日活跃用户",
                   type: "line",
                   yAxisIndex:1,
-                  "data": [{{range $element := .users}}{{with $element}}{{.userCount}},{{end}}{{end}}],
-                  markLine : {
-                    data : [
-                      {type : 'average', name : 'avg'}
+                  smooth: true,
+                  data: [{{range $element := .users}}{{with $element}}{{.userCount}},{{end}}{{end}}],
+                  markLine: {
+                    data: [
+                      {type: 'average', name: 'avg'}
+                    ]
+                  },
+                  markPoint:{
+                    data: [
+                      {type: 'max',name:'max'},
+                      {type: 'min',name:'min'}
                     ]
                   }
                 }
