@@ -46,31 +46,31 @@ func (p *Processor) analytics() {
 func (p *Processor) statistics(command ...string) {
 	f := func() {
 		msg := tgbotapi.NewMessage(p.chatid(), " ")
+		msg.ParseMode = tgbotapi.ModeMarkdown
 		if len(p.s) >= 2 {
 			switch p.s[1] {
 			case "@":
-				msg = tgbotapi.NewMessage(p.chatid(), Statistics("day", true))
+				msg.Text = Statistics("day", true)
 			case "m":
-				msg = tgbotapi.NewMessage(p.chatid(), Statistics("month", false))
+				msg.Text = Statistics("month", false)
 			case "m@":
-				msg = tgbotapi.NewMessage(p.chatid(), Statistics("month", true))
+				msg.Text = Statistics("month", true)
 			case "^":
-				msg = tgbotapi.NewMessage(p.chatid(), Statistics("yesterday", false))
+				msg.Text = Statistics("yesterday", false)
 			case "^@":
-				msg = tgbotapi.NewMessage(p.chatid(), Statistics("yesterday", true))
+				msg.Text = Statistics("yesterday", true)
 			case "^m":
-				msg = tgbotapi.NewMessage(p.chatid(), Statistics("last_month", false))
+				msg.Text = Statistics("last_month", false)
 			case "^m@":
-				msg = tgbotapi.NewMessage(p.chatid(), Statistics("last_month", true))
+				msg.Text = Statistics("last_month", true)
 			case "me":
-				msg = tgbotapi.NewMessage(p.chatid(),
-					Statistics(FromUserName(p.update.Message.From), true))
+				msg.Text = Statistics(FromUserName(p.update.Message.From), true)
 				if p.update.Message.IsGroup() {
 					msg.ReplyToMessageID = p.update.Message.MessageID
 				}
 			default:
 				name := strings.Join(p.s[1:], " ")
-				msg = tgbotapi.NewMessage(p.chatid(), Statistics(name, true))
+				msg.Text = Statistics(name, true)
 				if p.update.Message.IsGroup() {
 					msg.ReplyToMessageID = p.update.Message.MessageID
 				}
@@ -78,13 +78,11 @@ func (p *Processor) statistics(command ...string) {
 			bot.SendMessage(msg)
 		} else {
 			if p.update.Message.ReplyToMessage != nil {
-				msg = tgbotapi.NewMessage(p.chatid(),
-					Statistics(FromUserName(
-						p.update.Message.ReplyToMessage.From), true),
-				)
+				msg.Text = Statistics(FromUserName(
+					p.update.Message.ReplyToMessage.From), true)
 				bot.SendMessage(msg)
 			} else {
-				msg = tgbotapi.NewMessage(p.chatid(), Statistics("day", false))
+				msg.Text = Statistics("day", false)
 				bot.SendMessage(msg)
 			}
 		}
@@ -144,7 +142,7 @@ func Statistics(s string, withAt bool) string {
 			buf.WriteString(s)
 		}
 
-		s = fmt.Sprintf("平均每人: %.2f\n",
+		s = fmt.Sprintf("平均每人: %.2f [历史记录](http://bot.jqs7.com)\n",
 			total/float64(count))
 		buf.WriteString(s)
 
@@ -162,6 +160,7 @@ func Statistics(s string, withAt bool) string {
 		return report(false, -1)
 	default:
 		//指定用户日|月发言量
+		userName := s
 		userid := rc.HGet("tgUsersName", s).Val()
 		if userid == "" {
 			return "舰队阵列手册中查无此人呢喵ˋ( ° ▽、°  )"
@@ -194,10 +193,10 @@ func Statistics(s string, withAt bool) string {
 		//输出格式
 		s := fmt.Sprintf("ID: %s\n今日: %.0f / %.2f%% 排名: %d\n"+
 			"本月: %.0f / %.2f%% 排名: %d\n"+
-			"水值: %.2f%%\n",
+			"水值: %.2f%% [历史记录](http://bot.jqs7.com/user/%s)\n",
 			userid, dayCount, dayCount/dayTotal*100, dayRank+1,
 			monthCount, monthCount/monthTotal*100, monthRank+1,
-			rank,
+			rank, userName,
 		)
 		if rank > 10 {
 			s += "是个十足的大水比喵！💦"

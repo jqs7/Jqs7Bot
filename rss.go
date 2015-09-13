@@ -112,7 +112,7 @@ func rssItem(feed *rss.Feed,
 		format := fmt.Sprintf("%s [link](%s)\n", v.Title, v.Links[0].Href)
 		buf.WriteString(format)
 
-		if (k != 0 && k%10 == 0) || k == len(newitems)-1 {
+		if (k != 0 && k%15 == 0) || k == len(newitems)-1 {
 			sendMsg()
 			buf.Reset()
 		}
