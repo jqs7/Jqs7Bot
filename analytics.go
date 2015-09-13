@@ -64,12 +64,14 @@ func (p *Processor) statistics(command ...string) {
 				msg.Text = Statistics("last_month", true)
 			case "me":
 				msg.Text = Statistics(FromUserName(p.update.Message.From), true)
+				msg.ParseMode = tgbotapi.ModeMarkdown
 				if p.update.Message.IsGroup() {
 					msg.ReplyToMessageID = p.update.Message.MessageID
 				}
 			default:
 				name := strings.Join(p.s[1:], " ")
 				msg.Text = Statistics(name, true)
+				msg.ParseMode = tgbotapi.ModeMarkdown
 				if p.update.Message.IsGroup() {
 					msg.ReplyToMessageID = p.update.Message.MessageID
 				}
@@ -79,6 +81,7 @@ func (p *Processor) statistics(command ...string) {
 			if p.update.Message.ReplyToMessage != nil {
 				msg.Text = Statistics(FromUserName(
 					p.update.Message.ReplyToMessage.From), true)
+				msg.ParseMode = tgbotapi.ModeMarkdown
 				bot.SendMessage(msg)
 			} else {
 				msg.Text = Statistics("day", false)
@@ -192,7 +195,7 @@ func Statistics(s string, withAt bool) string {
 		//输出格式
 		s := fmt.Sprintf("ID: %s\n今日: %.0f / %.2f%% 排名: %d\n"+
 			"本月: %.0f / %.2f%% 排名: %d\n"+
-			"水值: %.2f%% \n更多: http://bot.jqs7.com/user/%s\n",
+			"水值: %.2f%% \n[更多](http://bot.jqs7.com/user/%s)\n",
 			userid, dayCount, dayCount/dayTotal*100, dayRank+1,
 			monthCount, monthCount/monthTotal*100, monthRank+1,
 			rank, userName,
