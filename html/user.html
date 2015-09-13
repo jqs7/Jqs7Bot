@@ -30,7 +30,7 @@
             'echarts/chart/line'
           ],
           function (ec) {
-            var user = ec.init(document.getElementById('user'));
+            var user = ec.init(document.getElementById('user'), 'helianthus');
             var user_option = {
               tooltip: {
                 show: true,
@@ -49,7 +49,12 @@
                 {
                   "name": "total",
                   "type": "line",
-                  "data": [{{range $element := .result}}{{with $element}}{{.count}},{{end}}{{end}}]
+                  "data": [{{range $element := .result}}{{with $element}}{{.count}},{{end}}{{end}}],
+                  markLine : {
+                    data : [
+                      {type : 'average', name : 'avg'}
+                    ]
+                  }
                 },
               ]
             };

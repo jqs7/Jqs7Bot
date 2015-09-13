@@ -98,7 +98,8 @@ func rssItem(feed *rss.Feed,
 	for k, v := range newitems {
 		sendMsg := func() {
 			if buf.String() != "" {
-				msg := tgbotapi.NewMessage(chatID, ch.Title+"\n"+buf.String())
+				msg := tgbotapi.NewMessage(chatID,
+					"*"+ch.Title+"*\n"+buf.String())
 				msg.DisableWebPagePreview = true
 				msg.ParseMode = tgbotapi.ModeMarkdown
 				bot.SendMessage(msg)

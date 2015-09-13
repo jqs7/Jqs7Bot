@@ -38,7 +38,7 @@
             'echarts/chart/line'
           ],
           function (ec) {
-            var total = ec.init(document.getElementById('total'));
+            var total = ec.init(document.getElementById('total'), 'helianthus');
             var user;
             $("#user").keyup(function () {
               if (event.keyCode == 13) {
@@ -94,15 +94,25 @@
               ],
               series: [
                 {
-                  "name": "日发言量",
-                  "type": "line",
-                  "data": [{{range $element := .total}}{{with $element}}{{.total}},{{end}}{{end}}]
+                  name: "日发言量",
+                  type: "line",
+                  "data": [{{range $element := .total}}{{with $element}}{{.total}},{{end}}{{end}}],
+                  markLine : {
+                    data : [
+                      {type : 'average', name : 'avg'}
+                    ]
+                  }
                 },
                 {
-                  "name": "日活跃用户",
-                  "type": "line",
-                  "yAxisIndex":1,
-                  "data": [{{range $element := .users}}{{with $element}}{{.userCount}},{{end}}{{end}}]
+                  name: "日活跃用户",
+                  type: "line",
+                  yAxisIndex:1,
+                  "data": [{{range $element := .users}}{{with $element}}{{.userCount}},{{end}}{{end}}],
+                  markLine : {
+                    data : [
+                      {type : 'average', name : 'avg'}
+                    ]
+                  }
                 }
               ]
             };
