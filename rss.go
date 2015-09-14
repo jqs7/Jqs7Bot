@@ -99,10 +99,13 @@ func rssItem(feed *rss.Feed,
 		sendMsg := func() {
 			if buf.String() != "" {
 				msg := tgbotapi.NewMessage(chatID,
-					"*"+ch.Title+"*\n"+buf.String())
+					"*"+markdownEscape(ch.Title)+"*\n"+
+						buf.String())
 				msg.DisableWebPagePreview = true
 				msg.ParseMode = tgbotapi.ModeMarkdown
-				bot.SendMessage(msg)
+				go func(msg tgbotapi.MessageConfig) {
+					bot.SendMessage(msg)
+				}(msg)
 			}
 		}
 		if v.Links[0].Href == rc.Get("tgRssLatest:"+
@@ -110,7 +113,8 @@ func rssItem(feed *rss.Feed,
 			sendMsg()
 			break
 		}
-		format := fmt.Sprintf("%s [link](%s)\n", v.Title, v.Links[0].Href)
+		format := fmt.Sprintf("%s [link](%s)\n",
+			markdownEscape(v.Title), v.Links[0].Href)
 		buf.WriteString(format)
 
 		if (k != 0 && k%8 == 0) || k == len(newitems)-1 {

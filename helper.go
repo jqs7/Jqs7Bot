@@ -120,3 +120,12 @@ func humanByte(in ...interface{}) (out []interface{}) {
 	}
 	return out
 }
+
+func markdownEscape(s string) string {
+	return strings.NewReplacer(
+		"_", "\\_",
+		"*", "\\*",
+		"[", "\\[", "]", "\\]",
+		"(", "\\(", ")", "\\)").
+		Replace(s)
+}
