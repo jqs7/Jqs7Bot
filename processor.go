@@ -180,8 +180,7 @@ func (p *Processor) setStatus(status string) {
 		rc.Del("tgStatus:" +
 			strconv.Itoa(p.update.Message.Chat.ID))
 		return
-	} else {
-		rc.Set("tgStatus:"+
-			strconv.Itoa(p.update.Message.Chat.ID), status, -1)
 	}
+	rc.Set("tgStatus:"+
+		strconv.Itoa(p.update.Message.Chat.ID), status, -1)
 }

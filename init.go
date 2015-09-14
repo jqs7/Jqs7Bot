@@ -17,7 +17,7 @@ var (
 	conf          *yaml.File
 	rc            *redis.Client
 	mc            *mgo.Session
-	mgoUrl        string
+	mgoURL        string
 	categories    []string
 	vimtips       chan Tips
 	hitokoto      chan Hitokoto
@@ -46,12 +46,12 @@ func init() {
 	LoadConf()
 	botapi, _ := conf.Get("botapi")
 	redisPass, _ := conf.Get("redisPass")
-	mgoUrl, _ = conf.Get("mgoUrl")
+	mgoURL, _ = conf.Get("mgoUrl")
 	vimTipsCache, _ := conf.GetInt("vimTipsCache")
 	hitokotoCache, _ := conf.GetInt("hitokotoCache")
 	vimtips = new(Tips).GetChan(int(vimTipsCache))
 	hitokoto = new(Hitokoto).GetChan(int(hitokotoCache))
-	papertrailUrl, _ := conf.Get("papertrailUrl")
+	papertrailURL, _ := conf.Get("papertrailUrl")
 	papertrailPort, _ := conf.GetInt("papertrailPort")
 
 	rc = redis.NewClient(&redis.Options{
@@ -63,7 +63,7 @@ func init() {
 
 	//logger
 	hook, err := logrus_papertrail.NewPapertrailHook(
-		papertrailUrl, int(papertrailPort), "nyan")
+		papertrailURL, int(papertrailPort), "nyan")
 	if err != nil {
 		loge.Println(err)
 	} else {

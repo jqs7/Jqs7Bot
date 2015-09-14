@@ -5,7 +5,7 @@ import "gopkg.in/mgo.v2"
 func MSession() *mgo.Session {
 	if mc == nil {
 		var err error
-		mc, err = mgo.Dial(mgoUrl)
+		mc, err = mgo.Dial(mgoURL)
 		if err != nil {
 			loge.Error(err)
 		}

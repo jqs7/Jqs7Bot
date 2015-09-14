@@ -22,13 +22,13 @@ func GinServer() {
 		limit := time.Now().AddDate(0, 0, -100)
 		M("dailyTotal", func(c *mgo.Collection) {
 			c.Find(bson.M{
-				"date": bson.M{"$gt": limit}}).
-				Sort("date").All(&total)
+				"date": bson.M{"$gt": limit},
+			}).Sort("date").All(&total)
 		})
 		M("dailyUsersCount", func(c *mgo.Collection) {
 			c.Find(bson.M{
-				"date": bson.M{"$gt": limit}}).
-				Sort("date").All(&users)
+				"date": bson.M{"$gt": limit},
+			}).Sort("date").All(&users)
 		})
 		c.HTML(http.StatusOK, "index.html",
 			gin.H{"total": total, "users": users})
@@ -43,7 +43,9 @@ func GinServer() {
 		}
 		var result interface{}
 		M("dailyRank", func(c *mgo.Collection) {
-			c.Find(bson.M{"date": date}).One(&result)
+			c.Find(
+				bson.M{"date": date},
+			).One(&result)
 		})
 		c.JSON(http.StatusOK, result)
 	})
@@ -57,14 +59,18 @@ func GinServer() {
 		var result []interface{}
 		userid := rc.HGet("tgUsersName", s).Val()
 		M("dailyUser", func(c *mgo.Collection) {
-			c.Find(bson.M{
-				"user": userid,
-				"date": bson.M{"$gt": limit}}).
-				Sort("date").All(&result)
+			c.Find(
+				bson.M{
+					"user": userid,
+					"date": bson.M{"$gt": limit},
+				},
+			).Sort("date").All(&result)
 		})
 		c.HTML(http.StatusOK, "user.html",
-			gin.H{"result": result,
-				"userName": s})
+			gin.H{
+				"result":   result,
+				"userName": s,
+			})
 	})
 
 	ginpprof.Wrapper(r)
