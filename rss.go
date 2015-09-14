@@ -113,8 +113,15 @@ func rssItem(feed *rss.Feed,
 			sendMsg()
 			break
 		}
-		format := fmt.Sprintf("[%s](%s)\n",
-			markdownEscape(v.Title), v.Links[0].Href)
+		var format string
+		if strings.Contains(v.Title, "[") &&
+			strings.Contains(v.Title, "]") {
+			format = fmt.Sprintf("%s [link](%s)\n",
+				markdownEscape(v.Title), v.Links[0].Href)
+		} else {
+			format = fmt.Sprintf("[%s](%s)\n",
+				markdownEscape(v.Title), v.Links[0].Href)
+		}
 		buf.WriteString(format)
 
 		if (k != 0 && k%8 == 0) || k == len(newitems)-1 {
