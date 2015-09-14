@@ -13,7 +13,11 @@ import (
 
 func GinServer() {
 	r := gin.Default()
-	gin.SetMode(gin.ReleaseMode)
+	if runMode == "debug" {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
 	r.LoadHTMLGlob("html/*")
 	r.Static("/assets", "./assets")
