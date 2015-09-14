@@ -70,6 +70,7 @@ func main() {
 				p.statistics("/rain")
 				p.rss("/rss")
 				p.rmrss("/rmrss")
+				p.markdown("/md")
 				p.turing("@" + botname)
 				p._default()
 			}(p)
