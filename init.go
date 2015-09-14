@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/Sirupsen/logrus"
 	"github.com/Sirupsen/logrus/hooks/papertrail"
 	"github.com/Syfaro/telegram-bot-api"
@@ -12,20 +14,26 @@ import (
 )
 
 var (
-	loge          = logrus.New()
-	bot           *tgbotapi.BotAPI
+	rc     *redis.Client
+	mc     *mgo.Session
+	mgoURL string
+
+	loge = logrus.New()
+
+	runMode string
+	bot     *tgbotapi.BotAPI
+
 	conf          *yaml.File
-	rc            *redis.Client
-	mc            *mgo.Session
-	mgoURL        string
 	categories    []string
-	vimtips       chan Tips
-	hitokoto      chan Hitokoto
-	sticker       chan string
-	turingAPI     string
 	categoriesSet set.Interface
-	msID          string
-	msSecret      string
+
+	vimtips  chan Tips
+	hitokoto chan Hitokoto
+	sticker  chan string
+
+	turingAPI string
+	msID      string
+	msSecret  string
 )
 
 func init() {
@@ -46,7 +54,6 @@ func init() {
 	LoadConf()
 	botapi, _ := conf.Get("botapi")
 	redisPass, _ := conf.Get("redisPass")
-	mgoURL, _ = conf.Get("mgoUrl")
 	vimTipsCache, _ := conf.GetInt("vimTipsCache")
 	hitokotoCache, _ := conf.GetInt("hitokotoCache")
 	vimtips = new(Tips).GetChan(int(vimTipsCache))
@@ -76,9 +83,18 @@ func init() {
 		loge.Panic(err)
 	}
 
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-	bot.UpdatesChan(u)
+	if runMode == "debug" {
+		hook := tgbotapi.NewWebhook("")
+		bot.SetWebhook(hook)
+		u := tgbotapi.NewUpdate(0)
+		u.Timeout = 60
+		bot.UpdatesChan(u)
+	} else {
+		hook := tgbotapi.NewWebhookWithCert("https://jqs7.com:8443/"+bot.Token, "crt.pem")
+		bot.SetWebhook(hook)
+		bot.ListenForWebhook()
+		go http.ListenAndServeTLS(":8443", "crt.pem", "key.pem", nil)
+	}
 
 	initRss()
 	MIndex()
@@ -93,7 +109,9 @@ func LoadConf() {
 	if err != nil {
 		loge.Panic(err)
 	}
+	runMode, _ = conf.Get("runMode")
 	turingAPI, _ = conf.Get("turingBotKey")
+	mgoURL, _ = conf.Get("mgoUrl")
 	msID, _ = conf.Get("msTransId")
 	msSecret, _ = conf.Get("msTransSecret")
 }
