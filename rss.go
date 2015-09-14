@@ -113,7 +113,7 @@ func rssItem(feed *rss.Feed,
 			sendMsg()
 			break
 		}
-		format := fmt.Sprintf("%s [link](%s)\n",
+		format := fmt.Sprintf("[%s](%s)\n",
 			markdownEscape(v.Title), v.Links[0].Href)
 		buf.WriteString(format)
 
