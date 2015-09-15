@@ -172,7 +172,7 @@ func loopFeed(feed *rss.Feed, url string, chatid int) {
 		interval := 7
 		stopRssLoop[strconv.Itoa(chatid)+":"+url] = make(chan bool)
 
-		var counter int
+		firstLoop := true
 		t := time.Tick(time.Minute*time.Duration(interval-1) +
 			time.Second*time.Duration(rand.Intn(120)))
 
@@ -182,9 +182,9 @@ func loopFeed(feed *rss.Feed, url string, chatid int) {
 			case <-stopRssLoop[strconv.Itoa(chatid)+":"+url]:
 				break Loop
 			case <-t:
-				if counter == 0 {
+				if firstLoop {
 					time.Sleep(time.Duration(rand.Intn(interval)) * time.Minute)
-					counter++
+					firstLoop = false
 				}
 				if err := feed.Fetch(url, charsetReader); err != nil {
 					loge.Warningf("failed to fetch rss, "+
