@@ -92,7 +92,7 @@ func init() {
 	} else {
 		hook := tgbotapi.NewWebhookWithCert("https://jqs7.com:8443/"+bot.Token, "crt.pem")
 		bot.SetWebhook(hook)
-		bot.ListenForWebhook()
+		bot.ListenForWebhook("/" + bot.Token)
 		go http.ListenAndServeTLS(":8443", "crt.pem", "key.pem", nil)
 	}
 
