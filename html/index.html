@@ -50,9 +50,7 @@
     </div>
   </div>
 </body>
-
 </html>
-
 <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
 <link href="//cdn.bootcss.com/semantic-ui/2.1.3/semantic.min.css" rel="stylesheet">
 <script src="//cdn.bootcss.com/echarts/2.2.7/echarts.js"></script>
@@ -184,7 +182,7 @@
             var pname;
             var len;
             var sum =0;
-            console.log(param['data']);
+            //console.log(param['data']);
             if(param['seriesName']=="日发言量" && param['data']!=Object && $.inArray(param['name'],["avg","min","max"]) == -1){
               $("#pie").show();
               $.ajax({
@@ -220,8 +218,6 @@
             }else{
               $("#pie").hide();
             }
-
-
             console.log(param);
           }
   );
