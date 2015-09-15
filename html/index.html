@@ -19,6 +19,9 @@
   <div align="center">
     <div class="ui" id="total" style="height:500px;width:1200px"></div>
   </div>
+  <div>
+    <span id="xxx"></span>
+  </div>
   <div align="center">
     <div class="ui" id="test" style="height:500px;width:1200px"></div>
   </div>
@@ -35,15 +38,23 @@
       echarts: '//cdn.bootcss.com/echarts/2.2.7'
     }
   });
+  define(
+
+  );
   require(
           [
             'echarts',
+            'zrender',
+            'echarts/config',
+            'zrender/config',
+            'echarts/chart/pie',
             'echarts/chart/line'
           ],
           function (ec) {
             var total = ec.init(document.getElementById('total'));
             var test = ec.init(document.getElementById('test'));
             var user;
+            var date;
             $("#user").keyup(function () {
               if (event.keyCode == 13) {
                 user = localStorage.user = $("#user").val();
@@ -54,12 +65,14 @@
               user = localStorage.user = $("#user").val();
               window.location.href = '/user/@'+user;
             });
+
             var total_option = {
               legend:{
                 data:["日发言量","日活跃用户"]
               },
               tooltip: {
                 show: true,
+                enterable: true,
                 formatter: function (params, ticket, callback) {
                   if (params['seriesName']=="日活跃用户"){
                     if ($.inArray(params['name'],["avg","min","max"]) != -1){
@@ -75,18 +88,20 @@
                   }
                   var res = '<div style="margin-bottom:10px"><div class="ui blue label" style="margin-right:10px">' +
                       params['name'] + '</div><div class="ui blue label">' + params['data'] + '</div></div>';
+                  date = params['name'];
                   $.ajax({
                     url: "/rank/" + params['name']
                   }).done(function (data) {
                     for (var i in data['rank']) {
                       var percent = Number(data['rank'][i]['percent']);
                       percent = percent.toFixed(2);
-                      var name = data['rank'][i]['name']
-                      var count = data['rank'][i]['count']
+                      var name = data['rank'][i]['name'];
+                      var count = data['rank'][i]['count'];
                       res += '<div style="margin-bottom:3px"><div class="ui circular pink label"><a href="/user/' +
                               encodeURI(name) + '">' + name + '</a></div>' +
                               '<div class="ui circular yellow label">' + count +
                               '</div><div class="ui circular violet label">'+percent+'%</div></div>';
+                      //data1[i] = piedata(parseInt(data['rank'][i]['count']),data['rank'][i]['name']);
                     }
                     callback(ticket, res);
                   });
@@ -136,56 +151,55 @@
                 }
               ]
             };
-            total.setOption(total_option);
-            var today = new Date();
-            var y = today.getFullYear();
-            var m = today.getMonth()+1;
-            var d = today.getDate();
-            var date = [y+'-'+m+'-'+d-1];
-            var array;
-            var sum;
-            var lvalue;
-            var click_option = {
-              title: {
-                x: 'center',
-                text: date+'十大子舰在第二舰队的表现'
-              },
-              series: [
-                {
-                  name: "日活跃用户",
-                  type: "pie",
-                  smooth: true,
-                  center: [ '50%' , '60%'],
-                  radius: '55%',
-                  boundaryGap : true,
-                  data:(function (){
-                    var res = [];
-                    var len = 0;
-                    var l = 0;
-                    $.ajax({
-                      url: "/rank/" + date
-                    }).done(function(data){
-                      for(var i in data){
-                        var name = data['rank'][i]['name'];
-                        var count = data['rank'][i]['count'];
-                        array += '{value:'+count+', name:"'+name+'"},';
-                        sum += parseInt(count);
-                        l++;
+  total.setOption(total_option);
+  var ecConfig = require('echarts/config');
+  var text;
+  var name;
+
+
+  total.on('click',
+          function eConsole(param){
+            //alert(param.name);
+            function piedata(value,name){
+              var pie = new Object;
+              pie.value = value;
+              pie.name = name;
+              return pie;
+            }
+            var data1 = new Array;
+            var pname = param['name'];
+            $("#test").before('<h1>'+param['name']+'</h1>');
+            $.ajax({
+              url: "/rank/" + param['name']
+            }).done(function (data) {
+                      for (var i in data['rank']) {
+                        data1[i] = piedata(data['rank'][i]['count'],data['rank'][i]['name']);
+                        //alert(data['rank'][i]['count'])
+                        //alert(data1);
                       }
-                      lvalue = parseInt(date['value'])-sum;
-                      array +='{value:'+lvalue+', name:"其他"}'
-                    });
-                    //alert(array);
-                    while (len++ < l) {
-                      res.push(array);
-                    }
-                    return res;
-                  })()
-                }
-              ]
-            };
-            test.setOption(click_option);
-        }
+              var click_option = {
+                title:{
+                  x: 'center',
+                  text: pname+'十大子舰在第二舰队的表现'
+                },
+                series: [
+                  {
+                    name: "日活跃用户",
+                    type: "pie",
+                    smooth: true,
+                    center: [ '50%' , '60%'],
+                    radius: '55%',
+                    boundaryGap : true,
+                    data: data1
+                  }
+                ]
+              };
+              test.setOption(click_option);
+            });
+            console.log(param);
+          }
+  );
+  }
   );
 
 </script>
