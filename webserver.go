@@ -77,6 +77,43 @@ func GinServer() {
 			})
 	})
 
+	r.GET("/test", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html",
+			gin.H{
+				"total": []map[string]interface{}{
+					{"date": time.Now(), "total": 1024},
+					{"date": time.Now(), "total": 1025},
+					{"date": time.Now(), "total": 1026},
+					{"date": time.Now(), "total": 1027},
+				},
+				"users": []map[string]interface{}{
+					{"date": time.Now(), "userCount": 256},
+					{"date": time.Now(), "userCount": 257},
+					{"date": time.Now(), "userCount": 258},
+					{"date": time.Now(), "userCount": 259},
+				},
+			})
+	})
+
+	r.GET("/test/:date", func(c *gin.Context) {
+		c.JSON(http.StatusOK,
+			gin.H{
+				"date": time.Now(),
+				"rank": []map[string]interface{}{
+					{"name": time.Now(), "count": 12, "percent": "10"},
+					{"name": time.Now(), "count": 12, "percent": "10"},
+					{"name": time.Now(), "count": 12, "percent": "10"},
+					{"name": time.Now(), "count": 12, "percent": "10"},
+					{"name": time.Now(), "count": 12, "percent": "10"},
+					{"name": time.Now(), "count": 12, "percent": "10"},
+					{"name": time.Now(), "count": 12, "percent": "10"},
+					{"name": time.Now(), "count": 12, "percent": "10"},
+					{"name": time.Now(), "count": 12, "percent": "10"},
+					{"name": time.Now(), "count": 12, "percent": "10"},
+				},
+			})
+	})
+
 	ginpprof.Wrapper(r)
 	r.Run(":6060")
 }
