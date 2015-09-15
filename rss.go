@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
-	"net/url"
 	"sort"
 	"strconv"
 	"strings"
@@ -119,7 +118,7 @@ func rssItem(feed *rss.Feed,
 			buf.WriteString(item.Title)
 		} else {
 			for i, link := range item.Links {
-				href := url.QueryEscape(link.Href)
+				href := link.Href
 				if i == 0 {
 					var format string
 					if strings.Contains(item.Title, "[") &&
