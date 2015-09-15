@@ -25,10 +25,32 @@
   <div align="center">
     <div class="ui" id="pie" style="height:500px;width:1200px"></div>
   </div>
+  <div class="ui inverted vertical footer segment">
+    <div class="ui center aligned container">
+      <div class="ui stackable inverted divided grid">
+        <div class=" wide column">
+          <h4 class="ui inverted header">群组娘第二舰队</h4>
+          <div class="ui inverted link list">
+
+            <a href="http://www.pixiv.net/member_illust.php?mode=medium&illust_id=28762438" class="item">群组娘的头像</a>
+            <a href="https://github.com/jqs7/telegram-chinese-groups" class="item">群组娘的源代码基于 GPL v3 协议发布项目地址</a>
+          </div>
+        </div>
+      </div>
+      <div class="ui inverted section divider"></div>
+      <img src="http://chuantu.biz/t2/13/1442342559x-1376440126.jpg" class="ui centered mini image">
+      <p>本群组列表采用知识共享署名-非商业性使用 4.0 国际许可协议进行许可。</p>
+      <a href="http://creativecommons.org/licenses/by-nc/4.0/">http://creativecommons.org/licenses/by-nc/4.0/</a><br/>
+      <div class="ui horizontal inverted small divided link list">
+        <a class="item" href="#">Site Map</a>
+        <a class="item" href="#">Contact Us</a>
+        <a class="item" href="#">Terms and Conditions</a>
+        <a class="item" href="#">Privacy Policy</a>
+      </div>
+    </div>
+  </div>
 </body>
-
 </html>
-
 <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
 <link href="//cdn.bootcss.com/semantic-ui/2.1.3/semantic.min.css" rel="stylesheet">
 <script src="//cdn.bootcss.com/echarts/2.2.7/echarts.js"></script>
@@ -38,9 +60,6 @@
       echarts: '//cdn.bootcss.com/echarts/2.2.7'
     }
   });
-  define(
-
-  );
   require(
           [
             'echarts',
@@ -54,6 +73,7 @@
             var total = ec.init(document.getElementById('total'));
             var pie = ec.init(document.getElementById('pie'));
             var user;
+            $("#pie").hide();
             $("#user").keyup(function () {
               if (event.keyCode == 13) {
                 user = localStorage.user = $("#user").val();
@@ -88,7 +108,7 @@
                   var res = '<div style="margin-bottom:10px"><div class="ui blue label" style="margin-right:10px">' +
                       params['name'] + '</div><div class="ui blue label">' + params['data'] + '</div></div>';
                   $.ajax({
-                    url: "/rank/" + params['name']
+                    url: "/test/" + params['name']
                   }).done(function (data) {
                     for (var i in data['rank']) {
                       var percent = Number(data['rank'][i]['percent']);
@@ -99,7 +119,6 @@
                               encodeURI(name) + '">' + name + '</a></div>' +
                               '<div class="ui circular yellow label">' + count +
                               '</div><div class="ui circular violet label">'+percent+'%</div></div>';
-                      //data1[i] = piedata(parseInt(data['rank'][i]['count']),data['rank'][i]['name']);
                     }
                     callback(ticket, res);
                   });
@@ -150,7 +169,6 @@
               ]
             };
   total.setOption(total_option);
-
   total.on('click',
           function eConsole(param){
             function piedata(value,name){
@@ -160,44 +178,46 @@
               return pie;
             }
             var data1 = new Array;
-            var pname = param['name'];
-            var leng =0;
+            var other;
+            var pname;
+            var len;
             var sum =0;
-            var other = param['data'];
-            $.ajax({
-              url: "/rank/" + param['name']
-            }).done(function (data) {
-              leng = data['rank'].length;
-              for (var i in data['rank']) {
-                data1[i] = piedata(data['rank'][i]['count'],data['rank'][i]['name']);
-                sum += data['rank'][i]['count'];
-                if(i==(leng-1)) {
-                  other = other - sum;
-                  alert(other);
-                  i++;
-                  data1[i] = piedata(other, '其他');
-                }
-              }
-
-              var click_option = {
-                title:{
-                  x: 'center',
-                  text: pname+'十大子舰在第二舰队的表现'
-                },
-                series: [
-                  {
-                    name: "日活跃用户",
-                    type: "pie",
-                    smooth: true,
-                    center: [ '50%' , '60%'],
-                    radius: '55%',
-                    boundaryGap : true,
-                    data: data1
+            //console.log(param['data']);
+            if(param['seriesName']=="日发言量" && param['data']!=Object && $.inArray(param['name'],["avg","min","max"]) == -1){
+              $("#pie").show();
+              $.ajax({
+                url: "/test/" + param['name']
+              }).done(function (data) {
+                pname = param['name'];
+                other = param['data'];
+                len = data['rank'].length;
+                for (var i in data['rank']) {
+                  data1[i] = piedata(data['rank'][i]['count'], data['rank'][i]['name']);
+                  sum += data['rank'][i]['count'];
+                  if (i == (len - 1)) {
+                    other = other - sum;
+                    i++;
+                    data1[i] = piedata(other, '其他');
                   }
-                ]
-              };
-              pie.setOption(click_option);
-            });
+                }
+                var click_option = {
+                  series: [
+                    {
+                      name: "日活跃用户",
+                      type: "pie",
+                      smooth: true,
+                      center: [ '50%' , '60%'],
+                      radius: '55%',
+                      boundaryGap : true,
+                      data:data1
+                    }
+                  ]
+                };
+                pie.setOption(click_option);
+              });
+            }else{
+              $("#pie").hide();
+            }
             console.log(param);
           }
   );
