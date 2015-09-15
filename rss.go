@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
+	"net/url"
 	"sort"
 	"strconv"
 	"strings"
@@ -118,21 +119,22 @@ func rssItem(feed *rss.Feed,
 			buf.WriteString(item.Title)
 		} else {
 			for i, link := range item.Links {
+				href := url.QueryEscape(link.Href)
 				if i == 0 {
 					var format string
 					if strings.Contains(item.Title, "[") &&
 						strings.Contains(item.Title, "]") {
 						format = fmt.Sprintf("%s [link](%s) ",
-							markdownEscape(item.Title), link.Href)
+							markdownEscape(item.Title), href)
 					} else {
 						format = fmt.Sprintf("[%s](%s) ",
-							markdownEscape(item.Title), link.Href)
+							markdownEscape(item.Title), href)
 					}
 					buf.WriteString(format)
 					continue
 				}
 				buf.WriteString(
-					fmt.Sprintf("[link%d](%s) ", i, link))
+					fmt.Sprintf("[link %d](%s) ", i, href))
 			}
 		}
 
