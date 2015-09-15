@@ -85,11 +85,10 @@ func GetDate(day bool, offset int) string {
 	if !day {
 		month = (now.Month() + time.Month(offset)).String()
 		return year + month
-	} else {
-		month = now.Month().String()
-		day := strconv.Itoa(now.Day() + offset)
-		return year + month + day
 	}
+	month = now.Month().String()
+	dayNum := strconv.Itoa(now.Day() + offset)
+	return year + month + dayNum
 }
 
 func FromUserName(user tgbotapi.User) string {
@@ -120,4 +119,12 @@ func humanByte(in ...interface{}) (out []interface{}) {
 		}
 	}
 	return out
+}
+
+func markdownEscape(s string) string {
+	return strings.NewReplacer(
+		"_", "\\_",
+		"*", "\\*",
+		"[", "\\[",
+	).Replace(s)
 }

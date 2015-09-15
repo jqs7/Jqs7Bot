@@ -2,3 +2,5 @@
 botconf.yaml
 .idea
 /html/tmp.html
+crt.pem
+key.pem

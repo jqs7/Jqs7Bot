@@ -81,6 +81,9 @@ func (p *Processor) statistics(command ...string) {
 			if p.update.Message.ReplyToMessage != nil {
 				msg.Text = Statistics(FromUserName(
 					p.update.Message.ReplyToMessage.From), true)
+				if p.update.Message.IsGroup() {
+					msg.ReplyToMessageID = p.update.Message.ReplyToMessage.MessageID
+				}
 				msg.ParseMode = tgbotapi.ModeMarkdown
 				bot.SendMessage(msg)
 			} else {

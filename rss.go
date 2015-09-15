@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
+	"net/url"
 	"sort"
 	"strconv"
 	"strings"
@@ -95,23 +96,49 @@ func rssItem(feed *rss.Feed,
 	ch *rss.Channel, newitems []*rss.Item, chatID int) {
 	loge.Infof("%d new item(s) in %s\n", len(newitems), feed.Url)
 	var buf bytes.Buffer
-	for k, v := range newitems {
+	for k, item := range newitems {
 		sendMsg := func() {
 			if buf.String() != "" {
 				msg := tgbotapi.NewMessage(chatID,
-					"*"+ch.Title+"*\n"+buf.String())
+					"*"+markdownEscape(ch.Title)+"*\n"+
+						buf.String())
 				msg.DisableWebPagePreview = true
 				msg.ParseMode = tgbotapi.ModeMarkdown
-				bot.SendMessage(msg)
+				go func(msg tgbotapi.MessageConfig) {
+					bot.SendMessage(msg)
+				}(msg)
 			}
 		}
-		if v.Links[0].Href == rc.Get("tgRssLatest:"+
+		if item.Links[0].Href == rc.Get("tgRssLatest:"+
 			strconv.Itoa(chatID)+":"+feed.Url).Val() {
 			sendMsg()
 			break
 		}
-		format := fmt.Sprintf("%s [link](%s)\n", v.Title, v.Links[0].Href)
-		buf.WriteString(format)
+
+		if len(item.Links) == 0 {
+			buf.WriteString(item.Title)
+		} else {
+			for i, link := range item.Links {
+				href := url.QueryEscape(link.Href)
+				if i == 0 {
+					var format string
+					if strings.Contains(item.Title, "[") &&
+						strings.Contains(item.Title, "]") {
+						format = fmt.Sprintf("%s [link](%s) ",
+							markdownEscape(item.Title), href)
+					} else {
+						format = fmt.Sprintf("[%s](%s) ",
+							markdownEscape(item.Title), href)
+					}
+					buf.WriteString(format)
+					continue
+				}
+				buf.WriteString(
+					fmt.Sprintf("[link %d](%s) ", i, href))
+			}
+		}
+
+		buf.WriteString("\n")
 
 		if (k != 0 && k%8 == 0) || k == len(newitems)-1 {
 			sendMsg()
@@ -146,7 +173,7 @@ func loopFeed(feed *rss.Feed, url string, chatid int) {
 		interval := 7
 		stopRssLoop[strconv.Itoa(chatid)+":"+url] = make(chan bool)
 
-		time.Sleep(time.Duration(rand.Intn(interval)) * time.Minute)
+		var counter int
 		t := time.Tick(time.Minute*time.Duration(interval-1) +
 			time.Second*time.Duration(rand.Intn(120)))
 
@@ -156,6 +183,10 @@ func loopFeed(feed *rss.Feed, url string, chatid int) {
 			case <-stopRssLoop[strconv.Itoa(chatid)+":"+url]:
 				break Loop
 			case <-t:
+				if counter == 0 {
+					time.Sleep(time.Duration(rand.Intn(interval)) * time.Minute)
+					counter++
+				}
 				if err := feed.Fetch(url, charsetReader); err != nil {
 					loge.Warningf("failed to fetch rss, "+
 						"retry in 3 seconds... [ %s ]", url)

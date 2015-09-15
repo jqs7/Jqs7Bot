@@ -2,6 +2,7 @@ package main
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/Syfaro/telegram-bot-api"
 )
@@ -101,6 +102,19 @@ func (p *Processor) reload(command ...string) {
 	p.hitter(f, command...)
 }
 
+func (p *Processor) markdown(command ...string) {
+	f := func() {
+		if len(p.s) > 1 {
+			s := strings.Join(p.s[1:], " ")
+			msg := tgbotapi.NewMessage(p.chatid(), s)
+			msg.DisableWebPagePreview = true
+			msg.ParseMode = tgbotapi.ModeMarkdown
+			bot.SendMessage(msg)
+		}
+	}
+	p.hitter(f, command...)
+}
+
 func (p *Processor) _autoRule() {
 	if p.update.Message.NewChatParticipant.ID != 0 {
 		chatIDStr := strconv.Itoa(p.chatid())
@@ -180,8 +194,7 @@ func (p *Processor) setStatus(status string) {
 		rc.Del("tgStatus:" +
 			strconv.Itoa(p.update.Message.Chat.ID))
 		return
-	} else {
-		rc.Set("tgStatus:"+
-			strconv.Itoa(p.update.Message.Chat.ID), status, -1)
 	}
+	rc.Set("tgStatus:"+
+		strconv.Itoa(p.update.Message.Chat.ID), status, -1)
 }
