@@ -112,8 +112,9 @@
                           data1[i] = piedata(other, '其他');
                           //console.log(data1);
                         }
-                      }
-
+                      }else{
+                          $("#pie").hide();
+                      }                                          
                       res += '<div style="margin-bottom:3px"><div class="ui circular pink label"><a href="/user/' +
                               encodeURI(name) + '">' + name + '</a></div>' +
                               '<div class="ui circular yellow label">' + count +
@@ -171,6 +172,9 @@
           var click_option = {
                   tooltip:{
                     show :true,
+                    formatter: function(params){
+                        return '<div class="ui blue label">'+params['name']+ '</div></br>'+ params['data']['value']+'</br>'; 
+                    }
                   },
                   series: [
                     {
@@ -182,15 +186,19 @@
                     }
                   ]
                 };
-
+            
           total.on('click',
           function eConsole(param){
-            $("#pie").show();
+            if($.inArray(param['name'],['avg','max','min'])!=-1||param['seriesIndex']==1){
+                $("pie").hide();
+            }else{
+                $("#pie").show();
+            }
             pie.hideLoading();
             pie.setOption(click_option);
+            console.log(param);
+          });
           }
-         );
-        }
   );
 
 </script>
