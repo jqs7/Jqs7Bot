@@ -25,19 +25,25 @@
   <div align="center">
     <div class="ui" id="pie" style="height:500px;width:1200px"></div>
   </div>
-  <div class="ui inverted vertical footer segment">
-    <div class="ui center aligned container">
-      <div class="ui stackable inverted divided grid">
-        <div class=" wide column">
-          <img src="http://chuantu.biz/t2/13/1442342559x-1376440126.jpg" class="ui centered mini image">
-          <div class="ui inverted link list">
-            <a href="http://www.pixiv.net/member_illust.php?mode=medium&illust_id=28762438" class="item">群组娘的头像</a>
-            <a href="https://github.com/jqs7/telegram-chinese-groups" class="item">群组娘的源代码基于 GPL v3 协议发布</a>
+  <footer>
+    <div class="ui inverted vertical footer segment">
+      <div class="ui center aligned container">
+        <div class="ui stackable inverted divided grid">
+          <div class=" wide column">
+            <img src="http://chuantu.biz/t2/13/1442378430x-1566638145.jpg" class="ui centered small image">
+            <div class="ui inverted link list">
+              <a href="http://www.pixiv.net/member_illust.php?mode=medium&illust_id=28762438" class="item">群组娘的头像</a>
+              <a href="https://github.com/jqs7/telegram-chinese-groups" class="item">群组娘的源代码基于 GPL v3 协议发布</a>
+            </div>
+            <div class="ui horizontal inverted small divided link list">
+              <a class="item" href="https://github.com/jqs7">@Jqs_7</a>
+              <a class="item" href="https://github.com/lingkong7">@jiadaeleven</a>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </footer>
 </body>
 </html>
 <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
@@ -111,7 +117,7 @@
                       params['name'] + '</div><div class="ui blue label">' + params['data'] + '</div></div>';
                   var sum = 0;
                   $.ajax({
-                    url: "/test/" + params['name']
+                    url: "/rank/" + params['name']
                   }).done(function (data) {
                     for (var i in data['rank']) {
                       var percent = Number(data['rank'][i]['percent']);
