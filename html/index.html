@@ -102,7 +102,7 @@
                       params['name'] + '</div><div class="ui blue label">' + params['data'] + '</div></div>';
                   var sum = 0;
                   $.ajax({
-                    url: "/test/" + params['name']
+                    url: "/rank/" + params['name']
                   }).done(function (data) {
                     for (var i in data['rank']) {
                       var percent = Number(data['rank'][i]['percent']);
