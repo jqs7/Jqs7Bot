@@ -81,10 +81,10 @@ func GinServer() {
 		c.HTML(http.StatusOK, "index.html",
 			gin.H{
 				"total": []map[string]interface{}{
-					{"date": time.Now(), "total": 1024},
-					{"date": time.Now(), "total": 1025},
-					{"date": time.Now(), "total": 1026},
-					{"date": time.Now(), "total": 1027},
+					{"date": time.Now(), "total": 2024},
+					{"date": time.Now(), "total": 3025},
+					{"date": time.Now(), "total": 4026},
+					{"date": time.Now(), "total": 5027},
 				},
 				"users": []map[string]interface{}{
 					{"date": time.Now(), "userCount": 256},
@@ -101,15 +101,15 @@ func GinServer() {
 				"date": time.Now(),
 				"rank": []map[string]interface{}{
 					{"name": time.Now(), "count": 12, "percent": "10"},
-					{"name": time.Now(), "count": 12, "percent": "10"},
-					{"name": time.Now(), "count": 12, "percent": "10"},
-					{"name": time.Now(), "count": 12, "percent": "10"},
-					{"name": time.Now(), "count": 12, "percent": "10"},
-					{"name": time.Now(), "count": 12, "percent": "10"},
-					{"name": time.Now(), "count": 12, "percent": "10"},
-					{"name": time.Now(), "count": 12, "percent": "10"},
-					{"name": time.Now(), "count": 12, "percent": "10"},
-					{"name": time.Now(), "count": 12, "percent": "10"},
+					{"name": time.Now(), "count": 22, "percent": "10"},
+					{"name": time.Now(), "count": 32, "percent": "10"},
+					{"name": time.Now(), "count": 42, "percent": "10"},
+					{"name": time.Now(), "count": 52, "percent": "10"},
+					{"name": time.Now(), "count": 22, "percent": "10"},
+					{"name": time.Now(), "count": 62, "percent": "10"},
+					{"name": time.Now(), "count": 72, "percent": "10"},
+					{"name": time.Now(), "count": 82, "percent": "10"},
+					{"name": time.Now(), "count": 92, "percent": "10"},
 				},
 			})
 	})
