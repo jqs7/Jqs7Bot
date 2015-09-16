@@ -121,8 +121,7 @@ func rssItem(feed *rss.Feed,
 				href := link.Href
 				if i == 0 {
 					var format string
-					if strings.Contains(item.Title, "[") &&
-						strings.Contains(item.Title, "]") {
+					if strings.ContainsAny(item.Title, "[]()") {
 						format = fmt.Sprintf("%s [link](%s) ",
 							markdownEscape(item.Title), href)
 					} else {
