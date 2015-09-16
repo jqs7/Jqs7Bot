@@ -55,17 +55,27 @@
             var pie = ec.init(document.getElementById('pie'));
             var user;
             $("#pie").hide();
+            localStorage.user = $("#user").val();
             $("#user").keyup(function () {
-              if (event.keyCode == 13) {
-                user = localStorage.user = $("#user").val();
-                window.location.href = '/user/@' + user;
-              }
-            });
+                if (event.keyCode == 13) {
+                    user = localStorage.user;
+                    if(user==""){
+                        window.location.href = '/';
+                    }else{
+                        window.location.href = '/user/@' + user;                                                       
+                    }
+                  }           
+                 });
             $("#us").click(function () {
-              user = localStorage.user = $("#user").val();
-              window.location.href = '/user/@'+user;
+                    user = localStorage.user;
+                    if(user==""){
+                        window.location.href = '/';
+                    }else{
+                        window.location.href = '/user/@' + user;                                                       
+                    }
             });
-
+           
+            
             var total_option = {
               legend:{
                 data:["日发言量","日活跃用户"]
@@ -76,7 +86,6 @@
                   return [p[0],p[1]+50]
                 },
                 formatter: function (params, ticket, callback) {
-                  //return [params[0] + 10, params[1] - 10]
                   if (params['seriesName']=="日活跃用户"){
                     if ($.inArray(params['name'],["avg","min","max"]) != -1){
                       return '<div class="ui blue label">'+params['name']+ '</div></br>'+ params['data']['value']+'</br>';
@@ -196,7 +205,6 @@
             }
             pie.hideLoading();
             pie.setOption(click_option);
-            console.log(param);
           });
           }
   );
