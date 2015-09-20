@@ -1,15 +1,16 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"strings"
 
 	"github.com/Syfaro/telegram-bot-api"
 	"github.com/franela/goreq"
-	"github.com/mozillazg/request"
 )
 
 func imageLink(photo tgbotapi.PhotoSize) string {
@@ -39,21 +40,45 @@ func imageLink(photo tgbotapi.PhotoSize) string {
 }
 
 func vim_cn_Uploader(f *os.File) string {
-	c := new(http.Client)
-	req := request.NewRequest(c)
-	req.Files = []request.FileField{
-		request.FileField{"name", f.Name(), f},
-	}
-	res, err := req.Post("https://img.vim-cn.com/")
+	client := new(http.Client)
+	req, err := fileUploadReq("https://img.vim-cn.com/", "name", f)
+	resp, err := client.Do(req)
 	if err != nil {
 		return "嘟嘟！希望号已失联~( ＞﹏＜ )"
 	}
-
-	s, err := res.Text()
+	body := &bytes.Buffer{}
+	_, err = body.ReadFrom(resp.Body)
 	if err != nil {
 		return "生命转换系统发生了[叮咚~]"
 	}
-	s = strings.TrimSpace(s)
+	defer resp.Body.Close()
+	s := strings.TrimSpace(body.String())
 
 	return fmt.Sprintf("[img.vim-cn.com/%s](%s)", s[len(s)-9:], s)
+}
+
+func fileUploadReq(uri, paramName string, file *os.File) (*http.Request, error) {
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+	part, err := writer.CreateFormFile(paramName, file.Name())
+	if err != nil {
+		return nil, err
+	}
+	_, err = io.Copy(part, file)
+
+	//for k, v := range params {
+	//writer.WriteField(k, v)
+	//}
+
+	err = writer.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	request, err := http.NewRequest("POST", uri, body)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Add("Content-Type", writer.FormDataContentType())
+	return request, nil
 }
