@@ -160,6 +160,10 @@ func (p *Processor) _default() {
 				}
 				photo := p.update.Message.Photo
 				if len(photo) > 0 {
+					go func() {
+						msg := tgbotapi.NewChatAction(p.chatid(), tgbotapi.ChatUploadPhoto)
+						bot.SendChatAction(msg)
+					}()
 					s := imageLink(photo[len(photo)-1])
 					msg := tgbotapi.NewMessage(p.chatid(), s)
 					msg.ReplyToMessageID = p.update.Message.MessageID
