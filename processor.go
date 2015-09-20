@@ -18,9 +18,11 @@ func (p *Processor) hitter(f func(), command ...string) {
 		return
 	}
 	for k := range command {
-		if p.s[0] == command[k] {
-			p.hited = true
-			break
+		if len(p.s) > 0 {
+			if p.s[0] == command[k] {
+				p.hited = true
+				break
+			}
 		}
 	}
 	if p.hited {
@@ -152,7 +154,20 @@ func (p *Processor) _default() {
 					YamlList2String(conf, p.update.Message.Text))
 				bot.SendMessage(msg)
 			} else {
-				p._turing(p.update.Message.Text)
+				if len(p.s) > 0 {
+					p._turing(p.update.Message.Text)
+					return
+				}
+				photo := p.update.Message.Photo
+				if len(photo) > 0 {
+					s := imageLink(photo[len(photo)-1])
+					msg := tgbotapi.NewMessage(p.chatid(), s)
+					msg.ReplyToMessageID = p.update.Message.MessageID
+					msg.DisableWebPagePreview = true
+					msg.ParseMode = tgbotapi.ModeMarkdown
+					bot.SendMessage(msg)
+					return
+				}
 			}
 		}
 	} else if p.update.Message.ReplyToMessage != nil &&
