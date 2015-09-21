@@ -30,6 +30,15 @@
 <script type="text/javascript">
   var data1 = new Array;
   var data2 = [0,1200];
+  var user = "";
+    function searchEvent(){
+        user = $("#user").val();
+        if(user == ""){
+            window.location.href = '/';
+        }else{
+            window.location.href = '/user/@' + user;
+        }
+    }
     function piedata(value,name){
       var pie = new Object;
       pie.value = value;
@@ -53,26 +62,16 @@
           function (ec) {
             var total = ec.init(document.getElementById('total'));
             var pie = ec.init(document.getElementById('pie'));
-            var user;
             $("#pie").hide();
-            localStorage.user = $("#user").val();
+
             $("#user").keyup(function () {
                 if (event.keyCode == 13) {
-                    user = localStorage.user;
-                    if(user==""){
-                        window.location.href = '/';
-                    }else{
-                        window.location.href = '/user/@' + user;                                                       
-                    }
-                  }           
-                 });
+                    searchEvent();
+                }
+            });
+
             $("#us").click(function () {
-                    user = localStorage.user;
-                    if(user==""){
-                        window.location.href = '/';
-                    }else{
-                        window.location.href = '/user/@' + user;                                                       
-                    }
+                searchEvent();
             });
            
             
