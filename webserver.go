@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/unrolled/render.v1"
 )
 
 func GinServer() {
@@ -19,8 +20,15 @@ func GinServer() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	r.LoadHTMLGlob("html/*")
+	render := render.New(render.Options{
+		Directory:  "html",
+		IndentJSON: true,
+		Delims:     render.Delims{"<<<", ">>>"},
+		Extensions: []string{".html"},
+	})
+
 	r.Static("/assets", "./assets")
+
 	r.GET("/", func(c *gin.Context) {
 		var total, users []interface{}
 		limit := time.Now().AddDate(0, 0, -100)
@@ -34,7 +42,7 @@ func GinServer() {
 				"date": bson.M{"$gt": limit},
 			}).Sort("date").All(&users)
 		})
-		c.HTML(http.StatusOK, "index.html",
+		render.HTML(c.Writer, http.StatusOK, "index",
 			gin.H{"total": total, "users": users})
 	})
 
@@ -51,7 +59,7 @@ func GinServer() {
 				bson.M{"date": date},
 			).One(&result)
 		})
-		c.JSON(http.StatusOK, result)
+		render.JSON(c.Writer, http.StatusOK, result)
 	})
 
 	r.GET("/user/:name", func(c *gin.Context) {
@@ -70,7 +78,7 @@ func GinServer() {
 				},
 			).Sort("date").All(&result)
 		})
-		c.HTML(http.StatusOK, "user.html",
+		render.HTML(c.Writer, http.StatusOK, "user",
 			gin.H{
 				"result":   result,
 				"userName": s,

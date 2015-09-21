@@ -146,7 +146,7 @@
               }],
               xAxis: [
                 {
-                  data: [{{range $element := .total}}{{with $element}}{{.date.Format "2006-01-02"}},{{end}}{{end}}]
+                    data: [<<<range $element := .total>>><<<with $element>>><<<.date.Format "2006-01-02">>>,<<<end>>><<<end>>>]
                 }
               ],
               series: [
@@ -155,7 +155,7 @@
                   type: "line",
                   yAxisIndex:0,
                   smooth: true,
-                  data: [{{range $element := .total}}{{with $element}}{{.total}},{{end}}{{end}}],
+                  data: [<<<range $element := .total>>><<<with $element>>><<<.total>>>,<<<end>>><<<end>>>],
                   markPoint: {
                     data: [
                       {type: 'max',name: 'max'},
@@ -168,7 +168,7 @@
                   type: "line",
                   yAxisIndex:1,
                   smooth: true,
-                  data: [{{range $element := .users}}{{with $element}}{{.userCount}},{{end}}{{end}}],
+                  data: [<<<range $element := .users>>><<<with $element>>><<<.userCount>>>,<<<end>>><<<end>>>],
                   markLine: {
                     data: [
                       {type: 'average', name: 'avg'}
