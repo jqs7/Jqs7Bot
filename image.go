@@ -7,6 +7,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/Syfaro/telegram-bot-api"
@@ -24,13 +25,13 @@ func imageLink(photo tgbotapi.PhotoSize) string {
 		Uri:    link,
 	}.Do()
 
-	filePath := "/tmp/" + photo.FileID
-	f, err := os.Create(filePath)
+	imagePath := filepath.Join(os.TempDir(), photo.FileID)
+	f, err := os.Create(imagePath)
 	if err != nil {
 		return "飞船冷却系统遭到严重虫子干扰，这是药丸？"
 	}
 	io.Copy(f, resp.Body)
-	f, err = os.Open(filePath)
+	f, err = os.Open(imagePath)
 	if err != nil {
 		return "飞船冷却系统遭到严重虫子干扰，这是药丸？"
 	}
