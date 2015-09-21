@@ -51,7 +51,7 @@
               yAxis: [],
               xAxis: [
                 {
-                  data: [{{range $element := .result}}{{with $element}}{{.date.Format "2006-01-02"}},{{end}}{{end}}]
+                    data: [<<<range $element := .result>>><<<with $element>>><<<.date.Format "2006-01-02">>>,<<<end>>><<<end>>>]
                 }
               ],
               series: [
@@ -59,7 +59,7 @@
                   name: "total",
                   type: "line",
                   smooth: true,
-                  data: [{{range $element := .result}}{{with $element}}{{.count}},{{end}}{{end}}],
+                  data: [<<<range $element := .result>>><<<with $element>>><<<.count>>>,<<<end>>><<<end>>>],
                   markLine: {
                     data: [
                       {type: 'average', name: 'avg'}
