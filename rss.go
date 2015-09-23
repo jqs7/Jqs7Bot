@@ -20,25 +20,32 @@ var stopRssLoop = make(map[string]chan bool)
 
 func (p *Processor) rss(command ...string) {
 	f := func() {
-		if p.update.Message.IsGroup() {
-			return
-		}
 		if len(p.s) < 2 {
 			p.rssList()
 			return
 		}
 
-		feed := rss.New(1, true, rssChan, p.rssItem)
-		if err := feed.Fetch(p.s[1], charsetReader); err != nil {
-			msg := tgbotapi.NewMessage(p.chatid(),
-				"弹药检测失败，请检查后重试")
-			bot.SendMessage(msg)
-			loge.Warning(err)
+		if p.update.Message.IsGroup() {
+			count := rc.SCard("tgRss:" + strconv.Itoa(p.chatid())).Val()
+			var limit int64 = 3
+			if count+1 > limit {
+				msg := tgbotapi.NewMessage(p.chatid(),
+					fmt.Sprintf("看起来貌似发生了一起过载事故了喵\n"+
+						"标准弹药容量为 %d , 请卸载部分弹药后重试", limit))
+				bot.SendMessage(msg)
+				return
+			}
+			if err := newRss(p); err != nil {
+				msg := tgbotapi.NewMessage(p.chatid(), err.Error())
+				bot.SendMessage(msg)
+			}
 			return
 		}
-		rc.SAdd("tgRssChats", strconv.Itoa(p.chatid()))
-		rc.SAdd("tgRss:"+strconv.Itoa(p.chatid()), p.s[1])
-		loopFeed(feed, p.s[1], p.chatid())
+
+		if err := newRss(p); err != nil {
+			msg := tgbotapi.NewMessage(p.chatid(), err.Error())
+			bot.SendMessage(msg)
+		}
 	}
 	p.hitter(f, command...)
 }
@@ -54,6 +61,18 @@ func (p *Processor) rmrss(command ...string) {
 		p.rssList()
 	}
 	p.hitter(f, command...)
+}
+
+func newRss(p *Processor) error {
+	feed := rss.New(1, true, rssChan, p.rssItem)
+	if err := feed.Fetch(p.s[1], charsetReader); err != nil {
+		loge.Warning(err)
+		return errors.New("弹药检测失败，请检查后重试")
+	}
+	rc.SAdd("tgRssChats", strconv.Itoa(p.chatid()))
+	rc.SAdd("tgRss:"+strconv.Itoa(p.chatid()), p.s[1])
+	loopFeed(feed, p.s[1], p.chatid())
+	return nil
 }
 
 func (p *Processor) rssItem(feed *rss.Feed,
