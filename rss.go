@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
+	"net/url"
 	"sort"
 	"strconv"
 	"strings"
@@ -115,6 +116,7 @@ func rssItem(feed *rss.Feed,
 	loge.Infof("%d new item(s) in %s\n", len(newitems), feed.Url)
 	var buf bytes.Buffer
 	for k, item := range newitems {
+
 		sendMsg := func() {
 			if buf.String() != "" {
 				msg := tgbotapi.NewMessage(chatID,
@@ -138,6 +140,16 @@ func rssItem(feed *rss.Feed,
 		} else {
 			for i, link := range item.Links {
 				href := link.Href
+
+				u, e := url.Parse(href)
+				if e != nil {
+					href = ""
+				}
+				if u.Scheme == "" {
+					fu, _ := url.Parse(feed.Url)
+					href = fu.Scheme + ":" + href
+				}
+
 				if i == 0 {
 					var format string
 					if strings.ContainsAny(item.Title, "[]()") {
@@ -150,8 +162,8 @@ func rssItem(feed *rss.Feed,
 					buf.WriteString(format)
 					continue
 				}
-				buf.WriteString(
-					fmt.Sprintf("[link %d](%s) ", i, href))
+				buf.WriteString(fmt.Sprintf("[link %d](%s) ",
+					i, href))
 			}
 		}
 
