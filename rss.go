@@ -168,7 +168,8 @@ func rssItem(feed *rss.Feed,
 
 		buf.WriteString("\n")
 
-		if (k != 0 && k%8 == 0) || k == len(newitems)-1 {
+		itemNumsInMessage := 9
+		if (k != 0 && k%itemNumsInMessage == 0) || k == len(newitems)-1 {
 			sendMsg()
 			buf.Reset()
 		}
