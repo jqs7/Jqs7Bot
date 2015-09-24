@@ -129,6 +129,7 @@ func rssItem(feed *rss.Feed,
 				}(msg)
 			}
 		}
+
 		if item.Links[0].Href == rc.Get("tgRssLatest:"+
 			strconv.Itoa(chatID)+":"+feed.Url).Val() {
 			sendMsg()
@@ -153,10 +154,10 @@ func rssItem(feed *rss.Feed,
 					var format string
 					if strings.ContainsAny(item.Title, "[]()") {
 						format = fmt.Sprintf("%s [link](%s) ",
-							markdownEscape(item.Title), href)
+							item.Title, href)
 					} else {
 						format = fmt.Sprintf("[%s](%s) ",
-							markdownEscape(item.Title), href)
+							item.Title, href)
 					}
 					buf.WriteString(format)
 					continue
