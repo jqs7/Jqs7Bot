@@ -28,7 +28,7 @@ func (p *Processor) rss(command ...string) {
 
 		if p.update.Message.IsGroup() {
 			count := rc.SCard("tgRss:" + strconv.Itoa(p.chatid())).Val()
-			var limit int64 = 3
+			var limit int64 = 7
 			if count+1 > limit {
 				msg := tgbotapi.NewMessage(p.chatid(),
 					fmt.Sprintf("看起来貌似发生了一起过载事故了喵\n"+

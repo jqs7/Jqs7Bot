@@ -176,7 +176,7 @@ func (p *Processor) _default() {
 		}
 	} else if p.update.Message.ReplyToMessage != nil &&
 		p.update.Message.ReplyToMessage.From.UserName == bot.Self.UserName {
-		if strings.HasPrefix(p.update.Message.Text, "[[") {
+		if strings.HasPrefix(p.update.Message.Text, "[") {
 			return
 		}
 		p._turing(p.update.Message.Text)
