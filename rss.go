@@ -142,12 +142,16 @@ func rssItem(feed *rss.Feed,
 			for i, link := range item.Links {
 				href := link.Href
 
-				//link scheme fix
+				//fix uncomplete link
 				if u, e := url.Parse(href); e == nil {
-					if u.Scheme == "" {
-						fu, _ := url.Parse(feed.Url)
-						href = fu.Scheme + ":" + href
+					fu, _ := url.Parse(feed.Url)
+					if u.Host == "" {
+						u.Host = fu.Host
 					}
+					if u.Scheme == "" {
+						u.Scheme = fu.Scheme
+					}
+					href = u.String()
 				}
 
 				if i == 0 {
