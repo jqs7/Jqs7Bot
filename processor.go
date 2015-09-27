@@ -175,7 +175,8 @@ func (p *Processor) _default() {
 			}
 		}
 	} else if p.update.Message.ReplyToMessage != nil &&
-		p.update.Message.ReplyToMessage.From.UserName == bot.Self.UserName {
+		p.update.Message.ReplyToMessage.From.UserName == bot.Self.UserName &&
+		p.update.Message.Text != "" {
 		if strings.HasPrefix(p.update.Message.Text, "[") {
 			return
 		}

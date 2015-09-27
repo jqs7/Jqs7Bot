@@ -158,10 +158,10 @@ func rssItem(feed *rss.Feed,
 					var format string
 					if strings.ContainsAny(item.Title, "[]()") {
 						format = fmt.Sprintf("%s [link](%s) ",
-							item.Title, href)
+							markdownEscape(item.Title), href)
 					} else {
 						format = fmt.Sprintf("[%s](%s) ",
-							item.Title, href)
+							markdownEscape(item.Title), href)
 					}
 					buf.WriteString(format)
 					continue
