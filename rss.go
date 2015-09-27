@@ -161,7 +161,7 @@ func rssItem(feed *rss.Feed,
 							markdownEscape(item.Title), href)
 					} else {
 						format = fmt.Sprintf("[%s](%s) ",
-							markdownEscape(item.Title), href)
+							item.Title, href)
 					}
 					buf.WriteString(format)
 					continue
