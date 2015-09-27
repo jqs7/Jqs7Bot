@@ -208,6 +208,7 @@ func loopFeed(feed *rss.Feed, url string, chatid int) {
 		stopRssLoop[strconv.Itoa(chatid)+":"+url] = make(chan bool)
 
 		firstLoop := true
+		retryTimes := 0
 		t := time.Tick(time.Minute*time.Duration(interval-1) +
 			time.Second*time.Duration(rand.Intn(120)))
 
@@ -222,9 +223,16 @@ func loopFeed(feed *rss.Feed, url string, chatid int) {
 					firstLoop = false
 				}
 				if err := feed.Fetch(url, charsetReader); err != nil {
+					if retryTimes > 30 {
+						loge.Warningf("Retry in 30 Minutes...[ %s ]", url)
+						time.Sleep(time.Minute * 30)
+						retryTimes = 0
+						continue
+					}
 					loge.Warningf("failed to fetch rss, "+
 						"retry in 3 seconds... [ %s ]", url)
 					time.Sleep(time.Second * 3)
+					retryTimes++
 					continue
 				}
 			}
