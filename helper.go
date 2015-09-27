@@ -125,5 +125,6 @@ func markdownEscape(s string) string {
 	return strings.NewReplacer(
 		"_", "\\_",
 		"*", "\\*",
+		"[", "\\[",
 	).Replace(s)
 }
