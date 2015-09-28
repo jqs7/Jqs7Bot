@@ -26,17 +26,8 @@ func (p *Processor) rss(command ...string) {
 			return
 		}
 
-		if p.update.Message.IsGroup() {
-			count := rc.SCard("tgRss:" + strconv.Itoa(p.chatid())).Val()
-			var limit int64 = 7
-			if count+1 > limit {
-				msg := tgbotapi.NewMessage(p.chatid(),
-					fmt.Sprintf("看起来貌似发生了一起过载事故了喵\n"+
-						"标准弹药容量为 %d , 请卸载部分弹药后重试", limit))
-				bot.SendMessage(msg)
-				return
-			}
-			if err := newRss(p); err != nil {
+		if len(p.s) > 2 {
+			if err := newRss(p, p.s[2]); err != nil {
 				msg := tgbotapi.NewMessage(p.chatid(), err.Error())
 				bot.SendMessage(msg)
 			}
@@ -59,12 +50,13 @@ func (p *Processor) rmrss(command ...string) {
 		rc.Del("tgRssLatest:" + strconv.Itoa(p.chatid()) + ":" + p.s[1])
 		stopRssLoop[strconv.Itoa(p.chatid())+":"+p.s[1]] <- true
 		rc.SRem("tgRss:"+strconv.Itoa(p.chatid()), p.s[1])
+		rc.Del("tgRssInterval:" + strconv.Itoa(p.chatid()) + ":" + p.s[1])
 		p.rssList()
 	}
 	p.hitter(f, command...)
 }
 
-func newRss(p *Processor) error {
+func newRss(p *Processor, interval ...string) error {
 	feed := rss.New(1, true, rssChan, p.rssItem)
 	if err := feed.Fetch(p.s[1], charsetReader); err != nil {
 		loge.Warning(err)
@@ -72,7 +64,17 @@ func newRss(p *Processor) error {
 	}
 	rc.SAdd("tgRssChats", strconv.Itoa(p.chatid()))
 	rc.SAdd("tgRss:"+strconv.Itoa(p.chatid()), p.s[1])
-	loopFeed(feed, p.s[1], p.chatid())
+	if len(interval) > 0 {
+		in, err := strconv.Atoi(interval[0])
+		if err != nil {
+			return errors.New("哔哔！时空坐标参数设置错误！")
+		}
+		rc.Set("tgRssInterval:"+
+			strconv.Itoa(p.chatid())+":"+p.s[1], interval[0], -1)
+		loopFeed(feed, p.s[1], p.chatid(), in)
+		return nil
+	}
+	loopFeed(feed, p.s[1], p.chatid(), -1)
 	return nil
 }
 
@@ -96,9 +98,10 @@ func initRss() {
 		id, _ := strconv.Atoi(chats[k])
 		chat := &chat{id}
 		go func(feeds []string) {
-			for k := range feeds {
+			for u := range feeds {
 				feed := rss.New(1, true, rssChan, chat.rssItem)
-				loopFeed(feed, feeds[k], chat.id)
+				interval, _ := strconv.Atoi(rc.Get("tgRssInterval:" + chats[k] + ":" + feeds[u]).Val())
+				loopFeed(feed, feeds[u], chat.id, interval)
 			}
 		}(feeds)
 	}
@@ -202,9 +205,11 @@ func charsetReader(charset string, r io.Reader) (io.Reader, error) {
 	return nil, errors.New("Unsupported character set encoding: " + charset)
 }
 
-func loopFeed(feed *rss.Feed, url string, chatid int) {
+func loopFeed(feed *rss.Feed, url string, chatid int, interval int) {
 	go func() {
-		interval := 7
+		if interval < 7 {
+			interval = 7
+		}
 		stopRssLoop[strconv.Itoa(chatid)+":"+url] = make(chan bool)
 
 		firstLoop := true
