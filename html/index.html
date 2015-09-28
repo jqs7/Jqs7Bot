@@ -29,23 +29,22 @@
 <script src="/assets/footer.js"></script>
 <script type="text/javascript">
   var data1 = new Array;
-  var data2 = [0,1200];
   var user = "";
-  function searchEvent(){
-    user = $("#user").val();
-    if(user == ""){
-      window.location.href = '/';
-    }else{
-      window.location.href = '/user/@' + user;
+    function searchEvent(){
+        user = $("#user").val();
+        if(user == ""){
+            window.location.href = '/';
+        }else{
+            window.location.href = '/user/@' + user;
+        }
     }
-  }
-  function piedata(value,name){
-    var pie = new Object;
-    pie.value = value;
-    pie.name = name;
-    return pie;
-  }
-  require.config({
+    function piedata(value,name){
+      var pie = new Object;
+      pie.value = value;
+      pie.name = name;
+      return pie;
+    }
+    require.config({
     paths: {
       echarts: '//cdn.bootcss.com/echarts/2.2.7'
     }
@@ -65,9 +64,10 @@
             $("#pie").hide();
             $("#user").keyup(function () {
                 if (event.keyCode == 13) {
-                    searchEvent()
+                    searchEvent();
                 }
             });
+
             $("#us").click(function () {
                 searchEvent();
             });
@@ -80,7 +80,7 @@
               dataZoom : {
                 show : true,
                 realtime : true,
-                start : 40,
+                start : 61
                 end :100
                 },
               tooltip: {
