@@ -45,19 +45,13 @@ func (d *Default) Run() {
 					go d.NewChatAction(d.ChatID).UploadPhoto().Send()
 					s := d.imageLink(photo[len(photo)-1])
 					d.NewMessage(d.ChatID, s).
-						ReplyToMessageID(d.Message.MessageID).
-						DisableWebPagePreview().MarkdownMode().Send()
+						MarkdownMode().
+						DisableWebPagePreview().
+						ReplyToMessageID(d.Message.MessageID).Send()
 					return
 				}
 			}
 		}
-	} else if d.Message.ReplyToMessage != nil &&
-		d.Message.ReplyToMessage.From.UserName == d.Bot.Self.UserName &&
-		d.Message.Text != "" {
-		if strings.HasPrefix(d.Message.Text, "[") {
-			return
-		}
-		d.turing(d.Message.Text)
 	}
 }
 
