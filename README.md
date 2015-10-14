@@ -2,7 +2,7 @@
 
 群组娘本体为 [@Jqs7Bot](https://telegram.me/Jqs7Bot)<br/>
 推荐新的群组地址，请将邀请链接发往
-https://telegram.me/joinchat/05fe39f501af4d542fbcd38cfcad8ff4 ，
+[@Jqs_7](https://telegram.me/Jqs_7) ，
 并注明群名称、讨论主题或者到
 [issues](https://github.com/jqs7/telegram-chinese-groups/issues)
 发布相关群信息。
