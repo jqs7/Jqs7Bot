@@ -1,15 +1,16 @@
-package main
+package plugin
 
 import (
 	"bytes"
 	"fmt"
 	"runtime"
+	"strconv"
 	"strings"
 	"time"
 
-	"gopkg.in/redis.v3"
-
-	"github.com/Syfaro/telegram-bot-api"
+	"github.com/jqs7/Jqs7Bot/conf"
+	"github.com/jqs7/bb"
+	"github.com/pyk/byten"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/host"
@@ -17,18 +18,24 @@ import (
 	"github.com/shirou/gopsutil/mem"
 )
 
-func (p *Processor) stat(command ...string) {
-	f := func() {
-		if p.isMaster() {
-			command := strings.TrimLeft(p.s[0], "/")
-			msg := tgbotapi.NewMessage(p.chatid(), Stat(command, rc))
-			bot.SendMessage(msg)
-		}
-	}
-	p.hitter(f, command...)
+type Reload struct{ bb.Base }
+
+func (r *Reload) Run() {
+	conf.LoadConf()
+	r.NewMessage(r.ChatID,
+		"群组娘已完成弹药重装(ゝ∀･)").Send()
 }
 
-func Stat(t string, rc *redis.Client) string {
+type Stat struct{ Default }
+
+func (s *Stat) Run() {
+	if s.isMaster() {
+		command := strings.TrimLeft(s.Args[0], "/")
+		s.NewMessage(s.ChatID, s.stat(command)).Send()
+	}
+}
+
+func (st *Stat) stat(t string) string {
 	checkErr := func(err error) string {
 		return "系统酱正在食用作死药丸中..."
 	}
@@ -46,7 +53,7 @@ func Stat(t string, rc *redis.Client) string {
 				"Swap:\nTotal: %s Free: %s\n Used: %s %s%%\n"+
 				"群组娘:\n"+
 				"Allocated: %s\nTotal Allocated: %s\nSystem: %s\n",
-			humanByte(m.Total, m.Free, m.Used, m.UsedPercent, m.Cached,
+			st.humanByte(m.Total, m.Free, m.Used, m.UsedPercent, m.Cached,
 				s.Total, s.Free, s.Used, s.UsedPercent,
 				mem.Alloc, mem.TotalAlloc, mem.Sys)...,
 		)
@@ -62,7 +69,7 @@ func Stat(t string, rc *redis.Client) string {
 			}
 			f := fmt.Sprintf("Mountpoint: %s Type: %s \n"+
 				"Total: %s Free: %s \nUsed: %s %s%%\n",
-				humanByte(fs[k].Mountpoint, fs[k].Fstype,
+				st.humanByte(fs[k].Mountpoint, fs[k].Fstype,
 					du.Total, du.Free, du.Used, du.UsedPercent)...,
 			)
 			buf.WriteString(f)
@@ -83,7 +90,7 @@ func Stat(t string, rc *redis.Client) string {
 			runtime.NumGoroutine(), c[0],
 		)
 	case "redis":
-		info := rc.Info().Val()
+		info := conf.Redis.Info().Val()
 		if info != "" {
 			infos := strings.Split(info, "\r\n")
 			infoMap := make(map[string]string)
@@ -93,7 +100,7 @@ func Stat(t string, rc *redis.Client) string {
 					infoMap[line[0]] = line[1]
 				}
 			}
-			DBSize := rc.DbSize().Val()
+			DBSize := conf.Redis.DbSize().Val()
 			return fmt.Sprintf("Redis Version: %s\nOS: %s\nUsed Memory: %s\n"+
 				"Used Memory Peak: %s\nDB Size: %d\n",
 				infoMap["redis_version"], infoMap["os"], infoMap["used_memory_human"],
@@ -103,4 +110,21 @@ func Stat(t string, rc *redis.Client) string {
 	default:
 		return "欢迎来到未知领域(ゝ∀･)"
 	}
+}
+
+func (s *Stat) humanByte(in ...interface{}) (out []interface{}) {
+	for _, v := range in {
+		switch v.(type) {
+		case int, uint64:
+			s := fmt.Sprintf("%d", v)
+			i, _ := strconv.ParseInt(s, 10, 64)
+			out = append(out, byten.Size(i))
+		case float64:
+			s := fmt.Sprintf("%.2f", v)
+			out = append(out, s)
+		default:
+			out = append(out, v)
+		}
+	}
+	return out
 }

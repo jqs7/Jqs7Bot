@@ -1,4 +1,4 @@
-package main
+package webServer
 
 import (
 	"net/http"
@@ -7,6 +7,8 @@ import (
 
 	"github.com/DeanThompson/ginpprof"
 	"github.com/gin-gonic/gin"
+	"github.com/jqs7/Jqs7Bot/conf"
+	"github.com/jqs7/Jqs7Bot/mongo"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/unrolled/render.v1"
@@ -14,7 +16,7 @@ import (
 
 func GinServer() {
 	r := gin.Default()
-	if runMode == "debug" {
+	if conf.GetItem("runMode") == "debug" {
 		gin.SetMode(gin.DebugMode)
 	} else {
 		gin.SetMode(gin.ReleaseMode)
@@ -32,12 +34,12 @@ func GinServer() {
 	r.GET("/", func(c *gin.Context) {
 		var total, users []interface{}
 		limit := time.Now().AddDate(0, 0, -100)
-		M("dailyTotal", func(c *mgo.Collection) {
+		mongo.M("dailyTotal", func(c *mgo.Collection) {
 			c.Find(bson.M{
 				"date": bson.M{"$gt": limit},
 			}).Sort("date").All(&total)
 		})
-		M("dailyUsersCount", func(c *mgo.Collection) {
+		mongo.M("dailyUsersCount", func(c *mgo.Collection) {
 			c.Find(bson.M{
 				"date": bson.M{"$gt": limit},
 			}).Sort("date").All(&users)
@@ -54,7 +56,7 @@ func GinServer() {
 			return
 		}
 		var result interface{}
-		M("dailyRank", func(c *mgo.Collection) {
+		mongo.M("dailyRank", func(c *mgo.Collection) {
 			c.Find(
 				bson.M{"date": date},
 			).One(&result)
@@ -69,8 +71,8 @@ func GinServer() {
 			return
 		}
 		var result []interface{}
-		userid := rc.HGet("tgUsersName", s).Val()
-		M("dailyUser", func(c *mgo.Collection) {
+		userid := conf.Redis.HGet("tgUsersName", s).Val()
+		mongo.M("dailyUser", func(c *mgo.Collection) {
 			c.Find(
 				bson.M{
 					"user": userid,

@@ -1,17 +1,29 @@
-package main
+package plugin
 
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"net/url"
 	"strings"
 	"time"
 
-	"github.com/Syfaro/telegram-bot-api"
 	"github.com/franela/goreq"
+	"github.com/jqs7/bb"
 )
 
-func Google(query string) string {
+type Google struct{ bb.Base }
+
+func (g *Google) Run() {
+	if len(g.Args) >= 2 {
+		q := strings.Join(g.Args[1:], " ")
+		g.NewMessage(g.ChatID, g.G(q)).
+			DisableWebPagePreview().
+			Send()
+	}
+}
+
+func (g *Google) G(query string) string {
 	query = url.QueryEscape(query)
 	retry := 0
 Req:
@@ -25,7 +37,7 @@ Req:
 			retry++
 			goto Req
 		} else {
-			loge.Warning("Google Timeout!")
+			log.Println("Google Timeout!")
 			return "群组娘连接母舰失败，请稍后重试"
 		}
 	}
@@ -51,16 +63,4 @@ Req:
 		buf.WriteString(t + "\n" + u + "\n")
 	}
 	return buf.String()
-}
-
-func (p *Processor) google(command ...string) {
-	f := func() {
-		if len(p.s) >= 2 {
-			q := strings.Join(p.s[1:], " ")
-			msg := tgbotapi.NewMessage(p.chatid(), Google(q))
-			msg.DisableWebPagePreview = true
-			bot.SendMessage(msg)
-		}
-	}
-	p.hitter(f, command...)
 }

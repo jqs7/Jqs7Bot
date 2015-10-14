@@ -1,8 +1,9 @@
-package main
+package plugin
 
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -10,10 +11,70 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/Syfaro/telegram-bot-api"
 	"github.com/antonholmquist/jason"
 	"github.com/franela/goreq"
+	"github.com/jqs7/Jqs7Bot/conf"
 )
+
+type Turing struct{ Default }
+
+func (t *Turing) Run() {
+	if len(t.Args) == 1 {
+		t.NewMessage(t.ChatID, "叫奴家是有什么事呢| ω・´)").Send()
+	} else if len(t.Args) >= 2 {
+		in := strings.Join(t.Args[1:], " ")
+		t.turing(in)
+	}
+}
+
+func (t *Default) turing(text string) {
+	msgText := make(chan string)
+	chatAction := make(chan bool)
+	asGroupMsg := false
+	go func() {
+		var userid string
+		if t.FromGroup && strings.HasPrefix(text, "-") {
+			text = strings.TrimPrefix(text, "-")
+			asGroupMsg = true
+			userid = strconv.Itoa(t.ChatID)
+		} else {
+			userid = strconv.Itoa(t.Message.From.ID)
+		}
+		//语言检测，如果不是中文，则使用翻译后的结果
+		reZh := regexp.MustCompile(`[\p{Han}]`).
+			FindAllString(text, -1)
+		if float32(len(reZh))/float32(utf8.RuneCountInString(text)) < 0.4 {
+			m := &MsTrans{}
+			m.New()
+			from, _ := m.Detect(text)
+			switch from {
+			case "zh-CHS", "zh-CHT":
+			default:
+				text, _ = m.Trans(text, from, "zh-CHS")
+			}
+		}
+		msgText <- TuringBot(conf.GetItem("turingBotKey"), userid, text)
+	}()
+
+	go func(done chan bool) {
+		t.NewChatAction(t.ChatID).Typing().Send()
+		done <- true
+	}(chatAction)
+
+	<-chatAction
+	result := <-msgText
+	if asGroupMsg {
+		result = fmt.Sprintf("- %s", result)
+	}
+
+	msg := t.NewMessage(t.ChatID, result).
+		DisableWebPagePreview()
+	if t.FromGroup {
+		msg.ReplyToMessageID(t.Message.MessageID)
+	}
+	msg.Send()
+	return
+}
 
 func TuringBot(apiKey, userid, in string) string {
 	in = url.QueryEscape(in)
@@ -30,7 +91,7 @@ Req:
 			retry++
 			goto Req
 		} else {
-			loge.Warning("Turing Timeout!")
+			log.Println("Turing Timeout!")
 			return "群组娘连接母舰失败，请稍后重试"
 		}
 	}
@@ -120,71 +181,4 @@ Req:
 	default:
 		return "发生了理论上不可能出现的错误，你是不是穿越了喵？"
 	}
-}
-
-func (p *Processor) turing(command ...string) {
-	f := func() {
-		if len(p.s) == 1 {
-			msg := tgbotapi.NewMessage(p.chatid(), "叫奴家是有什么事呢| ω・´)")
-			bot.SendMessage(msg)
-		} else if len(p.s) >= 2 {
-			in := strings.Join(p.s[1:], " ")
-			p._turing(in)
-		}
-	}
-	p.hitter(f, command...)
-}
-
-func (p *Processor) _turing(text string) {
-	if !p.isAuthed() {
-		p.sendQuestion()
-		return
-	}
-	msgText := make(chan string)
-	chatAction := make(chan bool)
-	asGroupMsg := false
-	go func() {
-		var userid string
-		if p.update.Message.IsGroup() &&
-			strings.HasPrefix(text, "-") {
-			text = strings.TrimPrefix(text, "-")
-			asGroupMsg = true
-			userid = strconv.Itoa(p.update.Message.Chat.ID)
-		} else {
-			userid = strconv.Itoa(p.update.Message.From.ID)
-		}
-		//语言检测，如果不是中文，则使用翻译后的结果
-		reZh := regexp.MustCompile(`[\p{Han}]`).
-			FindAllString(text, -1)
-		if float32(len(reZh))/float32(utf8.RuneCountInString(text)) < 0.4 {
-			m := &MsTrans{}
-			m.New()
-			from, err := m.Detect(text)
-			if err != nil {
-			}
-			switch from {
-			case "zh-CHS", "zh-CHT":
-			default:
-				text, err = m.Trans(text, from, "zh-CHS")
-			}
-			if err != nil {
-			}
-		}
-		msgText <- TuringBot(turingAPI, userid, text)
-	}()
-
-	p.sendTyping(chatAction)
-	<-chatAction
-	result := <-msgText
-	if asGroupMsg {
-		result = fmt.Sprintf("- %s", result)
-	}
-
-	msg := tgbotapi.NewMessage(p.chatid(), result)
-	msg.DisableWebPagePreview = true
-	if p.update.Message.IsGroup() {
-		msg.ReplyToMessageID = p.update.Message.MessageID
-	}
-	bot.SendMessage(msg)
-	return
 }
