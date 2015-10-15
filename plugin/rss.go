@@ -238,14 +238,12 @@ func InitRss(bot *tgbotapi.BotAPI) {
 		feeds := rc.SMembers("tgRss:" + chats[k]).Val()
 		id, _ := strconv.Atoi(chats[k])
 		chat := &chat{id, bot}
-		go func(feeds []string, k int) {
-			for u := range feeds {
-				feed := rss.New(1, true, rssChan, chat.rssItem)
-				interval, _ := strconv.Atoi(rc.Get("tgRssInterval:" + chats[k] + ":" + feeds[u]).Val())
-				go func(feed *rss.Feed, u int) {
-					loopFeed(feed, feeds[u], id, interval)
-				}(feed, u)
-			}
-		}(feeds, k)
+		for u := range feeds {
+			feed := rss.New(1, true, rssChan, chat.rssItem)
+			interval, _ := strconv.Atoi(rc.Get("tgRssInterval:" + chats[k] + ":" + feeds[u]).Val())
+			go func(u int) {
+				loopFeed(feed, feeds[u], id, interval)
+			}(u)
+		}
 	}
 }
