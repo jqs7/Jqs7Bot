@@ -67,12 +67,8 @@ func (t *Default) turing(text string) {
 		result = fmt.Sprintf("- %s", result)
 	}
 
-	msg := t.NewMessage(t.ChatID, result).
-		DisableWebPagePreview()
-	if t.FromGroup {
-		msg.ReplyToMessageID(t.Message.MessageID)
-	}
-	msg.Send()
+	t.NewMessage(t.ChatID, result).
+		DisableWebPagePreview().Send()
 	return
 }
 
