@@ -11,6 +11,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/Syfaro/telegram-bot-api"
@@ -21,7 +22,41 @@ import (
 
 type Rss struct{ Default }
 
-var stopRssLoop = make(map[string]chan bool)
+var stopRssLoop = newMap()
+
+type mMap struct {
+	m map[string]chan bool
+	sync.Mutex
+}
+
+func (m *mMap) Put(key string) {
+	m.Lock()
+	defer m.Unlock()
+	if v, exist := m.m[key]; exist {
+		v <- true
+	}
+}
+
+func (m *mMap) Init(key string) {
+	m.Lock()
+	defer m.Unlock()
+	if _, exist := m.m[key]; !exist {
+		m.m[key] = make(chan bool)
+	}
+}
+
+func (m *mMap) Get(key string) chan bool {
+	m.Lock()
+	defer m.Unlock()
+	if v, exist := m.m[key]; exist {
+		return v
+	}
+	return nil
+}
+
+func newMap() *mMap {
+	return &mMap{m: make(map[string]chan bool)}
+}
 
 func (r *Rss) Run() {
 	switch r.Args[0] {
@@ -47,7 +82,7 @@ func (r *Rss) Run() {
 		}
 		rc := conf.Redis
 		rc.Del("tgRssLatest:" + strconv.Itoa(r.ChatID) + ":" + r.Args[1])
-		stopRssLoop[strconv.Itoa(r.ChatID)+":"+r.Args[1]] <- true
+		stopRssLoop.Put(strconv.Itoa(r.ChatID) + ":" + r.Args[1])
 		rc.SRem("tgRss:"+strconv.Itoa(r.ChatID), r.Args[1])
 		rc.Del("tgRssInterval:" + strconv.Itoa(r.ChatID) + ":" + r.Args[1])
 		r.rssList()
@@ -111,7 +146,7 @@ func loopFeed(feed *rss.Feed, url string, chatid int, interval int) {
 	if interval < 7 {
 		interval = 7
 	}
-	stopRssLoop[strconv.Itoa(chatid)+":"+url] = make(chan bool)
+	stopRssLoop.Init(strconv.Itoa(chatid) + ":" + url)
 
 	firstLoop := true
 	retryTimes := 0
@@ -121,7 +156,7 @@ func loopFeed(feed *rss.Feed, url string, chatid int, interval int) {
 Loop:
 	for {
 		select {
-		case <-stopRssLoop[strconv.Itoa(chatid)+":"+url]:
+		case <-stopRssLoop.Get(strconv.Itoa(chatid) + ":" + url):
 			break Loop
 		case <-t:
 			if firstLoop {
@@ -234,16 +269,16 @@ func (c *chat) rssItem(feed *rss.Feed,
 func InitRss(bot *tgbotapi.BotAPI) {
 	rc := conf.Redis
 	chats := rc.SMembers("tgRssChats").Val()
-	for k := range chats {
-		feeds := rc.SMembers("tgRss:" + chats[k]).Val()
-		id, _ := strconv.Atoi(chats[k])
+	for _, c := range chats {
+		feeds := rc.SMembers("tgRss:" + c).Val()
+		id, _ := strconv.Atoi(c)
 		chat := &chat{id, bot}
-		for u := range feeds {
+		for _, f := range feeds {
 			feed := rss.New(1, true, rssChan, chat.rssItem)
-			interval, _ := strconv.Atoi(rc.Get("tgRssInterval:" + chats[k] + ":" + feeds[u]).Val())
-			go func(u int) {
-				loopFeed(feed, feeds[u], id, interval)
-			}(u)
+			interval, _ := strconv.Atoi(rc.Get("tgRssInterval:" + c + ":" + f).Val())
+			go func(f string) {
+				loopFeed(feed, f, id, interval)
+			}(f)
 		}
 	}
 }
