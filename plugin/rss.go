@@ -77,10 +77,10 @@ func (r *Rss) newRss(interval ...string) error {
 		}
 		rc.Set("tgRssInterval:"+
 			strconv.Itoa(r.ChatID)+":"+r.Args[1], interval[0], -1)
-		loopFeed(feed, r.Args[1], r.ChatID, in)
+		go loopFeed(feed, r.Args[1], r.ChatID, in)
 		return nil
 	}
-	loopFeed(feed, r.Args[1], r.ChatID, -1)
+	go loopFeed(feed, r.Args[1], r.ChatID, -1)
 	return nil
 }
 
@@ -108,43 +108,41 @@ func charsetReader(charset string, r io.Reader) (io.Reader, error) {
 }
 
 func loopFeed(feed *rss.Feed, url string, chatid int, interval int) {
-	go func() {
-		if interval < 7 {
-			interval = 7
-		}
-		stopRssLoop[strconv.Itoa(chatid)+":"+url] = make(chan bool)
+	if interval < 7 {
+		interval = 7
+	}
+	stopRssLoop[strconv.Itoa(chatid)+":"+url] = make(chan bool)
 
-		firstLoop := true
-		retryTimes := 0
-		t := time.Tick(time.Minute*time.Duration(interval-1) +
-			time.Second*time.Duration(rand.Intn(120)))
+	firstLoop := true
+	retryTimes := 0
+	t := time.Tick(time.Minute*time.Duration(interval-1) +
+		time.Second*time.Duration(rand.Intn(120)))
 
-	Loop:
-		for {
-			select {
-			case <-stopRssLoop[strconv.Itoa(chatid)+":"+url]:
-				break Loop
-			case <-t:
-				if firstLoop {
-					time.Sleep(time.Duration(rand.Intn(interval)) * time.Minute)
-					firstLoop = false
-				}
-				if err := feed.Fetch(url, charsetReader); err != nil {
-					if retryTimes > 30 {
-						log.Printf("Retry in 30 Minutes...[ %s ]\n", url)
-						time.Sleep(time.Minute * 30)
-						retryTimes = 0
-						continue
-					}
-					log.Printf("failed to fetch rss, "+
-						"retry in 3 seconds... [ %s ]\n", url)
-					time.Sleep(time.Second * 3)
-					retryTimes++
+Loop:
+	for {
+		select {
+		case <-stopRssLoop[strconv.Itoa(chatid)+":"+url]:
+			break Loop
+		case <-t:
+			if firstLoop {
+				time.Sleep(time.Duration(rand.Intn(interval)) * time.Minute)
+				firstLoop = false
+			}
+			if err := feed.Fetch(url, charsetReader); err != nil {
+				if retryTimes > 30 {
+					log.Printf("Retry in 30 Minutes...[ %s ]\n", url)
+					time.Sleep(time.Minute * 30)
+					retryTimes = 0
 					continue
 				}
+				log.Printf("failed to fetch rss, "+
+					"retry in 3 seconds... [ %s ]\n", url)
+				time.Sleep(time.Second * 3)
+				retryTimes++
+				continue
 			}
 		}
-	}()
+	}
 }
 
 func markdownEscape(s string) string {
@@ -244,7 +242,9 @@ func InitRss(bot *tgbotapi.BotAPI) {
 			for u := range feeds {
 				feed := rss.New(1, true, rssChan, chat.rssItem)
 				interval, _ := strconv.Atoi(rc.Get("tgRssInterval:" + chats[k] + ":" + feeds[u]).Val())
-				loopFeed(feed, feeds[u], id, interval)
+				go func(u int) {
+					loopFeed(feed, feeds[u], id, interval)
+				}(u)
 			}
 		}(feeds, k)
 	}
