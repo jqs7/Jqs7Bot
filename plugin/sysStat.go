@@ -4,13 +4,12 @@ import (
 	"bytes"
 	"fmt"
 	"runtime"
-	"strconv"
 	"strings"
 	"time"
 
 	"github.com/jqs7/Jqs7Bot/conf"
+	"github.com/jqs7/Jqs7Bot/helper"
 	"github.com/jqs7/bb"
-	"github.com/pyk/byten"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/host"
@@ -53,7 +52,7 @@ func (st *Stat) stat(t string) string {
 				"Swap:\nTotal: %s Free: %s\n Used: %s %s%%\n"+
 				"群组娘:\n"+
 				"Allocated: %s\nTotal Allocated: %s\nSystem: %s\n",
-			st.humanByte(m.Total, m.Free, m.Used, m.UsedPercent, m.Cached,
+			helper.HumanByte(m.Total, m.Free, m.Used, m.UsedPercent, m.Cached,
 				s.Total, s.Free, s.Used, s.UsedPercent,
 				mem.Alloc, mem.TotalAlloc, mem.Sys)...,
 		)
@@ -69,7 +68,7 @@ func (st *Stat) stat(t string) string {
 			}
 			f := fmt.Sprintf("Mountpoint: %s Type: %s \n"+
 				"Total: %s Free: %s \nUsed: %s %s%%\n",
-				st.humanByte(fs[k].Mountpoint, fs[k].Fstype,
+				helper.HumanByte(fs[k].Mountpoint, fs[k].Fstype,
 					du.Total, du.Free, du.Used, du.UsedPercent)...,
 			)
 			buf.WriteString(f)
@@ -110,21 +109,4 @@ func (st *Stat) stat(t string) string {
 	default:
 		return "欢迎来到未知领域(ゝ∀･)"
 	}
-}
-
-func (s *Stat) humanByte(in ...interface{}) (out []interface{}) {
-	for _, v := range in {
-		switch v.(type) {
-		case int, uint64:
-			s := fmt.Sprintf("%d", v)
-			i, _ := strconv.ParseInt(s, 10, 64)
-			out = append(out, byten.Size(i))
-		case float64:
-			s := fmt.Sprintf("%.2f", v)
-			out = append(out, s)
-		default:
-			out = append(out, v)
-		}
-	}
-	return out
 }

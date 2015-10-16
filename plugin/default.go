@@ -1,16 +1,12 @@
 package plugin
 
 import (
-	"io"
+	"fmt"
 	"log"
-	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/Syfaro/telegram-bot-api"
-	"github.com/franela/goreq"
 	"github.com/jqs7/Jqs7Bot/conf"
 	"github.com/jqs7/Jqs7Bot/helper"
 	"github.com/jqs7/bb"
@@ -43,9 +39,18 @@ func (d *Default) Run() {
 				photo := d.Message.Photo
 				if len(photo) > 0 {
 					go d.NewChatAction(d.ChatID).UploadPhoto().Send()
-					s := d.imageLink(photo[len(photo)-1])
+
+					fileID := photo[len(photo)-1].FileID
+					link, _ := d.GetLink(fileID)
+					path := helper.Downloader(link, fileID)
+
+					mime := helper.FileMime(path)
+					size := helper.FileSize(path)
+					bar := helper.BarCode(path)
+					vcn := helper.Vim_cn_Uploader(path)
+
+					s := fmt.Sprintf("%s %s\n%s\n%s", mime, size, bar, vcn)
 					d.NewMessage(d.ChatID, s).
-						MarkdownMode().
 						DisableWebPagePreview().
 						ReplyToMessageID(d.Message.MessageID).Send()
 					return
@@ -53,31 +58,6 @@ func (d *Default) Run() {
 			}
 		}
 	}
-}
-
-func (d *Default) imageLink(photo tgbotapi.PhotoSize) string {
-	link, _ := d.GetLink(photo.FileID)
-	resp, err := goreq.Request{
-		Method: "GET",
-		Uri:    link,
-	}.Do()
-	if err != nil {
-		return "群组娘连接母舰失败，请稍后重试"
-	}
-
-	imagePath := filepath.Join(os.TempDir(), photo.FileID)
-	f, err := os.Create(imagePath)
-	if err != nil {
-		return "飞船冷却系统遭到严重虫子干扰，这是药丸？"
-	}
-	io.Copy(f, resp.Body)
-	f, err = os.Open(imagePath)
-	if err != nil {
-		return "飞船冷却系统遭到严重虫子干扰，这是药丸？"
-	}
-	defer f.Close()
-
-	return helper.Vim_cn_Uploader(f)
 }
 
 func (d *Default) getStatus() string {
