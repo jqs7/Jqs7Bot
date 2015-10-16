@@ -56,7 +56,7 @@ func (d *Default) Run() {
 }
 
 func (d *Default) imageLink(photo tgbotapi.PhotoSize) string {
-	link := d.File(photo.FileID).Get().Link()
+	link, _ := d.GetLink(photo.FileID)
 	resp, err := goreq.Request{
 		Method: "GET",
 		Uri:    link,
