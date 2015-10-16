@@ -91,9 +91,13 @@ func (r *Rss) Run() {
 
 func (r *Rss) rssList() {
 	rs := conf.Redis.SMembers("tgRss:" + strconv.Itoa(r.ChatID)).Val()
-	sort.Strings(rs)
-	s := strings.Join(rs, "\n")
-	r.NewMessage(r.ChatID, s).Send()
+	if len(rs) > 0 {
+		sort.Strings(rs)
+		s := strings.Join(rs, "\n")
+		r.NewMessage(r.ChatID, s).Send()
+	} else {
+		r.NewMessage(r.ChatID, "然而此会话并无rss订阅呢ˊ_>ˋ").Send()
+	}
 }
 
 func (r *Rss) newRss(interval ...string) error {
