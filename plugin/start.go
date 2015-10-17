@@ -9,6 +9,6 @@ func (s *Start) Run() {
 		s.sendQuestion()
 		return
 	}
-	s.NewMessage(s.ChatID,
+	s.NewMessage(s.Message.From.ID,
 		conf.List2StringInConf("help")).Send()
 }

@@ -49,7 +49,7 @@ func (d *Default) Run() {
 					bar := helper.BarCode(path)
 					vcn := helper.Vim_cn_Uploader(path)
 
-					s := fmt.Sprintf("%s %s\n%s\n%s", mime, size, bar, vcn)
+					s := fmt.Sprintf("%s %s\n%s\n%s", mime, size, vcn, bar)
 					d.NewMessage(d.ChatID, s).
 						DisableWebPagePreview().
 						ReplyToMessageID(d.Message.MessageID).Send()

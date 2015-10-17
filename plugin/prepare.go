@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"log"
 	"strconv"
 	"time"
 
@@ -16,6 +17,7 @@ func (p *Prepare) Run() {
 	if time.Since(p.Message.Time()) > time.Hour {
 		panic("out dated message")
 	}
+	log.Println(p.ChatID, p.Message.From.ID)
 }
 
 func (p *Prepare) autoRule() {

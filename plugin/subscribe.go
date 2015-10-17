@@ -16,33 +16,31 @@ func (s *Subscribe) Run() {
 	isSubscribe, _ := strconv.ParseBool(conf.Redis.HGet("tgSubscribe",
 		chatIDStr).Val())
 
-	if s.FromGroup {
-		s.NewMessage(s.ChatID,
-			"群组订阅功能已取消，需要订阅功能的话，请私聊奴家呢o(￣ˇ￣)o").
-			Send()
-		return
-	}
+	if s.FromChannel {
+		if !s.isAuthed() {
+			s.sendQuestion()
+			return
+		}
 
-	if !s.isAuthed() {
-		s.sendQuestion()
-		return
-	}
-
-	if isSubscribe {
-		s.NewMessage(s.ChatID,
-			"已经订阅过，就不要重复订阅啦😘").Send()
-	} else {
-		conf.Redis.HSet("tgSubscribe", chatIDStr, strconv.FormatBool(true))
-		conf.Redis.HIncrBy("tgSubscribeTimes", chatIDStr, 1)
-		s.NewMessage(s.ChatID,
-			"订阅成功\n以后奴家知道新的群组的话，会第一时间告诉你哟😊\n"+
-				"(订阅仅对当前会话有效)").Send()
+		if isSubscribe {
+			s.NewMessage(s.ChatID,
+				"已经订阅过，就不要重复订阅啦😘").Send()
+		} else {
+			conf.Redis.HSet("tgSubscribe", chatIDStr, strconv.FormatBool(true))
+			conf.Redis.HIncrBy("tgSubscribeTimes", chatIDStr, 1)
+			s.NewMessage(s.ChatID,
+				"订阅成功\n以后奴家知道新的群组的话，会第一时间告诉你哟😊\n"+
+					"(订阅仅对当前会话有效)").Send()
+		}
 	}
 }
 
 type UnSubscribe struct{ bb.Base }
 
 func (u *UnSubscribe) Run() {
+	if u.FromGroup {
+		return
+	}
 	chatIDStr := strconv.Itoa(u.ChatID)
 	rc := conf.Redis
 	if rc.HExists("tgSubscribe", chatIDStr).Val() {

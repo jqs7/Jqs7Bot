@@ -8,6 +8,6 @@ import (
 type About struct{ bb.Base }
 
 func (a *About) Run() {
-	a.NewMessage(a.ChatID,
+	a.NewMessage(a.Message.From.ID,
 		conf.List2StringInConf("about")).Send()
 }
