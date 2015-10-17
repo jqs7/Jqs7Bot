@@ -108,16 +108,9 @@ func (d *Default) isAuthed() bool {
 }
 
 func (d *Default) sendQuestion() {
-	if d.FromGroup {
-		d.NewMessage(d.ChatID,
-			"需要通过中文验证之后才能使用本功能哟~\n"+
-				"点击奴家的头像进入私聊模式，进行验证吧").
-			Send()
-		return
-	}
 	qs := conf.GetQuestions()
 	index := time.Now().Hour() % len(qs)
-	d.NewMessage(d.ChatID,
+	d.NewMessage(d.Message.From.ID,
 		"需要通过中文验证之后才能使用本功能哟~\n请问："+
 			qs[index].Q+"\n把答案发给奴家就可以了呢").
 		Send()
