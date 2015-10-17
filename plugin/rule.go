@@ -1,7 +1,6 @@
 package plugin
 
 import (
-	"log"
 	"strconv"
 	"strings"
 
@@ -17,7 +16,7 @@ func (r *Rule) Run() {
 	if rule != "" {
 		r.NewMessage(r.ChatID, rule).Send()
 	} else {
-		r.NewMessage(r.ChatID,
+		r.NewMessage(r.Message.From.ID,
 			conf.List2StringInConf("rules")).Send()
 	}
 }
@@ -31,11 +30,22 @@ func (s *SetRule) Run() {
 	rule := strings.Join(s.Args[1:], " ")
 	if s.isAuthed() {
 		chatIDStr := strconv.Itoa(s.ChatID)
-		log.Printf("setting rule %s to %s\n", rule, chatIDStr)
 		conf.Redis.Set("tgGroupRule:"+chatIDStr, rule, -1)
 		s.NewMessage(s.ChatID,
 			"新的群组规则Get！✔️\n以下是新的规则：\n\n"+rule).
 			Send()
+	} else {
+		s.sendQuestion()
+	}
+}
+
+type RmRule struct{ Default }
+
+func (s *RmRule) Run() {
+	if s.isAuthed() {
+		chatIDStr := strconv.Itoa(s.ChatID)
+		conf.Redis.Del("tgGroupRule:" + chatIDStr)
+		s.NewMessage(s.ChatID, "rule removed").Send()
 	} else {
 		s.sendQuestion()
 	}

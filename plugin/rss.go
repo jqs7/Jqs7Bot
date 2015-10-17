@@ -128,7 +128,7 @@ func (r *Rss) rssItem(feed *rss.Feed, ch *rss.Channel, newitems []*rss.Item) {
 }
 
 func rssChan(feed *rss.Feed, newchannels []*rss.Channel) {
-	log.Printf("%d new channel(s) in %s\n", len(newchannels), feed.Url)
+	//log.Printf("%d new channel(s) in %s\n", len(newchannels), feed.Url)
 }
 
 func charsetReader(charset string, r io.Reader) (io.Reader, error) {
@@ -193,7 +193,7 @@ func markdownEscape(s string) string {
 }
 
 func rssItem(feed *rss.Feed, ch *rss.Channel, newitems []*rss.Item, bot *tgbotapi.BotAPI, chatid int) {
-	log.Printf("%d new item(s) in %s\n", len(newitems), feed.Url)
+	//log.Printf("%d new item(s) in %s\n", len(newitems), feed.Url)
 	var buf bytes.Buffer
 	rc := conf.Redis
 	for k, item := range newitems {
