@@ -23,42 +23,6 @@ type Rss struct{ Default }
 
 var jobMap map[string]*scheduler.Job = make(map[string]*scheduler.Job)
 
-//var stopRssLoop = newMap()
-
-//type mMap struct {
-//m map[string]chan bool
-//sync.Mutex
-//}
-
-//func (m *mMap) Put(key string) {
-//m.Lock()
-//defer m.Unlock()
-//if v, exist := m.m[key]; exist {
-//v <- true
-//}
-//}
-
-//func (m *mMap) Init(key string) {
-//m.Lock()
-//defer m.Unlock()
-//if _, exist := m.m[key]; !exist {
-//m.m[key] = make(chan bool)
-//}
-//}
-
-//func (m *mMap) Get(key string) chan bool {
-//m.Lock()
-//defer m.Unlock()
-//if v, exist := m.m[key]; exist {
-//return v
-//}
-//return nil
-//}
-
-//func newMap() *mMap {
-//return &mMap{m: make(map[string]chan bool)}
-//}
-
 func (r *Rss) Run() {
 	switch r.Args[0] {
 	case "/rss":
@@ -83,7 +47,6 @@ func (r *Rss) Run() {
 		}
 		rc := conf.Redis
 		rc.Del("tgRssLatest:" + strconv.Itoa(r.ChatID) + ":" + r.Args[1])
-		//stopRssLoop.Put(strconv.Itoa(r.ChatID) + ":" + r.Args[1])
 		jobMap[strconv.Itoa(r.ChatID)+":"+r.Args[1]].Quit <- true
 		rc.SRem("tgRss:"+strconv.Itoa(r.ChatID), r.Args[1])
 		rc.Del("tgRssInterval:" + strconv.Itoa(r.ChatID) + ":" + r.Args[1])
@@ -160,44 +123,6 @@ func charsetReader(charset string, r io.Reader) (io.Reader, error) {
 	return nil, errors.New("Unsupported character set encoding: " + charset)
 }
 
-//func loopFeed(feed *rss.Feed, url string, chatid int, interval int) {
-//if interval < 7 {
-//interval = 7
-//}
-//stopRssLoop.Init(strconv.Itoa(chatid) + ":" + url)
-
-//firstLoop := true
-//retryTimes := 0
-//t := time.Tick(time.Minute*time.Duration(interval-1) +
-//time.Second*time.Duration(rand.Intn(120)))
-
-//Loop:
-//for {
-//select {
-//case <-stopRssLoop.Get(strconv.Itoa(chatid) + ":" + url):
-//break Loop
-//case <-t:
-//if firstLoop {
-//time.Sleep(time.Duration(rand.Intn(interval)) * time.Minute)
-//firstLoop = false
-//}
-//if err := feed.Fetch(url, charsetReader); err != nil {
-//if retryTimes > 30 {
-//log.Printf("Retry in 30 Minutes...[ %s ]\n", url)
-//time.Sleep(time.Minute * 30)
-//retryTimes = 0
-//continue
-//}
-//log.Printf("failed to fetch rss, "+
-//"retry in 3 seconds... [ %s ]\n", url)
-//time.Sleep(time.Second * 3)
-//retryTimes++
-//continue
-//}
-//}
-//}
-//}
-
 //accept minute and return seconds
 func getInterval(minute int) (second int) {
 	interval := 7
@@ -216,20 +141,19 @@ func markdownEscape(s string) string {
 }
 
 func rssItem(feed *rss.Feed, ch *rss.Channel, newitems []*rss.Item, bot *tgbotapi.BotAPI, chatid int) {
-	log.Printf("%d new item(s) in %s\n", len(newitems), feed.Url)
 	var buf bytes.Buffer
 	rc := conf.Redis
 	for k, item := range newitems {
 
 		if item.Links[0].Href == rc.Get("tgRssLatest:"+
-			strconv.Itoa(chatid)+":"+feed.Url).Val() &&
-			buf.String() != "" {
-			msg := tgbotapi.NewMessage(chatid,
-				"*"+markdownEscape(ch.Title)+"*\n"+buf.String())
-			msg.DisableWebPagePreview = true
-			msg.ParseMode = tgbotapi.ModeMarkdown
-			bot.SendMessage(msg)
-
+			strconv.Itoa(chatid)+":"+feed.Url).Val() {
+			if buf.String() != "" {
+				msg := tgbotapi.NewMessage(chatid,
+					"*"+markdownEscape(ch.Title)+"*\n"+buf.String())
+				msg.DisableWebPagePreview = true
+				msg.ParseMode = tgbotapi.ModeMarkdown
+				bot.SendMessage(msg)
+			}
 			break
 		}
 
@@ -271,13 +195,14 @@ func rssItem(feed *rss.Feed, ch *rss.Channel, newitems []*rss.Item, bot *tgbotap
 		buf.WriteString("\n")
 
 		itemNumsInMessage := 9
-		if (k != 0 && k%itemNumsInMessage == 0) || k == len(newitems)-1 &&
-			buf.String() != "" {
-			msg := tgbotapi.NewMessage(chatid,
-				"*"+markdownEscape(ch.Title)+"*\n"+buf.String())
-			msg.DisableWebPagePreview = true
-			msg.ParseMode = tgbotapi.ModeMarkdown
-			bot.SendMessage(msg)
+		if (k != 0 && k%itemNumsInMessage == 0) || k == len(newitems)-1 {
+			if buf.String() != "" {
+				msg := tgbotapi.NewMessage(chatid,
+					"*"+markdownEscape(ch.Title)+"*\n"+buf.String())
+				msg.DisableWebPagePreview = true
+				msg.ParseMode = tgbotapi.ModeMarkdown
+				bot.SendMessage(msg)
+			}
 			buf.Reset()
 		}
 	}
