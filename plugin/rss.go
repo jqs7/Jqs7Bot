@@ -11,6 +11,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/Syfaro/telegram-bot-api"
 	"github.com/carlescere/scheduler"
@@ -21,7 +22,31 @@ import (
 
 type Rss struct{ Default }
 
-var jobMap map[string]*scheduler.Job = make(map[string]*scheduler.Job)
+var jobs = newJMap()
+
+type jMap struct {
+	m map[string]*scheduler.Job
+	sync.Mutex
+}
+
+func (j *jMap) NewJob(key string, job *scheduler.Job) {
+	j.Lock()
+	defer j.Unlock()
+	j.m[key] = job
+}
+
+func (j *jMap) StopJob(key string) {
+	j.Lock()
+	defer j.Unlock()
+	if v, ok := j.m[key]; ok {
+		v.Quit <- true
+		delete(j.m, key)
+	}
+}
+
+func newJMap() *jMap {
+	return &jMap{m: make(map[string]*scheduler.Job)}
+}
 
 func (r *Rss) Run() {
 	switch r.Args[0] {
@@ -47,7 +72,7 @@ func (r *Rss) Run() {
 		}
 		rc := conf.Redis
 		rc.Del("tgRssLatest:" + strconv.Itoa(r.ChatID) + ":" + r.Args[1])
-		jobMap[strconv.Itoa(r.ChatID)+":"+r.Args[1]].Quit <- true
+		jobs.StopJob(strconv.Itoa(r.ChatID) + ":" + r.Args[1])
 		rc.SRem("tgRss:"+strconv.Itoa(r.ChatID), r.Args[1])
 		rc.Del("tgRssInterval:" + strconv.Itoa(r.ChatID) + ":" + r.Args[1])
 		r.rssList()
@@ -81,21 +106,22 @@ func (r *Rss) newRss(interval ...string) error {
 		}
 		rc.Set("tgRssInterval:"+
 			strconv.Itoa(r.ChatID)+":"+r.Args[1], interval[0], -1)
-		jobMap[strconv.Itoa(r.ChatID)+":"+r.Args[1]], err =
-			scheduler.Every(getInterval(in)).Seconds().
-				NotImmediately().Run(genLoop(feed, r.Args[1]))
+		j, err := scheduler.Every(getInterval(in)).Seconds().
+			NotImmediately().Run(genLoop(feed, r.Args[1]))
 		if err != nil {
-			log.Println(err.Error)
+			log.Println(err.Error())
+			return nil
 		}
+		jobs.NewJob(strconv.Itoa(r.ChatID)+":"+r.Args[1], j)
 		return nil
 	}
-	var err error
-	jobMap[strconv.Itoa(r.ChatID)+":"+r.Args[1]], err =
-		scheduler.Every(getInterval(-1)).Seconds().
-			NotImmediately().Run(genLoop(feed, r.Args[1]))
+	j, err := scheduler.Every(getInterval(-1)).Seconds().
+		NotImmediately().Run(genLoop(feed, r.Args[1]))
 	if err != nil {
 		log.Println(err.Error())
+		return nil
 	}
+	jobs.NewJob(strconv.Itoa(r.ChatID)+":"+r.Args[1], j)
 
 	return nil
 }
@@ -105,7 +131,7 @@ func (r *Rss) rssItem(feed *rss.Feed, ch *rss.Channel, newitems []*rss.Item) {
 }
 
 func rssChan(feed *rss.Feed, newchannels []*rss.Channel) {
-	log.Printf("%d new channel(s) in %s\n", len(newchannels), feed.Url)
+	//log.Printf("%d new channel(s) in %s\n", len(newchannels), feed.Url)
 }
 
 func charsetReader(charset string, r io.Reader) (io.Reader, error) {
@@ -126,7 +152,7 @@ func charsetReader(charset string, r io.Reader) (io.Reader, error) {
 //accept minute and return seconds
 func getInterval(minute int) (second int) {
 	interval := 7
-	if minute > 7 {
+	if minute > interval {
 		interval = minute
 	}
 	return (interval-1)*60 + rand.Intn(120)
@@ -230,13 +256,13 @@ func InitRss(bot *tgbotapi.BotAPI) {
 		for _, f := range feeds {
 			feed := rss.New(1, true, rssChan, chat.rssItem)
 			interval, _ := strconv.Atoi(rc.Get("tgRssInterval:" + c + ":" + f).Val())
-			var err error
-			jobMap[strconv.Itoa(chat.id)+":"+f], err =
-				scheduler.Every(getInterval(interval)).Seconds().
-					NotImmediately().Run(genLoop(feed, f))
+			j, err := scheduler.Every(getInterval(interval)).Seconds().
+				NotImmediately().Run(genLoop(feed, f))
 			if err != nil {
 				log.Println(strconv.Itoa(chat.id) + ":" + f + " init fail")
+				continue
 			}
+			jobs.NewJob(strconv.Itoa(chat.id)+":"+f, j)
 		}
 	}
 }
@@ -246,6 +272,5 @@ func genLoop(feed *rss.Feed, url string) func() {
 		if err := feed.Fetch(url, charsetReader); err != nil {
 			log.Println(err.Error() + " " + url)
 		}
-		log.Println("loop " + url)
 	}
 }
