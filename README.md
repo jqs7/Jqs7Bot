@@ -1,10 +1,10 @@
 # Telegram 中文群组列表机器人
 
 群组娘本体为 [@Jqs7Bot](https://telegram.me/Jqs7Bot)<br/>
-推荐新的群组地址，请将邀请链接发往
+推荐新的群组地址，请将邀请链接发给
 [@Jqs_7](https://telegram.me/Jqs_7) ，
 并注明群名称、讨论主题或者到
-[issues](https://github.com/jqs7/telegram-chinese-groups/issues)
+[issues](https://github.com/jqs7/Jqs7Bot/issues)
 发布相关群信息。
 
 不适合公开的群、私聊群请勿公开和分享。
@@ -21,7 +21,7 @@
 - `/gg [内容]`            - Google搜索
 - `/e64 [内容]`           - base64加密
 - `/d64 [内容]`           - base64解密
-- `/rss [url]`            - 添加RSS订阅
+- `/rss [url]`            - 添加RSS订阅(已暂关闭)
 - `/rmrss [url]`          - 删除RSS订阅
 - `/md [内容]`            - 以markdown格式化文本
 - `@Jqs7Bot [内容]`       - 召唤萌萌哒群组娘

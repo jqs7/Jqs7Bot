@@ -56,16 +56,19 @@ func (r *Rss) Run() {
 			return
 		}
 
-		if len(r.Args) > 2 {
-			if err := r.newRss(r.Args[2]); err != nil {
+		if r.isMaster() {
+			if len(r.Args) > 2 {
+				if err := r.newRss(r.Args[2]); err != nil {
+					r.NewMessage(r.ChatID, err.Error()).Send()
+				}
+				return
+			}
+
+			if err := r.newRss(); err != nil {
 				r.NewMessage(r.ChatID, err.Error()).Send()
 			}
-			return
 		}
 
-		if err := r.newRss(); err != nil {
-			r.NewMessage(r.ChatID, err.Error()).Send()
-		}
 	case "/rmrss":
 		if len(r.Args) < 2 {
 			return
