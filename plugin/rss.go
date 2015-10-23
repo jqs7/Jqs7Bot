@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io"
 	"log"
 	"math/rand"
-	"net/url"
 	"sort"
 	"strconv"
 	"strings"
@@ -16,8 +14,7 @@ import (
 	"github.com/Syfaro/telegram-bot-api"
 	"github.com/carlescere/scheduler"
 	"github.com/jqs7/Jqs7Bot/conf"
-	rss "github.com/jteeuwen/go-pkg-rss"
-	"github.com/qiniu/iconv"
+	"github.com/m3ng9i/feedreader"
 )
 
 type Rss struct{ Default }
@@ -44,6 +41,12 @@ func (j *jMap) StopJob(key string) {
 	}
 }
 
+func (j *jMap) Length() int {
+	j.Lock()
+	defer j.Unlock()
+	return len(j.m)
+}
+
 func newJMap() *jMap {
 	return &jMap{m: make(map[string]*scheduler.Job)}
 }
@@ -56,17 +59,15 @@ func (r *Rss) Run() {
 			return
 		}
 
-		if r.isMaster() {
-			if len(r.Args) > 2 {
-				if err := r.newRss(r.Args[2]); err != nil {
-					r.NewMessage(r.ChatID, err.Error()).Send()
-				}
-				return
-			}
-
-			if err := r.newRss(); err != nil {
+		if len(r.Args) > 2 {
+			if err := r.newRss(r.Args[2]); err != nil {
 				r.NewMessage(r.ChatID, err.Error()).Send()
 			}
+			return
+		}
+
+		if err := r.newRss(); err != nil {
+			r.NewMessage(r.ChatID, err.Error()).Send()
 		}
 
 	case "/rmrss":
@@ -95,8 +96,8 @@ func (r *Rss) rssList() {
 
 func (r *Rss) newRss(interval ...string) error {
 	rc := conf.Redis
-	feed := rss.New(1, true, rssChan, r.rssItem)
-	if err := feed.Fetch(r.Args[1], charsetReader); err != nil {
+	_, err := feedreader.Fetch(r.Args[1])
+	if err != nil {
 		log.Println(err)
 		return errors.New("弹药检测失败，请检查后重试")
 	}
@@ -110,7 +111,7 @@ func (r *Rss) newRss(interval ...string) error {
 		rc.Set("tgRssInterval:"+
 			strconv.Itoa(r.ChatID)+":"+r.Args[1], interval[0], -1)
 		j, err := scheduler.Every(getInterval(in)).Seconds().
-			NotImmediately().Run(genLoop(feed, r.Args[1]))
+			Run(rssJob(r.Args[1], r.ChatID, r.Bot))
 		if err != nil {
 			log.Println(err.Error())
 			return nil
@@ -119,7 +120,7 @@ func (r *Rss) newRss(interval ...string) error {
 		return nil
 	}
 	j, err := scheduler.Every(getInterval(-1)).Seconds().
-		NotImmediately().Run(genLoop(feed, r.Args[1]))
+		Run(rssJob(r.Args[1], r.ChatID, r.Bot))
 	if err != nil {
 		log.Println(err.Error())
 		return nil
@@ -129,27 +130,54 @@ func (r *Rss) newRss(interval ...string) error {
 	return nil
 }
 
-func (r *Rss) rssItem(feed *rss.Feed, ch *rss.Channel, newitems []*rss.Item) {
-	rssItem(feed, ch, newitems, r.Bot, r.ChatID)
-}
-
-func rssChan(feed *rss.Feed, newchannels []*rss.Channel) {
-	//log.Printf("%d new channel(s) in %s\n", len(newchannels), feed.Url)
-}
-
-func charsetReader(charset string, r io.Reader) (io.Reader, error) {
-	switch charset {
-	case "ISO-8859-1", "iso-8859-1":
-		return r, nil
-	default:
-		cd, err := iconv.Open("utf-8", charset)
+func rssJob(feedURL string, chatid int, bot *tgbotapi.BotAPI) func() {
+	return func() {
+		feed, err := feedreader.Fetch(feedURL)
 		if err != nil {
-			break
+			log.Println(err.Error())
+			return
 		}
-		r := iconv.NewReader(cd, r, 1024)
-		return r, nil
+		var buf bytes.Buffer
+		rc := conf.Redis
+		for k, item := range feed.Items {
+			if item.Link == conf.Redis.Get("tgRssLatest:"+
+				strconv.Itoa(chatid)+":"+feedURL).Val() {
+				if buf.String() != "" {
+					msg := tgbotapi.NewMessage(chatid,
+						"*"+markdownEscape(feed.Title)+"*\n"+buf.String())
+					msg.DisableWebPagePreview = true
+					msg.ParseMode = tgbotapi.ModeMarkdown
+					bot.SendMessage(msg)
+				}
+				break
+			}
+
+			if strings.ContainsAny(item.Title, "[]()") {
+				str := fmt.Sprintf("%s [link](%s)\n",
+					markdownEscape(item.Title), item.Link)
+				buf.WriteString(str)
+			} else {
+				str := fmt.Sprintf("[%s](%s)\n",
+					item.Title, item.Link)
+				buf.WriteString(str)
+			}
+
+			itemNumsInMessage := 9
+			if k != 0 && k%itemNumsInMessage == 0 || k == len(feed.Items)-1 {
+				if buf.String() != "" {
+					msg := tgbotapi.NewMessage(chatid,
+						"*"+markdownEscape(feed.Title)+"*\n"+buf.String())
+					msg.DisableWebPagePreview = true
+					msg.ParseMode = tgbotapi.ModeMarkdown
+					bot.SendMessage(msg)
+				}
+				buf.Reset()
+			}
+		}
+
+		rc.Set("tgRssLatest:"+strconv.Itoa(chatid)+":"+feedURL,
+			feed.Items[0].Link, -1)
 	}
-	return nil, errors.New("Unsupported character set encoding: " + charset)
 }
 
 //accept minute and return seconds
@@ -169,111 +197,22 @@ func markdownEscape(s string) string {
 	).Replace(s)
 }
 
-func rssItem(feed *rss.Feed, ch *rss.Channel, newitems []*rss.Item, bot *tgbotapi.BotAPI, chatid int) {
-	var buf bytes.Buffer
-	rc := conf.Redis
-	for k, item := range newitems {
-
-		if item.Links[0].Href == rc.Get("tgRssLatest:"+
-			strconv.Itoa(chatid)+":"+feed.Url).Val() {
-			if buf.String() != "" {
-				msg := tgbotapi.NewMessage(chatid,
-					"*"+markdownEscape(ch.Title)+"*\n"+buf.String())
-				msg.DisableWebPagePreview = true
-				msg.ParseMode = tgbotapi.ModeMarkdown
-				bot.SendMessage(msg)
-			}
-			break
-		}
-
-		if len(item.Links) == 0 {
-			buf.WriteString(item.Title)
-		} else {
-			for i, link := range item.Links {
-				href := link.Href
-
-				//fix uncomplete link
-				if u, e := url.Parse(href); e == nil {
-					fu, _ := url.Parse(feed.Url)
-					if u.Host == "" {
-						u.Host = fu.Host
-					}
-					if u.Scheme == "" {
-						u.Scheme = fu.Scheme
-					}
-					href = u.String()
-				}
-
-				if i == 0 {
-					var format string
-					if strings.ContainsAny(item.Title, "[]()") {
-						format = fmt.Sprintf("%s [link](%s) ",
-							markdownEscape(item.Title), href)
-					} else {
-						format = fmt.Sprintf("[%s](%s) ",
-							item.Title, href)
-					}
-					buf.WriteString(format)
-					continue
-				}
-				buf.WriteString(fmt.Sprintf("[link %d](%s) ",
-					i, href))
-			}
-		}
-
-		buf.WriteString("\n")
-
-		itemNumsInMessage := 9
-		if (k != 0 && k%itemNumsInMessage == 0) || k == len(newitems)-1 {
-			if buf.String() != "" {
-				msg := tgbotapi.NewMessage(chatid,
-					"*"+markdownEscape(ch.Title)+"*\n"+buf.String())
-				msg.DisableWebPagePreview = true
-				msg.ParseMode = tgbotapi.ModeMarkdown
-				bot.SendMessage(msg)
-			}
-			buf.Reset()
-		}
-	}
-	rc.Set("tgRssLatest:"+strconv.Itoa(chatid)+":"+feed.Url,
-		newitems[0].Links[0].Href, -1)
-}
-
-type chat struct {
-	id  int
-	bot *tgbotapi.BotAPI
-}
-
-func (c *chat) rssItem(feed *rss.Feed,
-	ch *rss.Channel, newitems []*rss.Item) {
-	rssItem(feed, ch, newitems, c.bot, c.id)
-}
-
 func InitRss(bot *tgbotapi.BotAPI) {
 	rc := conf.Redis
 	chats := rc.SMembers("tgRssChats").Val()
 	for _, c := range chats {
 		feeds := rc.SMembers("tgRss:" + c).Val()
 		id, _ := strconv.Atoi(c)
-		chat := &chat{id, bot}
 		for _, f := range feeds {
-			feed := rss.New(1, true, rssChan, chat.rssItem)
 			interval, _ := strconv.Atoi(rc.Get("tgRssInterval:" + c + ":" + f).Val())
 			j, err := scheduler.Every(getInterval(interval)).Seconds().
-				NotImmediately().Run(genLoop(feed, f))
+				NotImmediately().Run(rssJob(f, id, bot))
 			if err != nil {
-				log.Println(strconv.Itoa(chat.id) + ":" + f + " init fail")
+				log.Println(strconv.Itoa(id) + ":" + f + " init fail")
 				continue
 			}
-			jobs.NewJob(strconv.Itoa(chat.id)+":"+f, j)
+			jobs.NewJob(strconv.Itoa(id)+":"+f, j)
 		}
 	}
-}
-
-func genLoop(feed *rss.Feed, url string) func() {
-	return func() {
-		if err := feed.Fetch(url, charsetReader); err != nil {
-			log.Println(err.Error() + " " + url)
-		}
-	}
+	log.Printf("%d jobs init complete!\n", jobs.Length())
 }
