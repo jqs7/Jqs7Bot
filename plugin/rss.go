@@ -134,14 +134,14 @@ func rssJob(feedURL string, chatid int, bot *tgbotapi.BotAPI) func() {
 	return func() {
 		feed, err := feedreader.Fetch(feedURL)
 		if err != nil {
-			log.Println(err.Error())
+			log.Printf("Error: %s %s", feedURL, err.Error())
 			return
 		}
 		var buf bytes.Buffer
 		rc := conf.Redis
 		for k, item := range feed.Items {
-			if item.Link == conf.Redis.Get("tgRssLatest:"+
-				strconv.Itoa(chatid)+":"+feedURL).Val() {
+			if strings.Contains(conf.Redis.Get("tgRssLatest:"+
+				strconv.Itoa(chatid)+":"+feedURL).Val(), item.Link) {
 				if buf.String() != "" {
 					msg := tgbotapi.NewMessage(chatid,
 						"*"+markdownEscape(feed.Title)+"*\n"+buf.String())
@@ -175,8 +175,14 @@ func rssJob(feedURL string, chatid int, bot *tgbotapi.BotAPI) func() {
 			}
 		}
 
-		rc.Set("tgRssLatest:"+strconv.Itoa(chatid)+":"+feedURL,
-			feed.Items[0].Link, -1)
+		if feed.Items != nil && len(feed.Items) > 0 {
+			var buf []string
+			for _, v := range feed.Items {
+				buf = append(buf, v.Link)
+			}
+			rc.Set("tgRssLatest:"+strconv.Itoa(chatid)+":"+feedURL,
+				strings.Join(buf, ":"), -1)
+		}
 	}
 }
 
