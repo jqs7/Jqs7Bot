@@ -14,7 +14,7 @@ type Subscribe struct{ Default }
 func (s *Subscribe) Run() {
 	userIDStr := strconv.Itoa(s.Message.From.ID)
 	isSubscribe, _ := strconv.ParseBool(conf.Redis.HGet("tgSubscribe",
-		chatIDStr).Val())
+		userIDStr).Val())
 
 	if !s.isAuthed() {
 		s.sendQuestion()
