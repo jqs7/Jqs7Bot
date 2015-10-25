@@ -27,5 +27,5 @@
 - `@Jqs7Bot [内容]`       - 召唤萌萌哒群组娘
 - `/rain [^|m|^m|username with @|me]` - 查看群组娘统计信息
 
-*除计数外，群组娘不会记录/log聊天信息*
+**除计数外，群组娘不会记录/log聊天信息**
 ![Jqs7Bot](http://ww2.sinaimg.cn/large/71d9577dgw1eu5kuwdr3yj21kw1k7qhp.jpg)
