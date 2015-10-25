@@ -12,51 +12,36 @@ import (
 type Subscribe struct{ Default }
 
 func (s *Subscribe) Run() {
-	chatIDStr := strconv.Itoa(s.ChatID)
+	userIDStr := strconv.Itoa(s.Message.From.ID)
 	isSubscribe, _ := strconv.ParseBool(conf.Redis.HGet("tgSubscribe",
 		chatIDStr).Val())
 
-	if s.FromChannel {
-		if !s.isAuthed() {
-			s.sendQuestion()
-			return
-		}
+	if !s.isAuthed() {
+		s.sendQuestion()
+		return
+	}
 
-		if isSubscribe {
-			s.NewMessage(s.ChatID,
-				"已经订阅过，就不要重复订阅啦😘").Send()
-		} else {
-			conf.Redis.HSet("tgSubscribe", chatIDStr, strconv.FormatBool(true))
-			conf.Redis.HIncrBy("tgSubscribeTimes", chatIDStr, 1)
-			s.NewMessage(s.ChatID,
-				"订阅成功\n以后奴家知道新的群组的话，会第一时间告诉你哟😊\n"+
-					"(订阅仅对当前会话有效)").Send()
-		}
+	if isSubscribe {
+		s.NewMessage(s.ChatID,
+			"已经订阅过，就不要重复订阅啦😘").Send()
+	} else {
+		conf.Redis.HSet("tgSubscribe", userIDStr, strconv.FormatBool(true))
+		s.NewMessage(s.ChatID, "订阅成功\n以后奴家知道新的群组的话，会第一时间告诉你哟😊").Send()
 	}
 }
 
 type UnSubscribe struct{ bb.Base }
 
 func (u *UnSubscribe) Run() {
-	if u.FromGroup {
-		return
-	}
-	chatIDStr := strconv.Itoa(u.ChatID)
+	userIDStr := strconv.Itoa(u.Message.From.ID)
 	rc := conf.Redis
-	if rc.HExists("tgSubscribe", chatIDStr).Val() {
-		rc.HDel("tgSubscribe", chatIDStr)
-		times, _ := rc.HIncrBy("tgSubscribeTimes", chatIDStr, 1).Result()
-		if times > 5 {
-			u.NewMessage(u.ChatID,
-				"订了退，退了订，你烦不烦嘛！！！⊂彡☆))∀`)`").Send()
-			rc.HDel("tgSubscribeTimes", chatIDStr)
-			return
-		}
-		u.NewMessage(u.ChatID,
+	if rc.HExists("tgSubscribe", userIDStr).Val() {
+		rc.HDel("tgSubscribe", userIDStr)
+		u.NewMessage(u.Message.From.ID,
 			"好伤心，退订了就不能愉快的玩耍了呢😭").Send()
 		return
 	}
-	u.NewMessage(u.ChatID,
+	u.NewMessage(u.Message.From.ID,
 		"你都还没订阅，让人家怎么退订嘛！o(≧口≦)o").Send()
 	return
 }
@@ -64,16 +49,17 @@ func (u *UnSubscribe) Run() {
 type Broadcast struct{ Default }
 
 func (b *Broadcast) Run() {
-	if len(b.Args) == 1 && b.isMaster() &&
-		!b.FromGroup {
-		b.NewMessage(b.ChatID,
-			"Send me the Broadcast (＾o＾)ﾉ").Send()
-		b.setStatus("broadcast")
-		return
-	}
-	if len(b.Args) >= 2 {
-		text := strings.Join(b.Args[1:], " ")
-		b.bc(text)
+	if b.isMaster() {
+		if len(b.Args) == 1 && !b.FromGroup {
+			b.NewMessage(b.ChatID,
+				"Send me the Broadcast (＾o＾)ﾉ").Send()
+			b.setStatus("broadcast")
+			return
+		}
+		if len(b.Args) >= 2 {
+			text := strings.Join(b.Args[1:], " ")
+			b.bc(text)
+		}
 	}
 }
 

@@ -21,10 +21,11 @@
 - `/gg [内容]`            - Google搜索
 - `/e64 [内容]`           - base64加密
 - `/d64 [内容]`           - base64解密
-- `/rss [url]`            - 添加RSS订阅(已暂关闭)
+- `/rss [url]`            - 添加RSS订阅
 - `/rmrss [url]`          - 删除RSS订阅
 - `/md [内容]`            - 以markdown格式化文本
 - `@Jqs7Bot [内容]`       - 召唤萌萌哒群组娘
 - `/rain [^|m|^m|username with @|me]` - 查看群组娘统计信息
 
+*除计数外，群组娘不会记录/log聊天信息*
 ![Jqs7Bot](http://ww2.sinaimg.cn/large/71d9577dgw1eu5kuwdr3yj21kw1k7qhp.jpg)
