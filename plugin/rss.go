@@ -148,7 +148,7 @@ func rssJob(feedURL string, chatid int, bot *tgbotapi.BotAPI) func() {
 				strconv.Itoa(chatid)+":"+feedURL).Val(), item.Link) {
 				if buf.String() != "" {
 					msg := tgbotapi.NewMessage(chatid,
-						"*"+markdownEscape(feed.Title)+"*\n"+buf.String())
+						"*"+feed.Title+"*\n"+buf.String())
 					msg.DisableWebPagePreview = true
 					msg.ParseMode = tgbotapi.ModeMarkdown
 					bot.SendMessage(msg)
@@ -171,7 +171,7 @@ func rssJob(feedURL string, chatid int, bot *tgbotapi.BotAPI) func() {
 			if k != 0 && k%itemNumsInMessage == 0 || k == len(feed.Items)-1 {
 				if buf.String() != "" {
 					msg := tgbotapi.NewMessage(chatid,
-						"*"+markdownEscape(feed.Title)+"*\n"+buf.String())
+						"*"+feed.Title+"*\n"+buf.String())
 					msg.DisableWebPagePreview = true
 					msg.ParseMode = tgbotapi.ModeMarkdown
 					bot.SendMessage(msg)
