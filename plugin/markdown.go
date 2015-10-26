@@ -11,8 +11,11 @@ type Markdown struct{ bb.Base }
 func (m *Markdown) Run() {
 	if len(m.Args) > 1 {
 		s := strings.Join(m.Args[1:], " ")
-		m.NewMessage(m.ChatID, s).
+		err := m.NewMessage(m.ChatID, s).
 			DisableWebPagePreview().
-			MarkdownMode().Send()
+			MarkdownMode().Send().Err
+		if err != nil {
+			m.NewMessage(m.ChatID, err.Error()).Send()
+		}
 	}
 }
