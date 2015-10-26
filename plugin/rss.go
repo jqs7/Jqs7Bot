@@ -156,7 +156,8 @@ func rssJob(feedURL string, chatid int, bot *tgbotapi.BotAPI) func() {
 				break
 			}
 
-			if strings.ContainsAny(item.Title, "[]()") {
+			if strings.ContainsAny(item.Title, "[]()") ||
+				strings.Contains(item.Title, "://") {
 				str := fmt.Sprintf("%s [link](%s)\n",
 					markdownEscape(item.Title), item.Link)
 				buf.WriteString(str)
