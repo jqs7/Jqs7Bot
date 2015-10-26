@@ -31,9 +31,7 @@ func (s *SetRule) Run() {
 	if s.isAuthed() {
 		chatIDStr := strconv.Itoa(s.ChatID)
 		conf.Redis.Set("tgGroupRule:"+chatIDStr, rule, -1)
-		s.NewMessage(s.ChatID,
-			"新的群组规则Get！✔️\n以下是新的规则：\n\n"+rule).
-			Send()
+		s.NewMessage(s.ChatID, "新的群组规则Get！✔️").Send()
 	} else {
 		s.sendQuestion()
 	}
