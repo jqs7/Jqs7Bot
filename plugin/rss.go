@@ -29,6 +29,10 @@ type jMap struct {
 func (j *jMap) NewJob(key string, job *scheduler.Job) {
 	j.Lock()
 	defer j.Unlock()
+	if v, ok := j.m[key]; ok {
+		v.Quit <- true
+		delete(j.m, key)
+	}
 	j.m[key] = job
 }
 
