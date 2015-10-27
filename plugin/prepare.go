@@ -23,16 +23,14 @@ func (p *Prepare) autoRule() {
 		rc := conf.Redis
 		chatIDStr := strconv.Itoa(p.ChatID)
 		if rc.Exists("tgGroupAutoRule:" + chatIDStr).Val() {
-			go func() {
-				p.NewMessage(p.Message.NewChatParticipant.ID,
-					"欢迎加入 "+p.Message.Chat.Title+"\n 以下是群组规则：").Send()
-				if rc.Exists("tgGroupRule:" + chatIDStr).Val() {
-					p.NewMessage(
-						p.Message.NewChatParticipant.ID,
-						rc.Get("tgGroupRule:"+chatIDStr).Val(),
-					).Send()
-				}
-			}()
+			p.NewMessage(p.Message.NewChatParticipant.ID,
+				"欢迎加入 "+p.Message.Chat.Title+"\n 以下是群组规则：").Send()
+			if rc.Exists("tgGroupRule:" + chatIDStr).Val() {
+				p.NewMessage(
+					p.Message.NewChatParticipant.ID,
+					rc.Get("tgGroupRule:"+chatIDStr).Val(),
+				).Send()
+			}
 		}
 	}
 }
