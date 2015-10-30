@@ -1,6 +1,6 @@
 <template lang='jade'>
 .center
-  h1 {{{userName}}} 子舰活动图
+  h1 {{userName}} 子舰活动图
   user-chart
 </template>
 
@@ -15,7 +15,7 @@ import userChart from './userChart.vue'
 export default{
   ready (){
     var tmp = document.URL.split('/');
-    var userName = tmp[tmp.length - 1];
+    var userName = unescape(tmp[tmp.length - 1]);
     this.$data = {userName: userName};
     userChart.methods.show(userName);
   },
