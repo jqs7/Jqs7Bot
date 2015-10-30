@@ -1,11 +1,16 @@
 <template lang='jade'>
-#chart
-pie
+.container
+  #chart
+  pie
 </template>
 
 <style lang='stylus'>
-#chart
-  height 400px
+.container
+  text-align center
+  margin-top 30px
+  #chart
+    float left
+    height 400px
 </style>
 
 <script>
@@ -74,14 +79,17 @@ export default{
         dailyData.push(data['total'][i]['total']);
       }
       for (var i in data['users']){
-        dailyUsers.push(data['users'][i]['userCount'])       
+        dailyUsers.push(data['users'][i]['userCount']);
       }
       option.xAxis[0].data = xAxisData;
       option.series[0].data = dailyData;
       option.series[1].data = dailyUsers;
-      echarts.init(document.getElementById('chart')).
-        on(eConfig.EVENT.CLICK,function(param){
-          pie.methods.show(xAxisData[param.dataIndex],dailyData[param.dataIndex])
+      document.getElementById('chart').style.width = '100%';
+      var e = echarts.init(document.getElementById('chart'));
+      e.on(eConfig.EVENT.CLICK,function(param){
+          document.getElementById('chart').style.width = '70%'
+          e.resize();
+          pie.methods.show(xAxisData[param.dataIndex],dailyData[param.dataIndex]);
         }).setOption(option);
     });
   },
