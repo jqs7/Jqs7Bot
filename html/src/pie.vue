@@ -11,7 +11,8 @@
 
 <script>
 var echarts = require('echarts');
-  require('echarts/chart/pie');
+var eConfig = require('echarts/config');
+require('echarts/chart/pie');
 var option = {
   title: {
     text: '',
@@ -27,8 +28,7 @@ var option = {
       type:'pie',
       radius : '47%',
       center: ['37%', '50%'],
-      data:[
-      ]
+      data:[]
     }
   ]
 };
@@ -37,6 +37,11 @@ export default {
   ready (){
     v = this;
     e = echarts.init(document.getElementById('pie'));
+    e.on(eConfig.EVENT.CLICK,function(param){
+      if (param.name !== '其他'){
+        window.location.href = '/user/' + param.name;
+      }
+    })
     document.getElementById('pie').style.display = 'none';
   },
   methods: {
