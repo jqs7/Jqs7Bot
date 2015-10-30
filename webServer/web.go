@@ -24,14 +24,17 @@ func GinServer() {
 
 	render := render.New(render.Options{
 		Directory:  "html",
-		IndentJSON: true,
-		Delims:     render.Delims{"<<<", ">>>"},
+		Delims:     render.Delims{"<%", "%>"},
 		Extensions: []string{".html"},
 	})
 
-	r.Static("/assets", "./assets")
+	r.Static("/dist", "./html/dist")
 
 	r.GET("/", func(c *gin.Context) {
+		render.HTML(c.Writer, http.StatusOK, "index", nil)
+	})
+
+	r.GET("/api", func(c *gin.Context) {
 		var total, users []interface{}
 		limit := time.Now().AddDate(0, 0, -100)
 		mongo.M("dailyTotal", func(c *mgo.Collection) {
@@ -44,11 +47,11 @@ func GinServer() {
 				"date": bson.M{"$gt": limit},
 			}).Sort("date").All(&users)
 		})
-		render.HTML(c.Writer, http.StatusOK, "index",
+		render.JSON(c.Writer, http.StatusOK,
 			gin.H{"total": total, "users": users})
 	})
 
-	r.GET("/rank/:date", func(c *gin.Context) {
+	r.GET("/api/rank/:date", func(c *gin.Context) {
 		s := c.Params.ByName("date")
 		loc, _ := time.LoadLocation("Asia/Shanghai")
 		date, err := time.ParseInLocation("2006-01-02", s, loc)
@@ -64,7 +67,7 @@ func GinServer() {
 		render.JSON(c.Writer, http.StatusOK, result)
 	})
 
-	r.GET("/user/:name", func(c *gin.Context) {
+	r.GET("/api/user/:name", func(c *gin.Context) {
 		limit := time.Now().AddDate(0, 0, -100)
 		s, err := url.QueryUnescape(c.Params.ByName("name"))
 		if err != nil {
@@ -80,11 +83,12 @@ func GinServer() {
 				},
 			).Sort("date").All(&result)
 		})
-		render.HTML(c.Writer, http.StatusOK, "user",
-			gin.H{
-				"result":   result,
-				"userName": s,
-			})
+		render.JSON(c.Writer, http.StatusOK,
+			gin.H{"result": result, "userName": s})
+	})
+
+	r.GET("/user/:name", func(c *gin.Context) {
+		render.HTML(c.Writer, http.StatusOK, "user", nil)
 	})
 
 	ginpprof.Wrapper(r)

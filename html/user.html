@@ -1,81 +1,12 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <meta charset="utf-8">
-  <title><<<.userName>>>|Jqs7Bot</title>
-</head>
-
-<body id="body">
-  <div id="main" align="center">
-    <h1 style="color:#3C3C3C;margin-top:20px"><<<.userName>>> 子舰活动图</h1>
-    <div id="user" style="opacity:0.85;height:500px;width:1200px"></div>
-  </div>
-</body>
-
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Jqs7Bot</title>
+  </head>
+  <body>
+    <index></index>
+    <script src="/dist/user.build.js"></script>
+  </body>
 </html>
-
-<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
-<script src="//cdn.bootcss.com/echarts/2.2.7/echarts.js"></script>
-<link href="//cdn.bootcss.com/semantic-ui/2.1.3/semantic.min.css" rel="stylesheet">
-<script type="text/javascript">
-  require.config({
-    paths: {
-      echarts: '//cdn.bootcss.com/echarts/2.2.7'
-    }
-  });
-  require(
-          [
-            'echarts',
-            'echarts/chart/line'
-          ],
-          function (ec) {
-            var user = ec.init(document.getElementById('user'));
-            var user_option = {
-              dataZoom: {
-                show: true,
-                realtime: true,
-                start: 40,
-                end: 100
-                },
-              tooltip: {
-                show: true,
-                formatter: function (params, ticket, callback) {
-                  if ($.inArray(params['name'],["avg","min","max"]) != -1){
-                    return '<div class="ui blue label">'+params['name'] + '</div><br/>  ' + params['data']['value'];
-                  }
-                  return '<div class="ui blue label">'+params['name'] + '</div><br/>  ' + params['data'];
-                },
-                hideDelay: 3000
-              },
-              yAxis: [],
-              xAxis: [
-                {
-                    data: [<<<range $element := .result>>><<<with $element>>><<<.date.Format "2006-01-02">>>,<<<end>>><<<end>>>]
-                }
-              ],
-              series: [
-                {
-                  name: "total",
-                  type: "line",
-                  smooth: true,
-                  data: [<<<range $element := .result>>><<<with $element>>><<<.count>>>,<<<end>>><<<end>>>],
-                  markLine: {
-                    data: [
-                      {type: 'average', name: 'avg'}
-                    ]
-                  },
-                  markPoint: {
-                    data: [
-                      {type: 'min',name: 'min'},
-                      {type: 'max',name: 'max'}
-                    ]
-                  }
-                },
-              ]
-            };
-            user.setOption(user_option);
-          }
-       );
-
-</script>
