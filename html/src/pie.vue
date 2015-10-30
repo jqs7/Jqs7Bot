@@ -4,9 +4,9 @@
 
 <style lang='stylus'>
 #pie
-  width 450px
-  height 300px
-  margin-left 100px
+  width 500px
+  height 400px
+  margin-left 30px
 </style>
 
 <script>
@@ -16,7 +16,7 @@ var option = {
   title: {
     text: '',
     subtext: '',
-    x: 'center',
+    x: '100',
   },
   tooltip: {
     trigger: 'item',
@@ -24,10 +24,9 @@ var option = {
   },
   series: [
     {
-      name:'访问来源',
       type:'pie',
-      radius : '55%',
-      center: ['50%', '60%'],
+      radius : '47%',
+      center: ['37%', '50%'],
       data:[
       ]
     }

@@ -91,6 +91,7 @@ export default{
           e.resize();
           pie.methods.show(xAxisData[param.dataIndex],dailyData[param.dataIndex]);
         }).setOption(option);
+      window.onresize = e.resize;
     });
   },
   components: {
