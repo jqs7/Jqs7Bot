@@ -47,6 +47,7 @@ export default{
   ready (){
     v = this;
     e = echarts.init(document.getElementById('chart'));
+    window.onresize = e.resize;
   },
   methods: {
     show: function(userName) {

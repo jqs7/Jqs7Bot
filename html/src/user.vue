@@ -1,6 +1,6 @@
 <template lang='jade'>
 .center
-  h1 {{userName}} 子舰活动图
+  h1 {{{userName}}} 子舰活动图
   user-chart
 </template>
 
