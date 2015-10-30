@@ -4,7 +4,7 @@
 
 <style lang='stylus'>
 #pie
-  width 300px
+  width 450px
   height 300px
   margin-left 100px
 </style>
