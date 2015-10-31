@@ -5,7 +5,7 @@ input(type='text' @keydown.enter='submit')
 <script>
 export default{
   methods:{
-    submit:function(event){
+    submit(event){
       var v = event.target.value.trim();
       if (v !== ''){
         window.location.href = '/user/' + v;

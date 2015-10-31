@@ -68,11 +68,12 @@ var option = {
     }
   }]
 };
+var e;
 var xAxisData = new Array();
 var dailyData = new Array();
 var dailyUsers = new Array();
 export default{
-  ready (){
+  ready(){
     this.$http.get('/api',function(data,status,req){
       for (var i in data['total']){
         xAxisData.push(data['total'][i]['date'].replace('T00:00:00+08:00',''));
@@ -85,7 +86,7 @@ export default{
       option.series[0].data = dailyData;
       option.series[1].data = dailyUsers;
       document.getElementById('chart').style.width = '100%';
-      var e = echarts.init(document.getElementById('chart'));
+      e = echarts.init(document.getElementById('chart'));
       e.on(eConfig.EVENT.CLICK,function(param){
           document.getElementById('chart').style.width = '70%'
           e.resize();
@@ -96,6 +97,12 @@ export default{
   },
   components: {
     pie
+  },
+  events: {
+    resize(){
+      document.getElementById('chart').style.width = '100%';
+      e.resize();
+    }
   }
 }
 </script>

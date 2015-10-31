@@ -13,7 +13,7 @@
 import userChart from './userChart.vue'
 
 export default{
-  ready (){
+  ready(){
     var tmp = document.URL.split('/');
     var userName = unescape(tmp[tmp.length - 1]);
     this.$data = {userName: userName};

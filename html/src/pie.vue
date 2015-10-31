@@ -1,5 +1,6 @@
 <template lang='jade'>
 #pie
+button#hide(v-on:click='hidePie') Hide
 </template>
 
 <style lang='stylus'>
@@ -7,6 +8,9 @@
   width 500px
   height 400px
   margin-left 30px
+button
+  float right
+  margin-right 10%
 </style>
 
 <script>
@@ -34,7 +38,7 @@ var option = {
 };
 var e, v;
 export default {
-  ready (){
+  ready(){
     v = this;
     e = echarts.init(document.getElementById('pie'));
     e.on(eConfig.EVENT.CLICK,function(param){
@@ -43,9 +47,10 @@ export default {
       }
     })
     document.getElementById('pie').style.display = 'none';
+    document.getElementById('hide').style.display = 'none';
   },
   methods: {
-    show: function(date, total){
+    show(date, total){
       option.title.subtext = date;
       var others = total;
       var pieData = new Array();
@@ -63,7 +68,13 @@ export default {
         option.series[0].data = pieData;
         e.setOption(option);
         document.getElementById('pie').style.display = '';
+        document.getElementById('hide').style.display = '';
       });
+    },
+    hidePie(){
+      document.getElementById('pie').style.display = 'none';
+      document.getElementById('hide').style.display = 'none';
+      this.$dispatch('resize');
     }
   }
 }

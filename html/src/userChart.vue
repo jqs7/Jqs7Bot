@@ -44,13 +44,13 @@ var e,v;
 var xAxisData = new Array();
 var dailyData = new Array();
 export default{
-  ready (){
+  ready(){
     v = this;
     e = echarts.init(document.getElementById('chart'));
     window.onresize = e.resize;
   },
   methods: {
-    show: function(userName) {
+    show(userName) {
       v.$http.get('/api/user/' + escape(userName),function(data,status,req){
         for (var i in data['result']){
           xAxisData.push(data['result'][i]['date'].replace('T00:00:00+08:00',''));
