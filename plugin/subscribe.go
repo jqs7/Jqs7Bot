@@ -22,11 +22,11 @@ func (s *Subscribe) Run() {
 	}
 
 	if isSubscribe {
-		s.NewMessage(s.ChatID,
+		s.NewMessage(s.Message.From.ID,
 			"已经订阅过，就不要重复订阅啦😘").Send()
 	} else {
 		conf.Redis.HSet("tgSubscribe", userIDStr, strconv.FormatBool(true))
-		s.NewMessage(s.ChatID, "订阅成功\n以后奴家知道新的群组的话，会第一时间告诉你哟😊").Send()
+		s.NewMessage(s.Message.From.ID, "订阅成功\n以后奴家知道新的群组的话，会第一时间告诉你哟😊").Send()
 	}
 }
 
@@ -68,14 +68,17 @@ func (b *Default) bc(text string) {
 		conf.Redis.Exists("tgSubscribe").Val() {
 		subStates := conf.Redis.HGetAllMap("tgSubscribe").Val()
 
+		counter := 0
 		for k, v := range subStates {
 			chatid, _ := strconv.Atoi(k)
 			subState, _ := strconv.ParseBool(v)
 
 			if subState && chatid > 0 {
-				log.Printf("sending boardcast to %d ... \n", chatid)
+				log.Printf("sending broadcast to %d ... \n", chatid)
 				go b.NewMessage(chatid, text).Send()
+				counter++
 			}
 		}
+		log.Printf("%d broadcasts sent")
 	}
 }
