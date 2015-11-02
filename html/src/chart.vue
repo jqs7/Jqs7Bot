@@ -76,10 +76,16 @@ export default{
   ready(){
     this.$http.get('/api',function(data,status,req){
       for (var i in data['total']){
+        if (data['total'][i]['total']==0){
+          continue
+        }
         xAxisData.push(data['total'][i]['date'].replace('T00:00:00+08:00',''));
         dailyData.push(data['total'][i]['total']);
       }
       for (var i in data['users']){
+        if(data['users'][i]['userCount']==0){
+          continue
+        }
         dailyUsers.push(data['users'][i]['userCount']);
       }
       option.xAxis[0].data = xAxisData;
