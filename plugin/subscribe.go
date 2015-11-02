@@ -79,6 +79,6 @@ func (b *Default) bc(text string) {
 				counter++
 			}
 		}
-		log.Printf("%d broadcasts sent")
+		log.Printf("%d broadcasts sent", counter)
 	}
 }
