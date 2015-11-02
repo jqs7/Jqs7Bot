@@ -54,6 +54,7 @@ export default {
       option.title.subtext = date;
       var others = total;
       var pieData = new Array();
+      e.showLoading({text: 'Loading...',effect: 'whirling'});
       v.$http.get('/api/rank/' + date,function (data,status,req) {
         for (var i in data['rank']){
           pieData.push({
@@ -67,6 +68,7 @@ export default {
         }
         option.series[0].data = pieData;
         e.setOption(option);
+        e.hideLoading();
         document.getElementById('pie').style.display = '';
         document.getElementById('hide').style.display = '';
       });
