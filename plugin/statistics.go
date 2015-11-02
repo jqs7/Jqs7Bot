@@ -195,7 +195,7 @@ func FromUserName(user tgbotapi.User) string {
 
 func GetDate(day bool, offset int) string {
 	if day {
-		t := time.Now().Add(time.Hour * 24 * time.Duration(offset))
+		t := time.Now().AddDate(0, 0, offset)
 		return strconv.Itoa(t.Year()) +
 			t.Month().String() + strconv.Itoa(t.Day())
 	} else {

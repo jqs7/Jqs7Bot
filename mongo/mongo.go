@@ -62,7 +62,7 @@ type UserRank struct {
 
 func DailySave() {
 	rc := conf.Redis
-	t := time.Now().Add(-24 * time.Hour)
+	t := time.Now().AddDate(0, 0, -1)
 	date := time.Date(t.Year(), t.Month(), t.Day(),
 		0, 0, 0, 0, t.Location())
 
