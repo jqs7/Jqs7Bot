@@ -7,7 +7,7 @@ button#hide(v-on:click='hidePie') Hide
 #pie
   float left
   width 500px
-  height 400px
+  height 377px
   margin-left 30px
 button
   float right
