@@ -69,9 +69,9 @@ export default {
         option.series[0].data = pieData;
         e.setOption(option);
         e.hideLoading();
-        document.getElementById('pie').style.display = '';
-        document.getElementById('hide').style.display = '';
       });
+      document.getElementById('pie').style.display = '';
+      document.getElementById('hide').style.display = '';
     },
     hidePie(){
       document.getElementById('pie').style.display = 'none';
