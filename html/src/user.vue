@@ -2,6 +2,7 @@
 .center
   h1 {{userName}} 子舰活动图
   user-chart
+foot
 </template>
 
 <style lang='stylus'>
@@ -11,6 +12,7 @@
 
 <script>
 import userChart from './userChart.vue'
+import foot from './footer.vue'
 
 export default{
   ready(){
@@ -20,7 +22,8 @@ export default{
     userChart.methods.show(userName);
   },
   components: {
-    userChart
+    userChart,
+    foot
   }
 }
 </script>
