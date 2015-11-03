@@ -42,13 +42,7 @@ var option = {
     name: "日发言量",
     type: 'line',
     yAxisIndex:0,
-    smooth: true,
-    markPoint: {
-      data: [
-        {type: 'max',name: 'max'},
-        {type: 'min',name: 'min'},
-      ]
-    }
+    smooth: true
   },
   {
     name: "日活跃用户",
