@@ -5,6 +5,7 @@ button#hide(v-on:click='hidePie') Hide
 
 <style lang='stylus'>
 #pie
+  float left
   width 500px
   height 400px
   margin-left 30px
