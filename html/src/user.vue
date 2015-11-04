@@ -18,8 +18,8 @@ import foot from './footer.vue'
 
 export default{
   ready(){
-    var tmp = document.URL.split('/');
-    var userName = unescape(tmp[tmp.length - 1]);
+    let tmp = document.URL.split('/');
+    let userName = unescape(tmp[tmp.length - 1]);
     this.$data = {userName: userName};
     userChart.methods.show(userName);
   },

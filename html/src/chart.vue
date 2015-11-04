@@ -13,7 +13,7 @@
     height 400px
 </style>
 
-<script>
+<script lang='babel'>
 import pie from './pie.vue'
 var echarts = require('echarts');
 var eConfig = require('echarts/config');
@@ -62,32 +62,32 @@ var option = {
     }
   }]
 };
-var e;
-var xAxisData = new Array();
-var dailyData = new Array();
-var dailyUsers = new Array();
+let e;
+let xAxisData = new Array();
+let dailyData = new Array();
+let dailyUsers = new Array();
 export default{
   ready(){
-    this.$http.get('/api',function(data,status,req){
-      for (var i in data['total']){
-        if (data['total'][i]['total']==0){
+    this.$http.get('/api',(data,status,req) => {
+      for (let i of data['total']){
+        if (i['total']==0){
           continue
         }
-        xAxisData.push(data['total'][i]['date'].replace('T00:00:00+08:00',''));
-        dailyData.push(data['total'][i]['total']);
+        xAxisData.push(i['date'].replace('T00:00:00+08:00',''));
+        dailyData.push(i['total']);
       }
-      for (var i in data['users']){
-        if(data['users'][i]['userCount']==0){
+      for (let i of data['users']){
+        if(i['userCount']==0){
           continue
         }
-        dailyUsers.push(data['users'][i]['userCount']);
+        dailyUsers.push(i['userCount']);
       }
       option.xAxis[0].data = xAxisData;
       option.series[0].data = dailyData;
       option.series[1].data = dailyUsers;
       document.getElementById('chart').style.width = '100%';
       e = echarts.init(document.getElementById('chart'));
-      e.on(eConfig.EVENT.CLICK,function(param){
+      e.on(eConfig.EVENT.CLICK,param => {
           document.getElementById('chart').style.width = '70%'
           e.resize();
           pie.methods.show(xAxisData[param.dataIndex],dailyData[param.dataIndex]);

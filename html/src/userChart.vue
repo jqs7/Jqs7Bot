@@ -7,7 +7,7 @@
   height 400px
 </style>
 
-<script>
+<script language='babel'>
 var echarts = require('echarts');
 require('echarts/chart/line');
 var option = {
@@ -40,9 +40,9 @@ var option = {
     }
   }]
 }
-var e,v;
-var xAxisData = new Array();
-var dailyData = new Array();
+let e,v;
+let xAxisData = new Array();
+let dailyData = new Array();
 export default{
   ready(){
     v = this;
@@ -51,10 +51,10 @@ export default{
   },
   methods: {
     show(userName) {
-      v.$http.get('/api/user/' + escape(userName),function(data,status,req){
-        for (var i in data['result']){
-          xAxisData.push(data['result'][i]['date'].replace('T00:00:00+08:00',''));
-          dailyData.push(data['result'][i]['count']);
+      v.$http.get('/api/user/' + escape(userName),(data,status,req) => {
+        for (let i of data['result']){
+          xAxisData.push(i['date'].replace('T00:00:00+08:00',''));
+          dailyData.push(i['count']);
         }
         option.xAxis[0].data = xAxisData;
         option.series[0].data = dailyData;

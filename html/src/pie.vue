@@ -13,7 +13,7 @@ button
   margin-right 10%
 </style>
 
-<script>
+<script lang='babel'>
 var echarts = require('echarts');
 var eConfig = require('echarts/config');
 require('echarts/chart/pie');
@@ -36,12 +36,12 @@ var option = {
     }
   ]
 };
-var e, v;
+let e, v;
 export default {
   ready(){
     v = this;
     e = echarts.init(document.getElementById('pie'));
-    e.on(eConfig.EVENT.CLICK,function(param){
+    e.on(eConfig.EVENT.CLICK,param => {
       if (param.name !== '其他'){
         window.location.href = '/user/' + param.name;
       }
@@ -50,21 +50,21 @@ export default {
     document.getElementById('hide').style.display = 'none';
   },
   methods: {
-    show(date, total){
+    show: function(date, total){
       option.title.subtext = date;
-      var others = total;
-      var pieData = new Array();
-      e.showLoading({text: 'Loading...',effect: 'whirling'});
-      v.$http.get('/api/rank/' + date,function (data,status,req) {
-        for (var i in data['rank']){
+      let others = total;
+      let pieData = new Array();
+      e.showLoading({text: 'Loading...', effect: 'whirling'});
+      v.$http.get('/api/rank/' + date, (data,status,req) => {
+        for (let i of data['rank']){
           pieData.push({
-            value:data['rank'][i]['count'],
-            name:data['rank'][i]['name']
+            value:i['count'],
+            name:i['name']
           });
-          others -= data['rank'][i]['count'];
+          others -= i['count'];
         }
         if (others !== 0) {
-          pieData.push({value:others,name:'其他'});
+          pieData.push({value:others, name:'其他'});
         }
         option.series[0].data = pieData;
         e.setOption(option);
