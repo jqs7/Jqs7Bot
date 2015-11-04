@@ -7,6 +7,8 @@ foot
 
 <style lang='stylus'>
 .center
+  overflow hidden
+  margin-bottom 70px
   text-align center
 </style>
 
