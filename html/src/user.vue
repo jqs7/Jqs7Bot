@@ -1,4 +1,5 @@
 <template lang='jade'>
+corner
 .center
   h1 {{userName}} 子舰活动图
   user-chart
@@ -13,6 +14,7 @@ foot
 </style>
 
 <script>
+import corner from './corner.vue'
 import userChart from './userChart.vue'
 import foot from './footer.vue'
 
@@ -24,6 +26,7 @@ export default{
     userChart.methods.show(userName);
   },
   components: {
+    corner,
     userChart,
     foot
   }

@@ -50,7 +50,7 @@ export default {
     document.getElementById('hide').style.display = 'none';
   },
   methods: {
-    show: function(date, total){
+    show(date, total){
       option.title.subtext = date;
       let others = total;
       let pieData = new Array();

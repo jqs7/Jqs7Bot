@@ -61,10 +61,7 @@ func (d *Default) Run() {
 }
 
 func (d *Default) getStatus() string {
-	if conf.Redis.Exists("tgStatus:" + strconv.Itoa(d.ChatID)).Val() {
-		return conf.Redis.Get("tgStatus:" + strconv.Itoa(d.ChatID)).Val()
-	}
-	return ""
+	return conf.Redis.Get("tgStatus:" + strconv.Itoa(d.Message.From.ID)).Val()
 }
 
 func (d *Default) auth(answer string) {
@@ -127,10 +124,8 @@ func (d *Default) isMaster() bool {
 
 func (d *Default) setStatus(status string) {
 	if status == "" {
-		conf.Redis.Del("tgStatus:" +
-			strconv.Itoa(d.ChatID))
+		conf.Redis.Del("tgStatus:" + strconv.Itoa(d.Message.From.ID))
 		return
 	}
-	conf.Redis.Set("tgStatus:"+
-		strconv.Itoa(d.ChatID), status, -1)
+	conf.Redis.Set("tgStatus:"+strconv.Itoa(d.Message.From.ID), status, -1)
 }
