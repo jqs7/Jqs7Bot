@@ -22,6 +22,10 @@ func (d *Default) Run() {
 		case "broadcast":
 			d.bc(d.Message.Text)
 			d.setStatus("")
+		case "trans":
+			result := d.translator(d.Message.Text)
+			d.NewMessage(d.ChatID, result).Send()
+			d.setStatus("")
 		default:
 			if conf.CategoriesSet.Has(d.Message.Text) {
 				// custom keyboard reply

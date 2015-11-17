@@ -5,20 +5,22 @@ import (
 	"strings"
 
 	"github.com/jqs7/Jqs7Bot/conf"
-	"github.com/jqs7/bb"
 	"github.com/st3v/translator"
 	"github.com/st3v/translator/microsoft"
 )
 
-type Trans struct{ bb.Base }
+type Trans struct{ Default }
 
 func (t *Trans) Run() {
-	if t.Message.ReplyToMessage != nil &&
-		t.Message.ReplyToMessage.Text != "" &&
-		len(t.Args) < 2 {
-		in := t.Message.ReplyToMessage.Text
-		result := t.translator(in)
-		t.NewMessage(t.ChatID, result).Send()
+	if len(t.Args) < 2 {
+		if t.Message.ReplyToMessage != nil &&
+			t.Message.ReplyToMessage.Text != "" {
+			in := t.Message.ReplyToMessage.Text
+			result := t.translator(in)
+			t.NewMessage(t.ChatID, result).Send()
+		} else {
+			t.setStatus("trans")
+		}
 	} else if len(t.Args) >= 2 {
 		in := strings.Join(t.Args[1:], " ")
 		result := t.translator(in)
@@ -26,7 +28,7 @@ func (t *Trans) Run() {
 	}
 }
 
-func (t *Trans) translator(in string) string {
+func (t *Default) translator(in string) string {
 	result := make(chan string)
 	typingChan := make(chan bool)
 	go func() {
