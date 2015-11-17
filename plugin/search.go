@@ -14,17 +14,19 @@ func (s *Search) Run() {
 		return
 	}
 
-	if s.FromPrivate {
-		if len(s.Args) > 1 {
-			result := []string{}
-			for _, v := range conf.Groups {
-				arg := strings.ToLower(s.Args[1])
-				lower := strings.ToLower(v)
-				if strings.Contains(lower, arg) {
-					result = append(result, v)
-				}
+	if len(s.Args) > 1 {
+		result := []string{}
+		for _, v := range conf.Groups {
+			arg := strings.ToLower(s.Args[1])
+			lower := strings.ToLower(v)
+			if strings.Contains(lower, arg) {
+				result = append(result, v)
 			}
-			s.NewMessage(s.ChatID, strings.Join(result, "\n")).Send()
+		}
+		if len(result) != 0 {
+			s.NewMessage(s.Message.From.ID, strings.Join(result, "\n")).Send()
+		} else {
+			s.NewMessage(s.Message.From.ID, "搜索大失败喵(/￣ˇ￣)/").Send()
 		}
 	}
 }
