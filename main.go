@@ -56,6 +56,7 @@ func main() {
 		Plugin(new(plugin.Rain), "/rain").
 		Plugin(new(plugin.Rss), "/rss", "/rmrss").
 		Plugin(new(plugin.Markdown), "/md").
+		Plugin(new(plugin.Search), "/search").
 		Plugin(new(plugin.Turing), "@"+botName).
 		Default(&plugin.Default{}).
 		Start()

@@ -16,6 +16,7 @@ var (
 	Redis         *redis.Client
 	Categories    []string
 	CategoriesSet set.Interface
+	Groups        []string
 )
 
 func init() {
@@ -25,16 +26,6 @@ func init() {
 		Addr:     "localhost:6379",
 		Password: redisPass,
 	})
-
-	Categories = []string{
-		"Linux", "Programming", "Software",
-		"影音", "科幻", "ACG", "IT", "社区",
-		"闲聊", "资源", "同城", "Others",
-	}
-	CategoriesSet = set.New(set.NonThreadSafe)
-	for _, v := range Categories {
-		CategoriesSet.Add(v)
-	}
 }
 
 func LoadConf() {
@@ -42,6 +33,16 @@ func LoadConf() {
 	conf, err = yaml.ReadFile("botconf.yaml")
 	if err != nil {
 		log.Panic(err)
+	}
+	Categories = List2SliceInConf("catagoris")
+	CategoriesSet = set.New(set.NonThreadSafe)
+	for _, v := range Categories {
+		CategoriesSet.Add(v)
+		for _, i := range List2SliceInConf(v) {
+			if i != "\\n" {
+				Groups = append(Groups, i)
+			}
+		}
 	}
 }
 
