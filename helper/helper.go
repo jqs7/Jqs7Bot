@@ -43,7 +43,7 @@ func Downloader(link, fileName string) string {
 		return ""
 	}
 
-	filePath := filepath.Join(os.TempDir(), fileName)
+	filePath := filepath.Join(os.TempDir(), "tgImg-"+fileName)
 	f, err := os.Create(filePath)
 	defer f.Close()
 	if err != nil {

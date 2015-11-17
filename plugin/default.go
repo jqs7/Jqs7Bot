@@ -3,6 +3,7 @@ package plugin
 import (
 	"fmt"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -52,6 +53,7 @@ func (d *Default) Run() {
 					size := helper.FileSize(path)
 					bar := helper.BarCode(path)
 					vcn := helper.Vim_cn_Uploader(path)
+					os.Remove(path)
 
 					s := fmt.Sprintf("%s %s\n%s\n%s", mime, size, vcn, bar)
 					d.NewMessage(d.ChatID, s).
