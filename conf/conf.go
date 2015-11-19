@@ -36,6 +36,7 @@ func LoadConf() {
 	}
 	Categories = List2SliceInConf("catagoris")
 	CategoriesSet = set.New(set.NonThreadSafe)
+	Groups = []string{}
 	for _, v := range Categories {
 		CategoriesSet.Add(v)
 		for _, i := range List2SliceInConf(v) {
