@@ -16,7 +16,7 @@ import (
 type Default struct{ bb.Base }
 
 func (d *Default) Run() {
-	if !d.FromGroup {
+	if d.FromPrivate {
 		switch d.getStatus() {
 		case "auth":
 			d.auth(d.Message.Text)
@@ -75,7 +75,7 @@ func (d *Default) auth(answer string) {
 	index := time.Now().Hour() % len(qs)
 	answer = strings.ToLower(answer)
 	answer = strings.TrimSpace(answer)
-	if !d.FromGroup {
+	if d.FromPrivate {
 		if d.isAuthed() {
 			d.NewMessage(d.ChatID,
 				"已经验证过了，你还想验证，你是不是傻？⊂彡☆))д`)`").

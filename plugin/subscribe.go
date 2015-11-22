@@ -50,7 +50,7 @@ type Broadcast struct{ Default }
 
 func (b *Broadcast) Run() {
 	if b.isMaster() {
-		if len(b.Args) == 1 && !b.FromGroup {
+		if len(b.Args) == 1 && b.FromPrivate {
 			b.NewMessage(b.ChatID,
 				"Send me the Broadcast (＾o＾)ﾉ").Send()
 			b.setStatus("broadcast")

@@ -38,7 +38,7 @@ func (m *Man) Run() {
 		if len(m.Args) == 1 {
 			m.listMan()
 		} else {
-			if !m.FromGroup {
+			if m.FromPrivate || m.FromChannel {
 				return
 			}
 			if m.Args[1] == "man" && !conf.Redis.HExists(
