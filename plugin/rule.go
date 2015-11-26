@@ -24,16 +24,18 @@ func (r *Rule) Run() {
 type SetRule struct{ Default }
 
 func (s *SetRule) Run() {
-	if len(s.Args) < 2 || s.FromPrivate || s.FromChannel {
+	if len(s.Args) < 2 {
 		return
 	}
-	rule := strings.Join(s.Args[1:], " ")
-	if s.isAuthed() {
-		chatIDStr := strconv.Itoa(s.ChatID)
-		conf.Redis.Set("tgGroupRule:"+chatIDStr, rule, -1)
-		s.NewMessage(s.ChatID, "新的群组规则Get！✔️").Send()
-	} else {
-		s.sendQuestion()
+	if s.FromGroup || s.FromSuperGroup {
+		rule := strings.Join(s.Args[1:], " ")
+		if s.isAuthed() {
+			chatIDStr := strconv.Itoa(s.ChatID)
+			conf.Redis.Set("tgGroupRule:"+chatIDStr, rule, -1)
+			s.NewMessage(s.ChatID, "新的群组规则Get！✔️").Send()
+		} else {
+			s.sendQuestion()
+		}
 	}
 }
 
