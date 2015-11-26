@@ -24,7 +24,7 @@ func (r *Rule) Run() {
 type SetRule struct{ Default }
 
 func (s *SetRule) Run() {
-	if len(s.Args) < 2 || !(s.FromGroup || s.FromSuperGroup) {
+	if len(s.Args) < 2 || s.FromPrivate || s.FromChannel {
 		return
 	}
 	rule := strings.Join(s.Args[1:], " ")
