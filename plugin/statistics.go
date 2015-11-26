@@ -37,14 +37,14 @@ func (r *Rain) Run() {
 		case "me":
 			msg.Text = Statistics(FromUserName(r.Message.From), true)
 			msg.ParseMode = tgbotapi.ModeMarkdown
-			if r.FromGroup {
+			if r.FromGroup || r.FromSuperGroup {
 				msg.ReplyToMessageID = r.Message.MessageID
 			}
 		default:
 			name := strings.Join(r.Args[1:], " ")
 			msg.Text = Statistics(name, true)
 			msg.ParseMode = tgbotapi.ModeMarkdown
-			if r.FromGroup {
+			if r.FromGroup || r.FromSuperGroup {
 				msg.ReplyToMessageID = r.Message.MessageID
 			}
 		}
@@ -53,7 +53,7 @@ func (r *Rain) Run() {
 		if r.Message.ReplyToMessage != nil {
 			msg.Text = Statistics(FromUserName(
 				r.Message.ReplyToMessage.From), true)
-			if r.FromGroup {
+			if r.FromGroup || r.FromSuperGroup {
 				msg.ReplyToMessageID = r.Message.ReplyToMessage.MessageID
 			}
 			msg.ParseMode = tgbotapi.ModeMarkdown

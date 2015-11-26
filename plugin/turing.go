@@ -33,7 +33,7 @@ func (t *Default) turing(text string) {
 	asGroupMsg := false
 	go func() {
 		var userid string
-		if t.FromGroup && strings.HasPrefix(text, "-") {
+		if (t.FromGroup || t.FromSuperGroup) && strings.HasPrefix(text, "-") {
 			text = strings.TrimPrefix(text, "-")
 			asGroupMsg = true
 			userid = strconv.Itoa(t.ChatID)

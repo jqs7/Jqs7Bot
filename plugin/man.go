@@ -19,7 +19,7 @@ func (m *Man) Run() {
 				return
 			}
 
-			if m.FromGroup {
+			if m.FromGroup || m.FromSuperGroup {
 				conf.Redis.HSet(
 					"tgMan:"+strconv.Itoa(m.ChatID),
 					m.Args[1], value)
@@ -54,7 +54,7 @@ func (m *Man) Run() {
 }
 
 func (m *Man) listMan() {
-	if m.FromGroup {
+	if m.FromGroup || m.FromSuperGroup {
 		var result string
 		fields := conf.Redis.HGetAllMap("tgMan:" +
 			strconv.Itoa(m.ChatID)).Val()

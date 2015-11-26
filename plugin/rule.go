@@ -24,7 +24,7 @@ func (r *Rule) Run() {
 type SetRule struct{ Default }
 
 func (s *SetRule) Run() {
-	if len(s.Args) < 2 || !s.FromGroup {
+	if len(s.Args) < 2 || !(s.FromGroup || s.FromSuperGroup) {
 		return
 	}
 	rule := strings.Join(s.Args[1:], " ")
@@ -52,7 +52,7 @@ func (s *RmRule) Run() {
 type AutoRule struct{ Default }
 
 func (s *AutoRule) Run() {
-	if s.FromGroup {
+	if s.FromGroup || s.FromSuperGroup {
 		chatIDStr := strconv.Itoa(s.ChatID)
 		if conf.Redis.Exists("tgGroupAutoRule:" + chatIDStr).Val() {
 			conf.Redis.Del("tgGroupAutoRule:" + chatIDStr)

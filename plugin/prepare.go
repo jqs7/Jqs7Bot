@@ -57,7 +57,7 @@ func (p *Prepare) analytics() {
 		rc.Expire(key(month), time.Hour*(24*30*3+3))
 	}
 
-	if p.FromGroup {
+	if p.FromGroup || p.FromSuperGroup {
 		rc.Incr(totalKey(day))
 		rc.ZIncrBy(key(day), 1, strconv.Itoa(p.Message.From.ID))
 		rc.Incr(totalKey(month))
