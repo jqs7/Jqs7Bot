@@ -14,10 +14,10 @@ func (r *Rule) Run() {
 	chatIDStr := strconv.Itoa(r.ChatID)
 	rule := conf.Redis.Get("tgGroupRule:" + chatIDStr).Val()
 	if rule != "" {
-		r.NewMessage(r.ChatID, rule).Send()
+		r.NewMessage(r.ChatID, rule).MarkdownMode().Send()
 	} else {
 		r.NewMessage(r.Message.From.ID,
-			conf.List2StringInConf("rules")).Send()
+			conf.List2StringInConf("rules")).MarkdownMode().Send()
 	}
 }
 

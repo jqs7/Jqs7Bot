@@ -37,9 +37,9 @@ func main() {
 	bot.Prepare(&plugin.Prepare{}).
 		Plugin(new(plugin.Start), "/help", "/start", "/help@"+botName, "/start@"+botName).
 		Plugin(new(plugin.Rule), "/rule", "/rule@"+botName).
-		Plugin(new(plugin.SetRule), "/setrule").
-		Plugin(new(plugin.RmRule), "/rmrule").
-		Plugin(new(plugin.AutoRule), "/autorule").
+		Plugin(new(plugin.SetRule), "/setrule", "/setrule@"+botName).
+		Plugin(new(plugin.RmRule), "/rmrule", "/rmrule@"+botName).
+		Plugin(new(plugin.AutoRule), "/autorule", "/autorule@"+botName).
 		Plugin(new(plugin.About), "/about", "/about@"+botName).
 		Plugin(new(plugin.OtherResources), "/other_resources", "/other_resources@"+botName).
 		Plugin(new(plugin.Subscribe), "/subscribe", "/subscribe@"+botName).
