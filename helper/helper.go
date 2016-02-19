@@ -176,7 +176,7 @@ func ToMarkdown(title string, link string) string {
 		return fmt.Sprintf("%s [link](%s)",
 			MarkdownEscape(title), link)
 	} else {
-		return fmt.Sprintf("[%s](%s)\n",
+		return fmt.Sprintf("[%s](%s)",
 			title, link)
 	}
 }
