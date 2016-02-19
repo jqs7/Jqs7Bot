@@ -31,7 +31,7 @@ func (g *Google) G(query string) string {
 Req:
 	res, err := goreq.Request{
 		Uri: fmt.Sprintf("http://ajax.googleapis.com/"+
-			"ajax/services/search/web?v=1.0&rsz=3&q=%s", query),
+			"ajax/services/search/web?v=1.0&rsz=7&q=%s", query),
 		Timeout: 17 * time.Second,
 	}.Do()
 	if err != nil {
