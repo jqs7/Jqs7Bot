@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/franela/goreq"
+	"github.com/jqs7/Jqs7Bot/helper"
 	"github.com/jqs7/bb"
 )
 
@@ -18,6 +19,7 @@ func (g *Google) Run() {
 	if len(g.Args) >= 2 {
 		q := strings.Join(g.Args[1:], " ")
 		g.NewMessage(g.ChatID, g.G(q)).
+			MarkdownMode().
 			DisableWebPagePreview().
 			Send()
 	}
@@ -60,7 +62,7 @@ Req:
 	for _, item := range google.ResponseData.Results {
 		u, _ := url.QueryUnescape(item.URL)
 		t, _ := url.QueryUnescape(item.TitleNoFormatting)
-		buf.WriteString(t + "\n" + u + "\n")
+		buf.WriteString(helper.ToMarkdown(t, u) + "\n")
 	}
 	return buf.String()
 }

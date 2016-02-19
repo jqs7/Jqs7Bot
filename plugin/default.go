@@ -44,12 +44,13 @@ func (d *Default) Run() {
 						result[k] = v
 					}
 					for _, v := range strs {
-						result[k] = fmt.Sprintf("[%s](%s)", v[1], v[2])
+						result[k] = helper.ToMarkdown(v[1], v[2])
 					}
 				}
 				msgContent := strings.Join(result, "\n")
 				msgContent = strings.Replace(msgContent, "\\n", "", -1)
-				d.NewMessage(d.ChatID, msgContent).MarkdownMode().Send()
+				d.NewMessage(d.ChatID, msgContent).
+					MarkdownMode().DisableWebPagePreview().Send()
 			} else {
 				if len(d.Args) > 0 {
 					d.turing(d.Message.Text)

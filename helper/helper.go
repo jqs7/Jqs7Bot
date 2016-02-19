@@ -167,3 +167,25 @@ func HumanByte(in ...interface{}) (out []interface{}) {
 	}
 	return out
 }
+
+func ToMarkdown(title string, link string) string {
+	title = strings.TrimSpace(title)
+	link = strings.TrimSpace(link)
+	if strings.ContainsAny(title, "[]()") ||
+		strings.Contains(title, "://") {
+		return fmt.Sprintf("%s [link](%s)",
+			MarkdownEscape(title), link)
+	} else {
+		return fmt.Sprintf("[%s](%s)\n",
+			title, link)
+	}
+}
+
+func MarkdownEscape(s string) string {
+	return strings.NewReplacer(
+		"_", "\\_",
+		"*", "\\*",
+		"[", "\\[",
+		"`", "\\`",
+	).Replace(s)
+}
