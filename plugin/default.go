@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -34,8 +35,21 @@ func (d *Default) Run() {
 					d.sendQuestion()
 					return
 				}
-				d.NewMessage(d.ChatID,
-					conf.List2StringInConf(d.Message.Text)).Send()
+				groups := conf.List2SliceInConf(d.Message.Text)
+				result := make([]string, len(groups))
+				for k, v := range groups {
+					reg := regexp.MustCompile("^(.+) (http(s)?://(.*))$")
+					strs := reg.FindAllStringSubmatch(v, -1)
+					if !reg.MatchString(v) {
+						result[k] = v
+					}
+					for _, v := range strs {
+						result[k] = fmt.Sprintf("[%s](%s)", v[1], v[2])
+					}
+				}
+				msgContent := strings.Join(result, "\n")
+				msgContent = strings.Replace(msgContent, "\\n", "", -1)
+				d.NewMessage(d.ChatID, msgContent).MarkdownMode().Send()
 			} else {
 				if len(d.Args) > 0 {
 					d.turing(d.Message.Text)
