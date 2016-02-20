@@ -62,7 +62,7 @@ Req:
 	for _, item := range google.ResponseData.Results {
 		u, _ := url.QueryUnescape(item.URL)
 		t, _ := url.QueryUnescape(item.TitleNoFormatting)
-		buf.WriteString(helper.ToMarkdown(t, u) + "\n")
+		buf.WriteString(helper.ToMarkdownLink(t, u) + "\n")
 	}
 	return buf.String()
 }

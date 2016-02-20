@@ -2,13 +2,13 @@ package conf
 
 import (
 	"log"
+	"regexp"
 	"strconv"
 	"strings"
 
-	"gopkg.in/redis.v3"
-
 	"github.com/fatih/set"
 	"github.com/kylelemons/go-gypsy/yaml"
+	"gopkg.in/redis.v3"
 )
 
 var (
@@ -16,8 +16,13 @@ var (
 	Redis         *redis.Client
 	Categories    []string
 	CategoriesSet set.Interface
-	Groups        []string
+	Groups        []Group
 )
+
+type Group struct {
+	GroupName string
+	GroupURL  string
+}
 
 func init() {
 	LoadConf()
@@ -36,12 +41,21 @@ func LoadConf() {
 	}
 	Categories = List2SliceInConf("catagoris")
 	CategoriesSet = set.New(set.NonThreadSafe)
-	Groups = []string{}
+	Groups = []Group{}
 	for _, v := range Categories {
 		CategoriesSet.Add(v)
 		for _, i := range List2SliceInConf(v) {
-			if i != "\\n" {
-				Groups = append(Groups, i)
+			reg := regexp.MustCompile("^(.+) (http(s)?://(.*))$")
+			strs := reg.FindAllStringSubmatch(i, -1)
+			if !reg.MatchString(i) {
+				Groups = append(Groups,
+					Group{GroupName: i,
+						GroupURL: ""})
+			}
+			if len(strs) > 0 {
+				Groups = append(Groups,
+					Group{GroupName: strs[0][1],
+						GroupURL: strs[0][2]})
 			}
 		}
 	}

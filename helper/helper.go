@@ -168,7 +168,7 @@ func HumanByte(in ...interface{}) (out []interface{}) {
 	return out
 }
 
-func ToMarkdown(title string, link string) string {
+func ToMarkdownLink(title string, link string) string {
 	title = strings.TrimSpace(title)
 	link = strings.TrimSpace(link)
 	if strings.ContainsAny(title, "[]()") ||

@@ -43,8 +43,8 @@ func (d *Default) Run() {
 					if !reg.MatchString(v) {
 						result[k] = v
 					}
-					for _, v := range strs {
-						result[k] = helper.ToMarkdown(v[1], v[2])
+					if len(strs) > 0 {
+						result[k] = helper.ToMarkdownLink(strs[0][1], strs[0][2])
 					}
 				}
 				msgContent := strings.Join(result, "\n")
