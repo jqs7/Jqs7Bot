@@ -32,7 +32,6 @@ func M(collection string, f func(*mgo.Collection)) {
 	s := MSession()
 	defer func() {
 		s.Close()
-
 	}()
 	f(s.DB("tgBot").C(collection))
 }

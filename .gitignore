@@ -4,3 +4,5 @@ botconf.yaml
 /html/tmp.html
 crt.pem
 key.pem
+debug
+.vscode

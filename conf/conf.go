@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/fatih/set"
+	"github.com/fsnotify/fsnotify"
 	"github.com/kylelemons/go-gypsy/yaml"
 	"gopkg.in/redis.v3"
 )
@@ -26,6 +27,30 @@ type Group struct {
 
 func init() {
 	LoadConf()
+
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+
+	}
+	go func() {
+		for {
+			select {
+			case event := <-watcher.Events:
+				if event.Op == fsnotify.Write {
+					LoadConf()
+				}
+			case err := <-watcher.Errors:
+				if err != nil {
+					log.Println("error:", err)
+				}
+			}
+		}
+	}()
+	err = watcher.Add("botconf.yaml")
+	if err != nil {
+		log.Panicln(err)
+	}
+
 	redisPass, _ := conf.Get("redisPass")
 	Redis = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",

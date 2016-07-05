@@ -43,6 +43,7 @@ func (t *Default) turing(text string) {
 		//语言检测，如果不是中文，则使用翻译后的结果
 		reZh := regexp.MustCompile(`[\p{Han}]`).
 			FindAllString(text, -1)
+		var err error
 		if float32(len(reZh))/float32(utf8.RuneCountInString(text)) < 0.4 {
 			m := &MsTrans{}
 			m.New()
@@ -50,10 +51,14 @@ func (t *Default) turing(text string) {
 			switch from {
 			case "zh-CHS", "zh-CHT":
 			default:
-				text, _ = m.Trans(text, from, "zh-CHS")
+				text, err = m.Trans(text, from, "zh-CHS")
 			}
 		}
-		msgText <- TuringBot(conf.GetItem("turingBotKey"), userid, text)
+		if err != nil {
+			msgText <- ""
+		} else {
+			msgText <- TuringBot(conf.GetItem("turingBotKey"), userid, text)
+		}
 	}()
 
 	go func(done chan bool) {
