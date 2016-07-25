@@ -9,7 +9,6 @@ import (
 
 	"github.com/jqs7/Jqs7Bot/conf"
 	"github.com/jqs7/Jqs7Bot/helper"
-	"github.com/jqs7/bb"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/host"
@@ -17,13 +16,13 @@ import (
 	"github.com/shirou/gopsutil/mem"
 )
 
-type Reload struct{ bb.Base }
+// type Reload struct{ bb.Base }
 
-func (r *Reload) Run() {
-	conf.LoadConf()
-	r.NewMessage(r.ChatID,
-		"群组娘已完成弹药重装(ゝ∀･)").Send()
-}
+// func (r *Reload) Run() {
+// 	conf.LoadConf()
+// 	r.NewMessage(r.ChatID,
+// 		"群组娘已完成弹药重装(ゝ∀･)").Send()
+// }
 
 type Stat struct{ Default }
 

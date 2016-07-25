@@ -21,7 +21,7 @@ func main() {
 	}
 	if bot.Err != nil {
 		log.Println("bot connection failed")
-		log.Println(bot.Err)
+		log.Println(bot.Err.Error())
 		return
 	}
 
@@ -51,7 +51,7 @@ func main() {
 		Plugin(new(plugin.Google), "/gg").
 		Plugin(new(plugin.Trans), "/trans").
 		Plugin(new(plugin.Man), "/man", "/setman", "/rmman").
-		Plugin(new(plugin.Reload), "/reload").
+		// Plugin(new(plugin.Reload), "/reload").
 		Plugin(new(plugin.Stat), "/os", "/df", "/free", "/redis").
 		Plugin(new(plugin.Rain), "/rain").
 		Plugin(new(plugin.Rss), "/rss", "/rmrss").

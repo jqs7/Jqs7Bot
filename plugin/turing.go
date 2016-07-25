@@ -47,7 +47,10 @@ func (t *Default) turing(text string) {
 		if float32(len(reZh))/float32(utf8.RuneCountInString(text)) < 0.4 {
 			m := &MsTrans{}
 			m.New()
-			from, _ := m.Detect(text)
+			from, err := m.Detect(text)
+			if err != nil {
+				from = "zh-CHS"
+			}
 			switch from {
 			case "zh-CHS", "zh-CHT":
 			default:

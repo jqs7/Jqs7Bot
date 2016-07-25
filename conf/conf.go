@@ -3,12 +3,12 @@ package conf
 import (
 	"log"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/fatih/set"
 	"github.com/fsnotify/fsnotify"
 	"github.com/kylelemons/go-gypsy/yaml"
+	"github.com/spf13/viper"
 	"gopkg.in/redis.v3"
 )
 
@@ -26,69 +26,45 @@ type Group struct {
 }
 
 func init() {
-	LoadConf()
-
-	watcher, err := fsnotify.NewWatcher()
-	if err != nil {
-
+	viper.SetConfigName("botconf")
+	viper.AddConfigPath(".")
+	viper.WatchConfig()
+	if err := viper.ReadInConfig(); err != nil {
+		log.Println(err.Error())
 	}
-	go func() {
-		for {
-			select {
-			case event := <-watcher.Events:
-				if event.Op == fsnotify.Write {
-					LoadConf()
-				}
-			case err := <-watcher.Errors:
-				if err != nil {
-					log.Println("error:", err)
-				}
-			}
-		}
-	}()
-	err = watcher.Add("botconf.yaml")
-	if err != nil {
-		log.Panicln(err)
-	}
+	viper.OnConfigChange(func(e fsnotify.Event) {
+		loadGroups()
+	})
+	loadGroups()
 
-	redisPass, _ := conf.Get("redisPass")
 	Redis = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
-		Password: redisPass,
+		Password: viper.GetString("redisPass"),
 	})
 }
 
-func LoadConf() {
-	var err error
-	conf, err = yaml.ReadFile("botconf.yaml")
-	if err != nil {
-		log.Panic(err)
-	}
-	Categories = List2SliceInConf("catagoris")
+func loadGroups() {
+	Categories = viper.GetStringSlice("catagoris")
 	CategoriesSet = set.New(set.NonThreadSafe)
 	Groups = []Group{}
 	for _, v := range Categories {
 		CategoriesSet.Add(v)
-		for _, i := range List2SliceInConf(v) {
+		for _, i := range viper.GetStringSlice(v) {
 			reg := regexp.MustCompile("^(.+) (http(s)?://(.*))$")
 			strs := reg.FindAllStringSubmatch(i, -1)
 			if !reg.MatchString(i) {
-				Groups = append(Groups,
-					Group{GroupName: i,
-						GroupURL: ""})
+				Groups = append(Groups, Group{GroupName: i, GroupURL: ""})
+				continue
 			}
 			if len(strs) > 0 {
-				Groups = append(Groups,
-					Group{GroupName: strs[0][1],
-						GroupURL: strs[0][2]})
+				Groups = append(Groups, Group{GroupName: strs[0][1], GroupURL: strs[0][2]})
 			}
 		}
 	}
 }
 
 func GetItem(i string) string {
-	item, _ := conf.Get(i)
-	return item
+	return viper.GetString(i)
 }
 
 func List2StringInConf(text string) string {
@@ -101,22 +77,7 @@ func List2StringInConf(text string) string {
 }
 
 func List2SliceInConf(text string) []string {
-	count, err := conf.Count(text)
-	if err != nil {
-		log.Println(err)
-		return nil
-	}
-
-	var result []string
-	for i := 0; i < count; i++ {
-		v, err := conf.Get(text + "[" + strconv.Itoa(i) + "]")
-		if err != nil {
-			log.Println(err)
-			return nil
-		}
-		result = append(result, v)
-	}
-	return result
+	return viper.GetStringSlice(text)
 }
 
 type Question struct {
@@ -126,8 +87,7 @@ type Question struct {
 
 func GetQuestions() []Question {
 	var result []Question
-	questions := List2SliceInConf("questions")
-
+	questions := viper.GetStringSlice("questions")
 	for _, v := range questions {
 		qs := strings.Split(v, "|")
 		question := qs[0]
