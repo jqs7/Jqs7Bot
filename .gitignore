@@ -1,6 +1,8 @@
-*telegram-chinese-groups
+*Jqs7Bot
 botconf.yaml
 .idea
 /html/tmp.html
 crt.pem
 key.pem
+debug
+.vscode

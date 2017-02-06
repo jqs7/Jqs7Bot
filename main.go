@@ -1,77 +1,63 @@
 package main
 
 import (
-	"regexp"
-	"strings"
-	"time"
+	"log"
+
+	"github.com/carlescere/scheduler"
+	"github.com/jqs7/Jqs7Bot/conf"
+	"github.com/jqs7/Jqs7Bot/mongo"
+	"github.com/jqs7/Jqs7Bot/plugin"
+	"github.com/jqs7/Jqs7Bot/webServer"
+	"github.com/jqs7/bb"
 )
 
 func main() {
-	defer rc.Close()
-
-	botname := bot.Self.UserName
-
-	for update := range bot.Updates {
-
-		// Ignore Outdated Updates
-		if time.Since(time.Unix(int64(update.Message.Date), 0)) > time.Hour {
-			continue
-		}
-
-		// Logger
-		loge.Debugf("%+v", update)
-		startWithSlash, _ := regexp.MatchString("^/", update.Message.Text)
-		atBot, _ := regexp.MatchString("@"+botname, update.Message.Text)
-		if update.Message.Chat.ID > 0 || startWithSlash || atBot {
-			loge.Infof("[%d](%s) -- [%s] -- %s",
-				update.Message.Chat.ID, update.Message.Chat.Title,
-				update.Message.From.UserName, update.Message.Text,
-			)
-		}
-
-		// Field the message text
-		s := strings.FieldsFunc(update.Message.Text,
-			func(r rune) bool {
-				switch r {
-				case '\t', '\v', '\f', '\r', ' ', 0xA0:
-					return true
-				}
-				return false
-			})
-
-		p := Processor{false, s, update}
-
-		p._autoRule()
-		p.saveSticker()
-		p.analytics()
-
-		go func(p Processor) {
-			p.start("/help", "/start", "/help@"+botname, "/start@"+botname)
-			p.rule("/rule", "/rule@"+botname)
-			p.about("/about", "/about@"+botname)
-			p.otherResources("/other_resources", "/other_resources@"+botname)
-			p.subscribe("/subscribe", "/subscribe@"+botname)
-			p.unsubscribe("/unsubscribe", "/unsubscribe@"+botname)
-			p.autoRule("/autorule")
-			p.groups("/groups", "/groups@"+botname)
-			p.cancel("/cancel")
-			p.rand("/rand")
-			p.setRule("/setrule")
-			p.base64("/e64", "/d64")
-			p.google("/gg")
-			p.trans("/trans")
-			p.setMan("/setman")
-			p.rmMan("/rmman")
-			p.man("/man")
-			p.broadcast("/broadcast")
-			p.reload("/reload")
-			p.stat("/os", "/df", "/free", "/redis")
-			p.statistics("/rain")
-			p.rss("/rss")
-			p.rmrss("/rmrss")
-			p.markdown("/md")
-			p.turing("@" + botname)
-			p._default()
-		}(p)
+	bot := bb.LoadBot(conf.GetItem("botapi"))
+	if conf.GetItem("runMode") == "debug" {
+		bot.SetUpdate(10)
+	} else {
+		bot.SetWebhook("jqs7.com", "8443",
+			"crt.pem", "key.pem")
 	}
+	if bot.Err != nil {
+		log.Println("bot connection failed")
+		log.Println(bot.Err.Error())
+		return
+	}
+
+	go plugin.InitRss(bot.GetBot())
+	go func() {
+		mongo.MIndex()
+		mongo.DailySave()
+		scheduler.Every().Day().At("00:05").Run(mongo.DailySave)
+	}()
+	go webServer.GinServer()
+
+	botName := bot.GetBot().Self.UserName
+	bot.Prepare(&plugin.Prepare{}).
+		Plugin(new(plugin.Start), "/help", "/start", "/help@"+botName, "/start@"+botName).
+		Plugin(new(plugin.Rule), "/rule", "/rule@"+botName).
+		Plugin(new(plugin.SetRule), "/setrule", "/setrule@"+botName).
+		Plugin(new(plugin.RmRule), "/rmrule", "/rmrule@"+botName).
+		Plugin(new(plugin.AutoRule), "/autorule", "/autorule@"+botName).
+		Plugin(new(plugin.About), "/about", "/about@"+botName).
+		Plugin(new(plugin.OtherResources), "/other_resources", "/other_resources@"+botName).
+		Plugin(new(plugin.Subscribe), "/subscribe", "/subscribe@"+botName).
+		Plugin(new(plugin.UnSubscribe), "/unsubscribe", "/unsubscribe@"+botName).
+		Plugin(new(plugin.Broadcast), "/broadcast").
+		Plugin(new(plugin.Groups), "/groups", "/groups@"+botName).
+		Plugin(new(plugin.Cancel), "/cancel").
+		Plugin(new(plugin.Base64), "/e64", "/d64").
+		Plugin(new(plugin.Google), "/gg").
+		Plugin(new(plugin.Trans), "/trans").
+		Plugin(new(plugin.Man), "/man", "/setman", "/rmman").
+		// Plugin(new(plugin.Reload), "/reload").
+		Plugin(new(plugin.Stat), "/os", "/df", "/free", "/redis").
+		Plugin(new(plugin.Rain), "/rain").
+		Plugin(new(plugin.Rss), "/rss", "/rmrss").
+		Plugin(new(plugin.Markdown), "/md").
+		Plugin(new(plugin.Search), "/search").
+		Plugin(new(plugin.Turing), "@"+botName).
+		Default(&plugin.Default{}).
+		Start()
 }
